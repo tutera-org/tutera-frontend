@@ -1,4 +1,12 @@
 import "./globals.css";
+import { Lato } from "next/font/google";
+
+const lato = Lato({
+  // Importing font family for the body
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
+  display: "swap",
+});
 
 export const metadata = {
   title: "tutera",
@@ -13,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={lato.className}>
         <main> {children} </main>
       </body>
     </html>
