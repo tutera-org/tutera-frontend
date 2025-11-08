@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Toaster } from "sonner";
 import { Lato } from "next/font/google";
 
 const lato = Lato({
@@ -23,11 +24,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={lato.className}>
-        <main>
-          {children}
-          {modal}
-        </main>
+      <body className={`${lato.className} relative`}>
+        <main>{children}</main>
+        {modal}
+        <Toaster
+          position="top-center"
+          duration={10000}
+          richColors
+          closeButton
+          expand={false}
+          visibleToasts={3}
+        />
       </body>
     </html>
   );

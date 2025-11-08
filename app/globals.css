@@ -5,9 +5,26 @@
   --foreground: #171717;
 }
 
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border: 1px solid rgba(73, 119, 230, 1);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-gray-500: rgba(113, 118, 128, 1);
+  --color-primary-400: rgba(73, 119, 230, 1);
+  --color-neutral-900: rgba(16, 26, 51, 1);
+  --color-black-400: rgba(135, 135, 135, 1);
+  --color-neutral-700: rgba(93, 93, 93, 1);
+  --color-neutral-100: rgba(255, 255, 255, 1);
+  --color-main-primary: rgba(38, 70, 81, 1);
+  --color-accent-600: rgba(223, 70, 35, 1);
+  --color-error-300: rgba(213, 99, 94, 1);
+  --color-main-primary: rgba(38, 70, 81, 1);
 }
 
 @media (prefers-color-scheme: dark) {
