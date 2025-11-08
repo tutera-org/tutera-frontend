@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FaEnvelope } from "react-icons/fa";
 
-export default function VerifyOtpModal() {
+export default function VerifyOtpPage() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 

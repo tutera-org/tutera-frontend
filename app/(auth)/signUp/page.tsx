@@ -2,7 +2,7 @@ import AuthFormHeader from "@/components/auth/AuthHeader";
 import AuthModal from "@/components/auth/AuthModal";
 import SignUpForm from "@/components/auth/SignUpForm";
 
-function SignUpModal() {
+function SignUpPage() {
   return (
     <AuthModal>
       <div className="mx-4">
@@ -11,11 +11,11 @@ function SignUpModal() {
           text="Build a better brand through education"
         />
 
-        {/* form */}
+        {/* Form */}
         <SignUpForm />
       </div>
     </AuthModal>
   );
 }
 
-export default SignUpModal;
+export default SignUpPage;
