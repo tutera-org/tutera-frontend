@@ -7,7 +7,7 @@ const NavBar = () => {
   return (
     <nav className="w-full bg-[#F0F4FF]  py-8">
       <div className="max-w-[1240px] mx-auto ">
-        <div className="bg-[#ffffff] rounded-[16px] shadow-lg px-4.5 py-5.5">
+        <div className="bg-[#ffffff] rounded-2xl shadow-lg px-4.5 py-5.5">
           <div className="flex items-center justify-center">
             <div className="flex items-center ">
               <Image
@@ -44,7 +44,7 @@ const NavBar = () => {
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
               <Link
-                href="/creator/login"
+                href="/signUp"
                 className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg text-sm font-medium hover:bg-blue-50 transition-colors whitespace-nowrap"
               >
                 Creator Login
