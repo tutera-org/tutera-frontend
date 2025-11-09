@@ -1,14 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
 
   const handleClick = () => {
-    toast.success("Your Password has been reset successfully");
-    router.push("/");
+    router.push("/resetSuccess");
   };
   return (
     <form className="flex py-8 flex-col gap-10">
