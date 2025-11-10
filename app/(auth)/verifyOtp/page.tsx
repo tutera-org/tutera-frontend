@@ -5,9 +5,10 @@ import CountDown from "@/components/auth/Countdown";
 import VerifyOtpForm from "@/components/auth/verifyOtpForm";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { FaEnvelope } from "react-icons/fa";
 
-export default function VerifyOtpPage() {
+function VerifyOtpContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 
@@ -33,5 +34,28 @@ export default function VerifyOtpPage() {
         </p>
       </div>
     </AuthModal>
+  );
+}
+
+export default function VerifyOtpPage() {
+  return (
+    <Suspense
+      fallback={
+        <AuthModal>
+          <div className="flex flex-col items-center gap-9 py-10 mx-4">
+            <FaEnvelope className="text-4xl text-primary-400" />
+            <AuthFormHeader
+              header="We have Emailed you a code"
+              text="To verify your account, enter code sent to your email"
+            />
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-400"></div>
+            </div>
+          </div>
+        </AuthModal>
+      }
+    >
+      <VerifyOtpContent />
+    </Suspense>
   );
 }
