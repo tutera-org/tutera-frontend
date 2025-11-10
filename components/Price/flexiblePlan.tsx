@@ -43,8 +43,8 @@ const FlexiblePlan = () => {
   return (
     <section className="w-full bg-[#F0F4FF] md:pt-16 pt-4 md:pb-30 pb-10">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="text-center md:mb-24 mb-8 md:w-[70%] w-[90%] mx-auto">
-          <h2 className="text-[1.5rem] md:text-[3.75rem] font-bold mb-4 md:leading-[72px]">
+        <div className="text-center md:mb-24 mb-8 lg:w-[70%] w-[90%] mx-auto">
+          <h2 className="text-[1.5rem] lg:text-[3.75rem] md:text-[3rem]  font-bold mb-4 md:leading-[72px]">
             <span className="text-[#E8C56B] text-shadow-sm">
               Flexible Plans
             </span>{" "}
@@ -59,7 +59,7 @@ const FlexiblePlan = () => {
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6 justify-center items-stretch">
+        <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
           {plans.map((plan, index) => (
             <div
               key={index}
