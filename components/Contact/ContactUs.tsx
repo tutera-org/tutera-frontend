@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Button from "../Reuse/Button";
+import Link from "next/link";
 
 type FormData = {
   name: string;
@@ -69,7 +70,7 @@ const ContactUs = () => {
   };
 
   return (
-    <section className="w-full bg-[#F0F4FF] py-16 relative">
+    <section className="w-full bg-[#F0F4FF] py-2  md:py-12 relative">
       {/* Success Notification */}
       {showSuccess && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg px-6 py-4 border-l-4 border-[#4977E6] animate-slide-down">
@@ -81,35 +82,35 @@ const ContactUs = () => {
       )}
 
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <h1 className="text-[3rem] font-bold text-center mb-16 text-[#1A202C]">
+        <h1 className="text-[2rem] md:text-[3rem] lg:text-[3.75rem] font-bold text-center mb-4 lg:mb-16 text-[#1A202C]">
           Contact Us
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-8 items-start justify-center">
           {/* Left Section */}
-          <div className="flex-1 space-y-6">
-            <h2 className="text-[2.5rem] font-bold text-[#1A202C]">
+          <div className="flex-1 space-y-4 ">
+            <h2 className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
               Let&apos;s Empower Education Together
             </h2>
-            <p className="text-[1rem] text-[#4B4B4B]">
+            <p className="md:text-[1.25rem] text-[#3D3D3D]">
               Have a question, partnership idea, or need help getting started?
               Our team is here to support you from setup to success.
             </p>
 
-            <div className="relative w-full h-64 rounded-lg overflow-hidden">
+            <div className="relative w-full rounded-lg">
               <Image
-                src="/contact-image.jpg"
+                src="/contact-image.svg"
                 alt="Team collaboration"
-                width={600}
-                height={400}
-                className="w-full h-full object-cover"
+                width={561}
+                height={253}
+                className="w-full md:h-full "
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 mt-7 text-[#3D3D3D]">
               <div className="flex items-center gap-3">
                 <Image
-                  src="/icon-phone.svg"
+                  src="/icon-call.svg"
                   alt="Phone"
                   width={20}
                   height={20}
@@ -118,7 +119,7 @@ const ContactUs = () => {
               </div>
               <div className="flex items-center gap-3">
                 <Image
-                  src="/icon-email.svg"
+                  src="/icon-sms.svg"
                   alt="Email"
                   width={20}
                   height={20}
@@ -138,46 +139,67 @@ const ContactUs = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 mt-7">
               <p className="text-[#1A202C] font-medium">Follow us</p>
               <div className="flex gap-4">
+                <Link 
+                href="https://x.com/ansahchikeh"
+                target="_blank"
+                >
                 <Image
-                  src="/social-linkedin.svg"
+                  src="/linkdin-icons-black.svg"
                   alt="LinkedIn"
-                  width={24}
-                  height={24}
+                  width={16}
+                  height={16}
                   className="cursor-pointer"
                 />
-                <Image
-                  src="/social-x.svg"
+                </Link>
+                <Link 
+                href="https://x.com/ansahchikeh"
+                target="_blank"
+                >
+                    <Image
+                  src="/x-icon-black.svg"
                   alt="X"
-                  width={24}
-                  height={24}
+                  width={16}
+                  height={16}
                   className="cursor-pointer"
                 />
-                <Image
-                  src="/social-x-alt.svg"
-                  alt="X Alt"
-                  width={24}
-                  height={24}
+                </Link>
+               
+                <Link 
+                href="https://x.com/ansahchikeh"
+                target="_blank"
+                >
+                    <Image
+                  src="/Telegram-icon-black.svg"
+                  alt="Telegram"
+                  width={16}
+                  height={16}
                   className="cursor-pointer"
                 />
-                <Image
-                  src="/social-google.svg"
+                </Link>
+                <Link 
+                href="https://x.com/ansahchikeh"
+                target="_blank"
+                >
+                    <Image
+                  src="/google-icon-black.svg"
                   alt="Google"
-                  width={24}
-                  height={24}
+                  width={16}
+                  height={16}
                   className="cursor-pointer"
                 />
+                </Link>
               </div>
             </div>
           </div>
 
           {/* Right Section - Contact Form */}
-          <div className="flex-1">
+          <div className="w-full lg:w-1/2 ">
             <form
               onSubmit={handleSubmit}
-              className="bg-[#1A202C] rounded-[16px] p-8 space-y-6"
+              className="bg-[#485166] rounded-[24px] p-8 space-y-3"
             >
               <div>
                 <label className="block text-white text-sm font-medium mb-2">
@@ -185,7 +207,7 @@ const ContactUs = () => {
                 </label>
                 <div className="relative">
                   <Image
-                    src="/icon-person.svg"
+                    src="/icon-user.svg"
                     alt="Person"
                     width={20}
                     height={20}
@@ -208,7 +230,7 @@ const ContactUs = () => {
                 </label>
                 <div className="relative">
                   <Image
-                    src="/icon-email.svg"
+                    src="/icon-sms.svg"
                     alt="Email"
                     width={20}
                     height={20}
@@ -233,7 +255,7 @@ const ContactUs = () => {
                 </label>
                 <div className="relative">
                   <Image
-                    src="/icon-phone.svg"
+                    src="/icon-call.svg"
                     alt="Phone"
                     width={20}
                     height={20}
