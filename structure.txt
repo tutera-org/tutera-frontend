@@ -1,0 +1,105 @@
+.
+├── app
+│   ├── (auth)
+│   │   ├── forgotPassword
+│   │   ├── resetPassword
+│   │   ├── resetSuccess
+│   │   ├── signIn
+│   │   ├── signUp
+│   │   └── verifyOtp
+│   ├── contact
+│   │   └── page.tsx
+│   ├── globals.css
+│   ├── icon.svg
+│   ├── layout.tsx
+│   ├── @modal
+│   │   ├── (auth)
+│   │   └── default.tsx
+│   ├── page.tsx
+│   ├── Pricing
+│   │   └── page.tsx
+│   └── [tenant]
+│       ├── dashboard
+│       └── layout.tsx
+├── components
+│   ├── auth
+│   │   ├── AuthHeader.tsx
+│   │   ├── AuthModal.tsx
+│   │   ├── Countdown.tsx
+│   │   ├── forgotPasswordForm.tsx
+│   │   ├── resetPassword.tsx
+│   │   ├── resetSuccess.tsx
+│   │   ├── SignInForm.tsx
+│   │   ├── SignUpForm.tsx
+│   │   └── verifyOtpForm.tsx
+│   ├── Contact
+│   │   └── ContactUs.tsx
+│   ├── Home
+│   │   ├── AcademySteps.tsx
+│   │   ├── DigitalLearning.tsx
+│   │   ├── Empowering.tsx
+│   │   └── HeroSection.tsx
+│   ├── Price
+│   │   └── flexiblePlan.tsx
+│   └── Reuse
+│       ├── Button.tsx
+│       ├── CreatorHeader.tsx
+│       ├── CreatorsTestimony.tsx
+│       ├── EmpoweringPrompt.tsx
+│       ├── Footer.tsx
+│       ├── Navbar.tsx
+│       └── space.tsx
+├── eslint.config.mjs
+├── folder-structure.txt
+├── folders.txt
+├── global.d.ts
+├── LICENSE
+├── next.config.ts
+├── next-env.d.ts
+├── package.json
+├── package-lock.json
+├── postcss.config.mjs
+├── proxy.ts
+├── public
+│   ├── Academy-step-mobile.png
+│   ├── AcademySteps.png
+│   ├── Component1.svg
+│   ├── Component2.svg
+│   ├── Component3.svg
+│   ├── Creators.png
+│   ├── EmpowerImg
+│   │   ├── Audience.svg
+│   │   ├── Built.svg
+│   │   ├── control-pricing.svg
+│   │   ├── marketing.svg
+│   │   ├── world-class.svg
+│   │   ├── your-brand.svg
+│   │   └── Zero-tech.svg
+│   ├── footerImg.svg
+│   ├── heroImage1.svg
+│   ├── HeroImage2.svg
+│   ├── Heroimage3.svg
+│   ├── icon1.svg
+│   ├── icon2.svg
+│   ├── icon3.svg
+│   ├── img1.svg
+│   ├── img2.svg
+│   ├── img3.svg
+│   ├── img4.svg
+│   ├── img5.svg
+│   ├── logo2.svg
+│   ├── logo.svg
+│   ├── resetSuccess.svg
+│   ├── SocialIcons1.svg
+│   ├── SocialIcons2.svg
+│   ├── SocialIcons3.svg
+│   ├── SocialIcons4.svg
+│   ├── steps-container-icons.svg
+│   ├── tick1.svg
+│   ├── tick2.svg
+│   └── window.svg
+├── README.md
+├── structure.txt
+└── tsconfig.json
+
+23 directories, 80 files
