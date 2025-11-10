@@ -2,20 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Button from "./Button";
 
 const NavBar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleCreatorLogin = () => {
-    // TODO: Navigate to creator login page
+    router.push("/signIn");
+    setIsMenuOpen(false);
   };
 
   const handleStartNow = () => {
-    // TODO: Navigate to registration page
+    router.push("/signUp");
+    setIsMenuOpen(false);
   };
 
   return (
@@ -75,7 +78,7 @@ const NavBar = () => {
               >
                 Creator Login
               </Button>
-              
+
               <Button
                 variant="primary"
                 onClick={handleStartNow}
@@ -85,32 +88,28 @@ const NavBar = () => {
               </Button>
 
               <button
-              type="button"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 focus:outline-none "
-              aria-label="Toggle menu"
-            >
-              <span
-                className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
-                  isMenuOpen ? "rotate-45 translate-y-2" : ""
-                }`}
-              ></span>
-              <span
-                className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
-                  isMenuOpen ? "opacity-0" : "opacity-100"
-                }`}
-              ></span>
-              <span
-                className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
-                  isMenuOpen ? "-rotate-45 -translate-y-2" : ""
-                }`}
-              ></span>
-            </button>
-
-              
+                type="button"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden flex flex-col justify-center items-center w-8 h-8 space-y-1.5 focus:outline-none "
+                aria-label="Toggle menu"
+              >
+                <span
+                  className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
+                    isMenuOpen ? "rotate-45 translate-y-2" : ""
+                  }`}
+                ></span>
+                <span
+                  className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
+                ></span>
+                <span
+                  className={`w-6 h-0.5 bg-[#101A33] transition-all duration-300 ${
+                    isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+                  }`}
+                ></span>
+              </button>
             </div>
-
-            
           </div>
 
           {isMenuOpen && (

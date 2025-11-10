@@ -34,14 +34,15 @@ const Footer = () => {
                </div>
             </div>
 
-            <div className="absolute bg-white w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14">
-              <div className=" w-[80%] mx-auto flex flex-col md:flex-row item-center items-center gap-6">
+            <div className="absolute bg-white w-[90%] md:w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14">
+              <div className=" w-[90%] md:w-[80%] mx-auto flex flex-col md:flex-row item-center gap-6">
               <Image src="/footerimg.svg" alt="footer-bg" width={400} height={189}/>
 
-      <div className=" flex flex-col gap-6">
-    <p className="text-[1.25rem] font-semibold text-[#101A33]">Join the next generation of African knowledge entrepreneurs scaling their income.</p>
-    <Button variant="primary" className="w-[35%] py-3 rounded-[8px] text-[1rem] font-bold">Start Today</Button>
-    </div>
+            
+             <div className=" flex flex-col gap-6 justify-center items-center md:items-start">
+                <p className="text-[1.2rem] md:text-[1.2rem] font-semibold text-[#101A33]">Join the next generation of African knowledge entrepreneurs scaling their income.</p>
+                 <Button variant="primary" className="w-[65%] md:w-[57%] py-3 rounded-[8px] text-[1rem] font-bold">Start Your Academy Today</Button>
+                </div>
               </div>
             </div>
 

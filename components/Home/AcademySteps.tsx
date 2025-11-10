@@ -22,8 +22,8 @@ const steps = [
 const AcademySteps = () => {
   return (
     <section className="w-full bg-[#F0F4FF] text-center">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto pb-16 flex flex-col items-center justify-center">
-        <h2 className="text-[2.5rem] font-semibold py-14 w-[40%] mx-auto text-center">
+      <div className="w-[90%] lg:max-w-[1240px] mx-auto md:pb-16 pb-6 flex flex-col items-center justify-center">
+        <h2 className=" md:text-[2.5rem] text-[1.5rem] font-semibold md:py-14 py-6 md:w-[40%] w-[90%] mx-auto text-center">
           Build Your Academy in 3 Steps.
         </h2>
         <Image
@@ -34,7 +34,7 @@ const AcademySteps = () => {
           className="hidden md:block"
         />
         <Image
-          src="/AcademyStepsMobile.png"
+          src="/Academy-step-mobile.png"
           alt="Academy Steps"
           width={375}
           height={375}
@@ -53,7 +53,7 @@ const AcademySteps = () => {
         </div>
         <Button
           variant="primary"
-          className="py-3 mt-10 w-[18%] shadow-lg text-[1rem] font-bold"
+          className="py-3 mt-10 md:w-[18%] w-[50%] shadow-lg text-[1rem] font-bold"
         >
           start now
         </Button>

@@ -96,12 +96,12 @@ const Empowering = () => {
   };
 
   return (
-    <section className="w-full bg-[#F0F4FF] py-24">
+    <section className="w-full bg-[#F0F4FF] md:py-24 py-10">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <h2 className="lg:w-[50%] mx-auto text-[2.5rem] font-semibold text-center mb-4 text-[#101A33] lg:leading-[48px]">
+        <h2 className="lg:w-[50%] mx-auto md:text-[2.5rem] text-[1.5rem] font-semibold text-center mb-4 text-[#101A33] lg:leading-[48px]">
         Empowering Africa’s Educators and Learners to Thrive Together.
         </h2>
-        <p className="lg:w-[65%] mx-auto text-[1.25rem] font-semibold text-center mb-18 text-[#4B4B4B]">Tutera is more than an LMS it’s where independent instructors, passionate learners, and creative professionals connect, grow, and succeed without limitations.</p>
+        <p className="lg:w-[65%] mx-auto md:text-[1.25rem] text-[1rem] font-semibold text-center md:mb-18 mb-8 text-[#4B4B4B]">Tutera is more than an LMS it’s where independent instructors, passionate learners, and creative professionals connect, grow, and succeed without limitations.</p>
 
         {/* Desktop: 3-column layout */}
         <div className="hidden lg:grid grid-cols-3 gap-6">

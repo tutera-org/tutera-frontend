@@ -40,7 +40,7 @@ const HeroSection = () => {
             height={344}
           
           />
-          <p  className=" lg:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 md- xl:top-[20%] xl:left-[20%]  ">Tutera makes that your reality</p>
+          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[40%] left-[-1%]   ">Tutera makes that your reality</p>
           
          </div>
           <div className="relative">
@@ -51,7 +51,7 @@ const HeroSection = () => {
             height={434}
           
           />
-           <p  className=" lg:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 md- xl:top-[20%] xl:left-[20%]  ">We handle the tech</p>
+          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] right-[-1%]   ">Focus on what you do best</p>
           </div>
           <div className="relative">
           <Image
@@ -61,18 +61,18 @@ const HeroSection = () => {
             height={344}
            
           />
-           <p  className=" lg:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 md- xl:top-[20%] xl:left-[20%]  ">Focus on what you do best</p>
+          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] left-[-1%]   ">We handle the tech</p>
           </div>
 
-          <div className="hidden lg:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 md- xl:top-[20%] xl:left-[20%]  ">
-            <p>Tutera makes that your reality</p>
-          </div>
-          <div className="hidden lg:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[3%] left-[-2] md:right-auto md:left-0 xl:bottom-[20%] xl:left-[25%] ">
-            <p>We handle the tech</p>
-          </div>
-          <div className="hidden lg:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[37%] right-0 md:right-auto md:left-0 xl:right-[22%]">
-            <p>Focus on what you do best</p>
-          </div>
+
+         
+            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 xl:top-[20%] xl:left-[20%]  ">Tutera makes that your reality</p>
+       
+            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center  bottom-[20%] left-[25%] ">We handle the tech</p>
+          
+          
+            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[37%] right-[22%]">Focus on what you do best</p>
+         
         </div>
       </div>
     </section>

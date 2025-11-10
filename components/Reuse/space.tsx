@@ -1,6 +1,6 @@
 const Space = () => {
     return (
-        <div className="hidden 2xl:hidden  md:block w-full h-[120px] bg-[#F0F4FF]">
+        <div className=" w-full h-[40vh] md:h-[30vh] bg-[#F0F4FF]">
         </div>
     )
 }

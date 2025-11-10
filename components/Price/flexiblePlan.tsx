@@ -41,10 +41,10 @@ const plans = [
 
 const FlexiblePlan = () => {
   return (
-    <section className="w-full bg-[#F0F4FF] pt-16 pb-30">
+    <section className="w-full bg-[#F0F4FF] md:pt-16 pt-4 md:pb-30 pb-10">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="text-center mb-24 w-[70%] mx-auto">
-          <h2 className="text-[2.5rem] md:text-[3.75rem] font-bold mb-4 leading-[72px]">
+        <div className="text-center md:mb-24 mb-8 md:w-[70%] w-[90%] mx-auto">
+          <h2 className="text-[1.5rem] md:text-[3.75rem] font-bold mb-4 md:leading-[72px]">
             <span className="text-[#E8C56B] text-shadow-sm">
               Flexible Plans
             </span>{" "}
@@ -70,7 +70,7 @@ const FlexiblePlan = () => {
                   <h3 className="text-[1.75rem] md:text-[2rem] font-bold mb-1 group-hover:text-[#ffffff]">
                     {plan.name}
                   </h3>
-                  <p className="text-[0.875rem] md:text-[1rem] font-medium opacity- group-hover:text-[#ffffff]">
+                  <p className="text-[0.875rem] md:text-[1rem] opacity- group-hover:text-[#ffffff] font-semibold">
                     {plan.period}
                   </p>
                 </div>
@@ -81,7 +81,7 @@ const FlexiblePlan = () => {
                 </div>
               </div>
 
-              <ul className="flex-1 space-y-3 md:mb-32 md:mt-10 text-[#080E10] group-hover:text-[#ffffff]">
+              <ul className="flex-1 space-y-3 md:mb-32 md:mt-10 mt-10 text-[#080E10] group-hover:text-[#ffffff]">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start gap-3">
                     <div className="relative mt-0.5 shrink-0">
@@ -100,7 +100,7 @@ const FlexiblePlan = () => {
                         className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
                       />
                     </div>
-                    <span className="text-[0.9375rem] md:text-[1rem] ">
+                    <span className="text-[1rem] font-semibold">
                       {feature}
                     </span>
                   </li>
