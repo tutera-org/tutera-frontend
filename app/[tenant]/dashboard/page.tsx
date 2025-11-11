@@ -1,4 +1,6 @@
 import CardAnalytics from "@/components/creatorDashboard/CardAnalytics";
+import Enrol from "@/components/creatorDashboard/Enrrolment";
+import ChartDashboard from "@/components/creatorDashboard/Chart";
 
 export default function DashboardPage() {
   return (
@@ -20,6 +22,12 @@ export default function DashboardPage() {
 
       {/* Card Analytics */}
       <CardAnalytics />
+
+      {/* Charts */}
+      <ChartDashboard />
+
+      {/* Enrol Notification center */}
+      <Enrol />
     </div>
   );
 }

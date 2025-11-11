@@ -20,7 +20,7 @@ export default function CardAnalytics() {
       {cards.map((card, index) => (
         <div className="bg-neutral-100 rounded-xl p-5" key={index}>
           <aside className="flex justify-between items-start">
-            <h3 className="font-semibold text-xs lg:text-2xl leading-4 md:leading-8 text-neutrals-900">
+            <h3 className="font-semibold text-xs lg:text-2xl leading-4 md:leading-8 text-neutral-900">
               {card.title}
             </h3>
             <div className="bg-secondary-400 p-0.5 px-3.5 rounded-full">
