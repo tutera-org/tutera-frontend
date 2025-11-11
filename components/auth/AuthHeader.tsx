@@ -1,19 +1,18 @@
-interface Props {
+export default function AuthFormHeader({
+  header,
+  text,
+}: {
   header: string;
   text?: string;
-}
-
-export default function AuthFormHeader({ header, text }: Props) {
+}) {
   return (
-    <div className="flex flex-col items-center gap-6">
-      <h3 className="font-semibold lg:text-[1.5rem] text-center text-xs leading-8 text-primary-400">
+    <div className="text-center space-y-2 sm:space-y-3">
+      <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold leading-tight text-primary-400 px-2">
         {header}
-      </h3>
-      {text?.length && (
-        <p className="leading-[20%] lg:text-base text-[0.5rem] font-normal text-neutral-900">
-          {text}
-        </p>
-      )}
+      </h1>
+      <p className="text-xs sm:text-sm md:text-base text-neutral-900 px-2">
+        {text}
+      </p>
     </div>
   );
 }

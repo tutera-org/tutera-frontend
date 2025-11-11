@@ -34,7 +34,7 @@ export default function ResetPasswordForm() {
         Reset Password
       </button>
 
-      <p className="text-[0.5rem] lg:text-base font-normal text-main-primary text-center">
+      <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Return to{" "}
         <Link href="/signIn" className="text-accent-600 cursor-pointer">
           Sign-In
