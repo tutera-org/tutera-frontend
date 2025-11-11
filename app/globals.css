@@ -25,6 +25,10 @@ select:focus {
   --color-accent-600: rgba(223, 70, 35, 1);
   --color-error-300: rgba(213, 99, 94, 1);
   --color-main-primary: rgba(38, 70, 81, 1);
+  --color-neutral-200: rgba(240, 244, 255, 1);
+  --color-neutral-100: rgba(255, 255, 255, 1);
+  --color-darkblue: rgba(41, 45, 50, 1);
+  --color-dark: rgba(51, 51, 51, 1);
 }
 
 @media (prefers-color-scheme: dark) {
