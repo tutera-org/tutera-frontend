@@ -25,7 +25,7 @@ function VerifyOtpContent() {
 
         <VerifyOtpForm />
 
-        <p className="text-[0.5rem] lg:text-base font-normal text-main-primary text-center">
+        <p className="text-sm sm:text-base font-normal text-main-primary text-center">
           Return to{" "}
           <Link href="/signIn" className="text-red-500">
             Sign-In

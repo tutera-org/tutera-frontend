@@ -19,7 +19,7 @@ function ForgotPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex py-8  flex-col gap-7">
-      <label className="flex flex-col gap-2.5 text-[0.5rem] lg:text-sm font-semibold leading-[120%] text-neutral-900">
+      <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
         <input
           type="email"
@@ -39,7 +39,7 @@ function ForgotPasswordForm() {
         Send OTP
       </button>
 
-      <p className="text-[0.5rem] lg:text-base font-normal text-main-primary text-center">
+      <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Return to{" "}
         <Link href="/signIn" className="text-accent-600">
           Sign-In

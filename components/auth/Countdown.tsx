@@ -24,11 +24,11 @@ export default function CountdownTimer() {
   return (
     <>
       {time === 0 ? (
-        <p className="lg:text-base font-semibold text-error-300 animate-pulse">
+        <p className="text-sm lg:text-base font-semibold text-error-300 animate-pulse">
           Time&apos;s Up!
         </p>
       ) : (
-        <h1 className="lg:text-base text-error-300 font-semibold">
+        <h1 className="text-sm sm:text-base text-error-300 font-semibold">
           {formatTime(time)}
         </h1>
       )}

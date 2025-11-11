@@ -5,12 +5,11 @@ import SignUpForm from "@/components/auth/SignUpForm";
 function SignUpPage() {
   return (
     <AuthModal>
-      <div className="mx-4">
+      <div className="space-y-4 sm:space-y-6">
         <AuthFormHeader
           header="Create your account and scale your education program"
           text="Build a better brand through education"
         />
-
         {/* Form */}
         <SignUpForm />
       </div>

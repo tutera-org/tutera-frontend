@@ -23,7 +23,7 @@ export default function SignUpForm() {
   return (
     <form onSubmit={handleSubmit} className="flex py-8 flex-col gap-6">
       {/* Brand Name */}
-      <label className="flex flex-col mt-3 gap-2.5 text-[0.5rem] lg:text-sm font-semibold leading-[120%] text-neutral-900">
+      <label className="flex flex-col mt-3 gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Brand Name
         <input
           type="text"
@@ -36,7 +36,7 @@ export default function SignUpForm() {
       </label>
 
       {/* Email */}
-      <label className="flex flex-col gap-2.5 text-[0.5rem] lg:text-sm font-semibold leading-[120%] text-neutral-900">
+      <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
         <input
           type="email"
@@ -49,7 +49,7 @@ export default function SignUpForm() {
       </label>
 
       {/* Password */}
-      <label className="flex flex-col gap-2.5 text-[0.5rem] lg:text-sm font-semibold leading-[120%] text-neutral-900">
+      <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
         <input
           type="password"
@@ -63,7 +63,7 @@ export default function SignUpForm() {
       </label>
 
       {/* Terms and policy agreement */}
-      <label className="leading-5 text-neutral-900 mt-6 text-center flex items-center justify-center space-x-4 text-[0.5rem] lg:text-base">
+      <label className="leading-5 text-neutral-900 mt-6 text-center flex items-center justify-center space-x-4 text-xs sm:text-sm">
         <input type="checkbox" className="mr-3" required />
         By signing in, I agree to the terms of use and privacy policy
       </label>
@@ -76,7 +76,7 @@ export default function SignUpForm() {
         Sign Up
       </button>
 
-      <p className="text-[0.5rem] lg:text-base font-normal text-main-primary text-center">
+      <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Already have an account?{" "}
         <Link href="/signIn" className="text-red-500">
           Sign-In

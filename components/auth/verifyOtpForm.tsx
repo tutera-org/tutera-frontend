@@ -59,7 +59,7 @@ export default function VerifyOtpForm() {
         Send Otp
       </button>
 
-      <button className="text-primary-400 rounded-lg px-6 font-semibold lg:text-base text-[0.5rem] hover:text-blue-600 w-full">
+      <button className="text-primary-400 rounded-lg px-6 font-semibold lg:text-base text-xs sm:text-sm  hover:text-blue-600 w-full">
         Resend Otp
       </button>
     </form>
