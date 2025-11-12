@@ -71,16 +71,13 @@ const FlexiblePlan = () => {
         </div>
 
         <div
-          data-aos="zoom-in"
-          data-aos-duration="3000"
-          data-aos-delay="0"
-          data-aos-once="false"
-          className="flex flex-col lg:flex-row gap-6 justify-center items-stretch h-[80vh]"
+          
+          className="flex flex-col lg:flex-row gap-6 justify-center items-center "
         >
           {plans.map((plan, index) => (
             <div
               key={index}
-              className="group flex-1 max-w-md rounded-[24px] shadow-lg p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer font-medium h-full"
+              className="group flex-1 max-w-md rounded-[24px] shadow-lg p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer font-medium"
             >
               <div className="flex items-start justify-between pb-4 border-b border-[#D1D1D1] hover:border-[#F6F6F6]">
                 <div>

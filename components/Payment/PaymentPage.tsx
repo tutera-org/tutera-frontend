@@ -78,15 +78,9 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
       <div className="min-h-screen bg-[#F5F5F5]">
         {/* Header */}
         <div className="bg-white border-b border-gray-200">
-          <div className="w-[90%] max-w-[1240px] mx-auto py-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <span className="text-[#1A1A1A] text-xl font-semibold ml-2">
-                tutera
-              </span>
+          <div className="w-[90%] max-w-[1240px] mx-auto py-6 ">
+            <Link href="/">
+              <Image src="/logo.svg" alt="logo" width={120} height={36} />
             </Link>
           </div>
         </div>

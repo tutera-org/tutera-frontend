@@ -147,7 +147,7 @@ const ContactUs = () => {
                 target="_blank"
                 >
                 <Image
-                  src="/linkdin-icons-black.svg"
+                  src="/linkdin-Icons-black.svg"
                   alt="LinkedIn"
                   width={16}
                   height={16}
@@ -216,6 +216,7 @@ const ContactUs = () => {
                   <input
                     type="text"
                     name="name"
+                    placeholder="Enter your name..."
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full pl-10 pr-4 py-3 bg-white rounded-lg border border-gray-200 text-[#1A202C] focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
