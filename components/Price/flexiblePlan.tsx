@@ -1,10 +1,13 @@
+"use client";
+
 import Button from "../Reuse/Button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const plans = [
   {
     name: "Basic",
-    price: "₦1,000",
+    price: "Free Trial",
     period: "Per Month",
     features: [
       "Full access to course management tools",
@@ -40,6 +43,14 @@ const plans = [
 ];
 
 const FlexiblePlan = () => {
+  const router = useRouter();
+
+  const handlePurchasePlan = (plan: (typeof plans)[0]) => {
+    // Store plan data in sessionStorage to pass to payment page
+    sessionStorage.setItem("selectedPlan", JSON.stringify(plan));
+    router.push("/payment");
+  };
+
   return (
     <section className="w-full bg-[#F0F4FF] md:pt-16 pt-4 md:pb-30 pb-10">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
@@ -59,11 +70,17 @@ const FlexiblePlan = () => {
           </p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
+        <div
+          data-aos="zoom-in"
+          data-aos-duration="3000"
+          data-aos-delay="0"
+          data-aos-once="false"
+          className="flex flex-col lg:flex-row gap-6 justify-center items-stretch h-[80vh]"
+        >
           {plans.map((plan, index) => (
             <div
               key={index}
-              className="group flex-1 max-w-md rounded-[24px] shadow-lg p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer  font-medium"
+              className="group flex-1 max-w-md rounded-[24px] shadow-lg p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer font-medium h-full"
             >
               <div className="flex items-start justify-between pb-4 border-b border-[#D1D1D1] hover:border-[#F6F6F6]">
                 <div>
@@ -100,15 +117,14 @@ const FlexiblePlan = () => {
                         className="absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"
                       />
                     </div>
-                    <span className="text-[1rem] font-semibold">
-                      {feature}
-                    </span>
+                    <span className="text-[1rem] font-semibold">{feature}</span>
                   </li>
                 ))}
               </ul>
 
               <Button
                 variant="primary"
+                onClick={() => handlePurchasePlan(plan)}
                 className="w-full py-3 mt-30 mb-6 text-center group-hover:bg-white group-hover:text-[#4977E6] transition-colors shadow-sm hover:bg-[#ffffffef] active:w-[95%] active:py-[10px] "
               >
                 Purchase Plan

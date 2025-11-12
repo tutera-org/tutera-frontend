@@ -39,6 +39,11 @@ const AcademySteps = () => {
           width={1091}
           height={238}
           className="hidden md:block"
+        
+          data-aos="zoom-in"
+          data-aos-duration="1000"
+          data-aos-delay="0"
+          data-aos-once="false"
         />
         <Image
           src="/Academy-step-mobile.png"
@@ -46,11 +51,20 @@ const AcademySteps = () => {
           width={375}
           height={375}
           className="block md:hidden"
+          data-aos="fade-in"
+          data-aos-duration="1000"
+          data-aos-delay="0"
+          data-aos-once="false"
         />
 
         <div className="hidden md:flex flex-row items-center justify-evenly gap-10 text-center ">
           {steps.map((step) => (
-            <div key={step.title} className="lg:w-[25%] space-y-4">
+            <div key={step.title} 
+            data-aos="fade-right"
+            data-aos-duration="2000"
+            data-aos-delay="500"
+            data-aos-once="false"
+            className="lg:w-[25%] space-y-4">
               <h3 className="text-[2rem] font-semibold text-[#101A33]">
                 {step.title}
               </h3>
@@ -62,6 +76,10 @@ const AcademySteps = () => {
           variant="primary"
           className="py-3 mt-10 md:w-[18%] w-[50%] shadow-lg text-[1rem] font-bold"
           onClick={handleSignUp}
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="500"
+          data-aos-once="false"
         >
           start now
         </Button>
