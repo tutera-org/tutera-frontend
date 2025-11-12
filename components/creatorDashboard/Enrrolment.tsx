@@ -33,6 +33,16 @@ export default function Enrol() {
             View All
           </button>
         </div>
+
+        {/* looping through enrolled students */}
+        <div>
+          {newStudents.map((students, index) => (
+            <div className="grid grid-cols-4 gap-4" key={index}>
+              <p>{students.name}</p>
+              <p>{students.course}</p>
+            </div>
+          ))}
+        </div>
       </aside>
 
       {/* class Enrol side */}
@@ -49,7 +59,10 @@ export default function Enrol() {
         <div>
           {/* Looping through the enrolled classes */}
           {newClasses.map((item, index) => (
-            <p className="w-full p-3.5 rounded-lg shadow-lg" key={index}>
+            <p
+              className="w-full px-3.5 py-5 text-base rounded-lg shadow-lg"
+              key={index}
+            >
               {item}
             </p>
           ))}

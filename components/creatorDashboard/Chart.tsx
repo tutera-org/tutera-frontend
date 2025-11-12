@@ -1,38 +1,168 @@
+"use client";
+
 import React from "react";
 import {
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Legend,
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 export default function ChartDashboard() {
-  const weeklyData = [
-    { day: "Sun", totalCourse: 450, totalUsers: 200, totalEarning: 300 },
-    { day: "Mon", totalCourse: 250, totalUsers: 450, totalEarning: 100 },
-    { day: "Tue", totalCourse: 100, totalUsers: 300, totalEarning: 400 },
-    { day: "Wed", totalCourse: 500, totalUsers: 200, totalEarning: 400 },
-    { day: "Thu", totalCourse: 400, totalUsers: 100, totalEarning: 350 },
-    { day: "Fri", totalCourse: 450, totalUsers: 300, totalEarning: 400 },
-  ];
+  const barChartData = {
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri"],
+    datasets: [
+      {
+        label: "Total course",
+        data: [450, 250, 100, 500, 400, 450],
+        backgroundColor: "#3B82F6",
+        borderRadius: 8,
+        barThickness: 35,
+      },
+      {
+        label: "Total users",
+        data: [200, 450, 300, 200, 100, 300],
+        backgroundColor: "#FBBF24",
+        borderRadius: 8,
+        barThickness: 35,
+      },
+      {
+        label: "Total earning",
+        data: [300, 100, 400, 400, 350, 400],
+        backgroundColor: "#F87171",
+        borderRadius: 8,
+        barThickness: 35,
+      },
+    ],
+  };
 
-  const courseData = [
-    { name: "React and 30%", value: 30, color: "#6B8DE3" },
-    { name: "React and 20%", value: 20, color: "#8BA3E8" },
-    { name: "Front end 20%", value: 20, color: "#4A5568" },
-    { name: "Marketing 10%", value: 10, color: "#A0AEC0" },
-    { name: "UI/UX 15%", value: 15, color: "#CBD5E0" },
-    { name: "Elementary 5%", value: 5, color: "#E2E8F0" },
+  const barChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#374151",
+        bodyColor: "#374151",
+        borderColor: "#E5E7EB",
+        borderWidth: 1,
+        padding: 12,
+        boxPadding: 6,
+        usePointStyle: true,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        border: {
+          display: false,
+        },
+        ticks: {
+          color: "#9CA3AF",
+          font: {
+            size: 12,
+          },
+        },
+      },
+      y: {
+        grid: {
+          color: "#F3F4F6",
+          drawBorder: false,
+        },
+        border: {
+          display: false,
+        },
+        ticks: {
+          color: "#9CA3AF",
+          font: {
+            size: 12,
+          },
+          stepSize: 100,
+        },
+        min: 0,
+        max: 500,
+      },
+    },
+    categoryPercentage: 0.65,
+    barPercentage: 0.9,
+  };
+
+  const doughnutData = {
+    labels: [
+      "React and 30%",
+      "React and 20%",
+      "Front end 20%",
+      "Marketing 10%",
+      "UI/UX 15%",
+      "Elementary 5%",
+    ],
+    datasets: [
+      {
+        data: [30, 20, 20, 10, 15, 5],
+        backgroundColor: [
+          "#6B8DE3",
+          "#8BA3E8",
+          "#4A5568",
+          "#A0AEC0",
+          "#CBD5E0",
+          "#E2E8F0",
+        ],
+        borderWidth: 2,
+        borderColor: "#ffffff",
+      },
+    ],
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "white",
+        titleColor: "#374151",
+        bodyColor: "#374151",
+        borderColor: "#E5E7EB",
+        borderWidth: 1,
+        padding: 12,
+      },
+    },
+    cutout: "65%",
+  };
+
+  const courseColors = [
+    "#6B8DE3",
+    "#8BA3E8",
+    "#4A5568",
+    "#A0AEC0",
+    "#CBD5E0",
+    "#E2E8F0",
   ];
 
   return (
-    <div className="min-h-screen mt-10 bg-linear-to-br from-gray-50 to-blue-50 p-8">
+    <div className="min-h-screen mt-10 ">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Weekly Activity Chart - Takes 2/3 on large screens */}
         <div className="bg-white rounded-2xl shadow-lg p-6 lg:col-span-2">
@@ -55,52 +185,9 @@ export default function ChartDashboard() {
             </div>
           </div>
 
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={weeklyData} barGap={4} barCategoryGap="35%">
-              <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="#f0f0f0"
-                vertical={false}
-              />
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#9CA3AF", fontSize: 12 }}
-              />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                ticks={[0, 100, 200, 300, 400, 500]}
-              />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: "8px",
-                  border: "none",
-                  boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                }}
-              />
-              <Bar
-                dataKey="totalCourse"
-                fill="#3B82F6"
-                radius={[8, 8, 0, 0]}
-                maxBarSize={35}
-              />
-              <Bar
-                dataKey="totalUsers"
-                fill="#FBBF24"
-                radius={[8, 8, 0, 0]}
-                maxBarSize={35}
-              />
-              <Bar
-                dataKey="totalEarning"
-                fill="#F87171"
-                radius={[8, 8, 0, 0]}
-                maxBarSize={35}
-              />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="h-[350px]">
+            <Bar data={barChartData} options={barChartOptions} />
+          </div>
 
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-gray-800">
@@ -109,42 +196,25 @@ export default function ChartDashboard() {
           </div>
         </div>
 
-        {/* Course Overview Chart */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        {/* Course Overview Chart - Takes 1/3 on large screens */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 lg:col-span-1">
           <h2 className="text-xl font-semibold text-gray-800 mb-6">
             Course overview
           </h2>
 
-          <div className="flex justify-center items-center">
-            <ResponsiveContainer width="100%" height={400}>
-              <PieChart>
-                <Pie
-                  data={courseData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={80}
-                  outerRadius={140}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {courseData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <div className="flex justify-center items-center h-[400px]">
+            <Doughnut data={doughnutData} options={doughnutOptions} />
           </div>
 
           <div className="mt-6 space-y-3">
-            {courseData.map((item, index) => (
+            {doughnutData.labels.map((label, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: courseColors[index] }}
                   ></div>
-                  <span className="text-sm text-gray-700">{item.name}</span>
+                  <span className="text-sm text-gray-700">{label}</span>
                 </div>
               </div>
             ))}

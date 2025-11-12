@@ -1,6 +1,6 @@
-import CardAnalytics from "@/components/creatorDashboard/CardAnalytics";
-import Enrol from "@/components/creatorDashboard/Enrrolment";
-import ChartDashboard from "@/components/creatorDashboard/Chart";
+// import CardAnalytics from "@/components/creatorDashboard/CardAnalytics";
+// import Enrol from "@/components/creatorDashboard/Enrrolment";
+// import ChartDashboard from "@/components/creatorDashboard/Chart";
 
 export default function DashboardPage() {
   return (
@@ -11,23 +11,23 @@ export default function DashboardPage() {
           Welcome back
         </h1>
         <div className="flex gap-3">
-          <button className="text-primary-400 text-base font-bold leading-[120%] border border-primary-400 py-1.5 px-6 rounded-lg">
+          <button className="text-primary-400 text-base font-bold leading-[120%] border border-primary-400 py-1.5 px-6 rounded-lg  hover:bg-primary-400 cursor-pointer hover:text-neutral-100">
             View product
           </button>
-          <button className="font-bold rounded-lg py-1.5 px-6 bg-primary-400 text-neutral-100 text-base leading-[120%]">
+          <button className="font-bold rounded-lg py-1.5 px-6 bg-primary-400 hover:border hover:border-primary-400 hover:bg-neutral-100 hover:text-primary-400 cursor-pointer text-neutral-100 text-base leading-[120%]">
             Create Module
           </button>
         </div>
       </section>
 
       {/* Card Analytics */}
-      <CardAnalytics />
+      {/* <CardAnalytics /> */}
 
       {/* Charts */}
-      <ChartDashboard />
+      {/* <ChartDashboard /> */}
 
       {/* Enrol Notification center */}
-      <Enrol />
+      {/* <Enrol /> */}
     </div>
   );
 }
