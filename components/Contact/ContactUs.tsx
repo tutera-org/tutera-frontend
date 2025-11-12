@@ -143,7 +143,7 @@ const ContactUs = () => {
               <p className="text-[#1A202C] font-medium">Follow us</p>
               <div className="flex gap-4">
                 <Link 
-                href="https://x.com/ansahchikeh"
+                href="https://www.linkedin.com/in/tutera-tutera-782824395"
                 target="_blank"
                 >
                 <Image
@@ -155,7 +155,7 @@ const ContactUs = () => {
                 />
                 </Link>
                 <Link 
-                href="https://x.com/ansahchikeh"
+                href="https://x.com/tuteraafrica"
                 target="_blank"
                 >
                     <Image
@@ -168,7 +168,7 @@ const ContactUs = () => {
                 </Link>
                
                 <Link 
-                href="https://x.com/ansahchikeh"
+                href="https://www.tiktok.com/@tuteraafrica?lang=en"
                 target="_blank"
                 >
                     <Image
@@ -180,7 +180,7 @@ const ContactUs = () => {
                 />
                 </Link>
                 <Link 
-                href="https://x.com/ansahchikeh"
+                href="tuteralms@gmail.com"
                 target="_blank"
                 >
                     <Image

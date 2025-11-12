@@ -24,7 +24,7 @@ const NavBar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full bg-[#F0F4FF] py-8">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="bg-[#ffffff] rounded-[16px] shadow-lg px-5 py-6 relative">
+        <div className="bg-[#ffffff] rounded-[16px] shadow-md px-5 py-6 relative">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Image
@@ -82,7 +82,7 @@ const NavBar = () => {
               <Button
                 variant="primary"
                 onClick={handleStartNow}
-                className="whitespace-nowrap "
+                className=" hidden md:block whitespace-nowrap "
               >
                 Start Now
               </Button>

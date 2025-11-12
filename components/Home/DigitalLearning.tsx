@@ -8,7 +8,7 @@ import Image from "next/image";
 const DigitalLearning = () => {
   
   const handleExplorePlans = () => {
-    router.push("/pricing");
+    router.push("/Pricing");
   };
   const router = useRouter();
   return (
@@ -22,6 +22,9 @@ const DigitalLearning = () => {
             width={32}
             height={32}
             className="w-[30px] h-[30px] md:w-[52px] md:h-[52px]"
+             data-aos="zoom-in"
+             data-aos-delay="300"
+             data-aos-once="false"
           />
         </div>
 
@@ -33,6 +36,9 @@ const DigitalLearning = () => {
             width={32}
             height={32}
             className="w-[30px] h-[30px] md:w-[52px] md:h-[52px]"
+             data-aos="zoom-in"
+             data-aos-delay="300"
+             data-aos-once="false"
           />
         </div>
 
@@ -44,12 +50,15 @@ const DigitalLearning = () => {
             width={32}
             height={32}
             className="w-[30px] h-[30px] md:w-[52px] md:h-[52px]"
+             data-aos="zoom-in"
+             data-aos-delay="300"
+             data-aos-once="false"
           />
         </div>
 
         {/* Main Content */}
         <div className="max-w-[813.16px] mx-auto text-center z-0">
-          <p className="text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] font-semibold text-[#101A33] mb-8 md:leading-[40px]">
+          <p className="text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] font-semibold text-[#101A33] mb-14 md:leading-[40px]">
             In today&apos;s digital learning space, speed and ownership defines
             success. Tutera simplifies online teaching, reduces setup friction,
             and empowers instructors with branding and monetization tools that
@@ -58,8 +67,12 @@ const DigitalLearning = () => {
 
           <Button 
           variant="primary" 
-          className=" w-[48%] md:w-[24%] py-[10px] text-[1rem] rounded-[8px] shadow-lg"
+          className=" w-[48%] md:w-[24%] py-[10px] text-[1rem] rounded-[8px] shadow-md"
           onClick={handleExplorePlans}
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+          data-aos-once="false"
           >
             Explore Plans
           </Button>

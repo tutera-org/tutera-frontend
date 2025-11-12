@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Toaster } from "sonner";
 import { Lato } from "next/font/google";
-
+import AOSInitializer from "@/components/AOSInitializer";
 const lato = Lato({
   // Importing font family for the body
   subsets: ["latin"],
@@ -25,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.className} relative`}>
+        <AOSInitializer />
         <main>{children}</main>
         {modal}
         <Toaster

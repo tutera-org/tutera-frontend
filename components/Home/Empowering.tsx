@@ -32,7 +32,7 @@ const features = [
     imageHeight: 218,
   },
   {
-    image: "/EmpowerImg/zero-tech.svg",
+    image: "/EmpowerImg/Zero-tech.svg",
     imageAlt: "Person in video recording setup",
     title: "Zero Tech Stress",
     description:
@@ -59,7 +59,7 @@ const features = [
     imageHeight: 382,
   },
   {
-    image: "/EmpowerImg/built.svg",
+    image: "/EmpowerImg/Built.svg",
     imageAlt: "Design tools illustration",
     title: "Built For Conversion",
     description:
@@ -105,7 +105,12 @@ const Empowering = () => {
 
         {/* Desktop: 3-column layout */}
         <div className="hidden lg:grid grid-cols-3 gap-6">
-          <div className="flex flex-col gap-6">
+          <div
+           data-aos="fade-right"
+           data-aos-duration="3000"
+           data-aos-delay="300"
+           data-aos-once="false"
+           className="flex flex-col gap-6">
             {features.slice(0, 2).map((feature, index) => (
               <EmpoweringPrompt
                 key={index}
@@ -118,7 +123,12 @@ const Empowering = () => {
               />
             ))}
           </div>
-          <div className="flex flex-col gap-6">
+          <div
+           data-aos="zoom-in"
+           data-aos-duration="3000"
+           data-aos-delay="0"
+           data-aos-once="false"
+           className="flex flex-col gap-6">
             {features.slice(2, 5).map((feature, index) => (
               <EmpoweringPrompt
                 key={index + 2}
@@ -128,10 +138,16 @@ const Empowering = () => {
                 description={feature.description}
                 imageWidth={feature.imageWidth}
                 imageHeight={feature.imageHeight}
+               
               />
             ))}
           </div>
-          <div className="flex flex-col gap-6">
+          <div 
+          data-aos="fade-left"
+          data-aos-duration="3000"
+          data-aos-delay="300"
+          data-aos-once="false"
+          className="flex flex-col gap-6">
             {features.slice(5, 7).map((feature, index) => (
               <EmpoweringPrompt
                 key={index + 5}

@@ -2,16 +2,15 @@
 
 import Image from "next/image";
 import Button from "../Reuse/Button";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
-
   const handleSignUp = () => {
     router.push("/signUp");
   };
 
   const handleExplorePlans = () => {
-    router.push("/pricing");
+    router.push("/Pricing");
   };
   const router = useRouter();
   return (
@@ -20,7 +19,13 @@ const HeroSection = () => {
         <div className=" xl:w-[70%] mx-auto flex flex-col items-center justify-center space-y-6 text-center">
           <h3 className="text-[1.5rem] md:text-[3rem] lg:text-[3.75rem] text-center text-[#101A33] lg:leading-[72px] font-semibold">
             Own Your Earning. Own your Audience.{" "}
-            <span className="text-[#E8C56B] text-shadow-sm">
+            <span
+              data-aos="fade-left"
+              data-aos-duration="1000"
+              data-aos-delay="100"
+              data-aos-once="false"
+              className="text-[#E8C56B] text-shadow-sm"
+            >
               Own Your Brand.
             </span>
           </h3>
@@ -32,7 +37,11 @@ const HeroSection = () => {
             <Button
               variant="primary"
               className="rounded-[8px] py-3 px-[48px] text-[#DBE4FA]"
-                onClick={handleSignUp}
+              onClick={handleSignUp}
+              data-aos="fade-right"
+              data-aos-duration="500"
+              data-aos-delay="200"
+              data-aos-once="false"
             >
               Launch Now
             </Button>
@@ -40,53 +49,111 @@ const HeroSection = () => {
               variant="secondary"
               className="border-2 py-3 px-[48px] rounded-[8px]"
               onClick={handleExplorePlans}
+              data-aos="fade-left"
+              data-aos-duration="500"
+              data-aos-delay="200"
+              data-aos-once="false"
             >
               Explore Plans
             </Button>
           </div>
         </div>
         <div className="relative flex flex-col gap-4 xl:flex-row items-center xl:justify-between">
-         <div className="relative">
-         <Image
-            src="/heroImage1.svg"
-            alt="hero-image1"
-            width={403}
-            height={344}
-          
-          />
-          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[40%] left-[-1%]   ">Tutera makes that your reality</p>
-          
-         </div>
           <div className="relative">
-          <Image
-            src="/HeroImage2.svg"
-            alt="hero-image2"
-            width={403}
-            height={434}
-          
-          />
-          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] right-[-1%]   ">Focus on what you do best</p>
+            <Image
+              src="/heroImage1.svg"
+              alt="hero-image1"
+              width={403}
+              height={344}
+              priority
+              data-aos="fade-right"
+              data-aos-offset="300"
+              data-aos-duration="500"
+            />
+            <p
+              data-aos="zoom-in"
+              data-aos-duration="1000"
+              data-aos-delay="500"
+              data-aos-once="false"
+              className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[40%] left-[-1%]   "
+            >
+              Tutera makes that your reality
+            </p>
           </div>
           <div className="relative">
-          <Image
-            src="/HeroImage3.svg"
-            alt="hero-image3"
-            width={403}
-            height={344}
-           
-          />
-          <p  className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] left-[-1%]   ">We handle the tech</p>
+            <Image
+              src="/HeroImage2.svg"
+              alt="hero-image2"
+              width={403}
+              height={434}
+              priority
+              data-aos="fade-up"
+              data-aos-duration="500"
+              data-aos-once="false"
+            />
+            <p
+              data-aos="zoom-in"
+              data-aos-duration="1000"
+              data-aos-delay="500"
+              data-aos-once="false"
+              className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] right-[-1%]   "
+            >
+              Focus on what you do best
+            </p>
+          </div>
+          <div className="relative">
+            <Image
+              src="/Heroimage3.svg"
+              alt="hero-image3"
+              width={403}
+              height={344}
+              priority
+              data-aos="fade-left"
+              data-aos-anchor="#example-anchor"
+              data-aos-offset="300"
+              data-aos-duration="500"
+              data-aos-once="false"
+            />
+            <p
+              data-aos="zoom-in"
+              data-aos-duration="1000"
+              data-aos-delay="500"
+              data-aos-once="false"
+              className=" xl:hidden block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[12%] left-[-1%]   "
+            >
+              We handle the tech
+            </p>
           </div>
 
+          <p
+            data-aos="zoom-in"
+            data-aos-duration="1000"
+            data-aos-delay="500"
+            data-aos-once="false"
+            className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 xl:top-[20%] xl:left-[20%]  "
+          >
+            Tutera makes that your reality
+          </p>
 
-         
-            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center top-[12%] left-0 xl:top-[20%] xl:left-[20%]  ">Tutera makes that your reality</p>
-       
-            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center  bottom-[20%] left-[25%] ">We handle the tech</p>
-          
-          
-            <p className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[37%] right-[22%]">Focus on what you do best</p>
-         
+          <p
+            data-aos="zoom-in"
+            data-aos-delay="1000"
+            data-aos-duration="500"
+            data-aos-once="false"
+            className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center  bottom-[20%] left-[25%] "
+          >
+            We handle the tech
+          </p>
+
+          <p
+            data-aos="zoom-in"
+            data-aos-duration="1000"
+            data-aos-delay="500"
+            data-aos-once="false"
+            className="hidden xl:block absolute bg-[#ffffff] font-bold text-[18px] text-[#101A33] py-[8px] rounded-[8px] px-[24px] text-center bottom-[37%] right-[22%]"
+          >
+            Focus on what you do best
+          </p>
         </div>
       </div>
     </section>
