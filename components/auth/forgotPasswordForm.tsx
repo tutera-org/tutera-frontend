@@ -14,11 +14,12 @@ function ForgotPasswordForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Sending OTP to:", email);
-    router.push(`/verifyOtp?email=${encodeURIComponent(email)}`);
+
+    router.push("/verifyOtp");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex py-8  flex-col gap-7">
+    <form onSubmit={handleSubmit} className="flex py-8 flex-col gap-7">
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
         <input
@@ -30,7 +31,6 @@ function ForgotPasswordForm() {
           className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
         />
       </label>
-
       <button
         type="submit"
         disabled={!email}
@@ -38,7 +38,6 @@ function ForgotPasswordForm() {
       >
         Send OTP
       </button>
-
       <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Return to{" "}
         <Link href="/signIn" className="text-accent-600">
