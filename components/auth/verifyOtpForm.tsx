@@ -9,11 +9,9 @@ export default function VerifyOtpForm() {
 
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < otp.length - 1) {
       otpInputs.current[index + 1]?.focus();
     }
@@ -28,12 +26,14 @@ export default function VerifyOtpForm() {
     }
   };
 
-  const handleOtp = () => {
+  const handleOtp = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form reload
     console.log("Sending otp to backend", otp);
     router.push("/resetPassword");
   };
+
   return (
-    <form className="flex flex-col items-center gap-9">
+    <form onSubmit={handleOtp} className="flex flex-col items-center gap-9">
       <div className="flex gap-3 justify-center">
         {otp.map((digit, index) => (
           <input
@@ -53,13 +53,15 @@ export default function VerifyOtpForm() {
         ))}
       </div>
       <button
-        onClick={handleOtp}
+        type="submit"
         className="bg-primary-400 rounded-lg py-2 px-6 font-bold text-base text-neutral-100 w-full"
       >
         Send Otp
       </button>
-
-      <button className="text-primary-400 rounded-lg px-6 font-semibold lg:text-base text-xs sm:text-sm  hover:text-blue-600 w-full">
+      <button
+        type="button"
+        className="text-primary-400 rounded-lg px-6 font-semibold lg:text-base text-xs sm:text-sm hover:text-blue-600 w-full"
+      >
         Resend Otp
       </button>
     </form>

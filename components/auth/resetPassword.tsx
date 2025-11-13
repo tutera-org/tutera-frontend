@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 export default function ResetPasswordForm() {
   const router = useRouter();
 
-  const handleClick = () => {
+  const handleClick = (e: React.FormEvent) => {
+    e.preventDefault();
     router.push("/resetSuccess");
   };
   return (
-    <form className="flex py-8 flex-col gap-10">
+    <form onSubmit={handleClick} className="flex py-8 flex-col gap-10">
       {/* New Password */}
 
       <input
@@ -27,10 +28,7 @@ export default function ResetPasswordForm() {
       />
 
       {/* Sign up Button */}
-      <button
-        className="bg-primary-400 rounded-lg py-2 px-6 font-bold leading-[120%] text-base hover:bg-blue-600 text-neutral-100"
-        onClick={handleClick}
-      >
+      <button className="bg-primary-400 rounded-lg py-2 px-6 font-bold leading-[120%] text-base hover:bg-blue-600 text-neutral-100">
         Reset Password
       </button>
 
