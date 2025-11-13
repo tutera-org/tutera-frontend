@@ -14,7 +14,7 @@ const PaymentSuccessModal = ({
   onBack,
 }: PaymentSuccessModalProps) => {
   return (
-    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4 shadow-lg">
       <div className="bg-white rounded-[24px] p-8 max-w-md w-full relative">
         {/* Close Button */}
         <button
@@ -61,12 +61,12 @@ const PaymentSuccessModal = ({
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-[#1A1A1A] text-center mb-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-[#181D27] text-center mb-4">
           Payment Successful
         </h2>
 
         {/* Instruction Text */}
-        <p className="text-[#4B4B4B] text-center mb-8">
+        <p className="text-[#535862] text-center mb-8">
           Click on create account to continue
         </p>
 

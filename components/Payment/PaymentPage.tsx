@@ -21,7 +21,6 @@ interface PaymentPageProps {
 const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
   const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     cardNumber: "",
     expirationDate: "",
@@ -64,7 +63,6 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsProcessing(true);
 
     try {
       // TODO: Replace with actual API endpoint when provided
@@ -97,8 +95,6 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
       console.error("Payment error:", error);
       // TODO: Show error message to user
       alert("Payment failed. Please try again.");
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -114,12 +110,9 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     <>
       <div
         className={`min-h-screen bg-[#F0F4FF] ${
-          showSuccessModal ? "blur-xs pointer-events-none" : ""
+          showSuccessModal ? "blur-md pointer-events-none" : ""
         }`}
       >
-     
-      
-
         <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">
             Payment method
@@ -294,36 +287,9 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={isProcessing}
-                  className="w-full py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3 text-lg font-semibold"
                 >
-                  {isProcessing ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Processing...
-                    </span>
-                  ) : (
-                    "Purchase Plan"
-                  )}
+                  Purchase Plan
                 </Button>
 
                 {/* Terms and Info */}
