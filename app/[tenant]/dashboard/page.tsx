@@ -1,6 +1,7 @@
-// import CardAnalytics from "@/components/creatorDashboard/CardAnalytics";
-// import Enrol from "@/components/creatorDashboard/Enrrolment";
 // import ChartDashboard from "@/components/creatorDashboard/Chart";
+
+import CardAnalytics from "@/components/creatorDashboard/CardAnalytics";
+import CourseOverview from "@/components/creatorDashboard/CourseOverview";
 
 export default function DashboardPage() {
   return (
@@ -21,13 +22,13 @@ export default function DashboardPage() {
       </section>
 
       {/* Card Analytics */}
-      {/* <CardAnalytics /> */}
+      <CardAnalytics />
 
       {/* Charts */}
       {/* <ChartDashboard /> */}
 
-      {/* Enrol Notification center */}
-      {/* <Enrol /> */}
+      {/* Course overview */}
+      <CourseOverview />
     </div>
   );
 }
