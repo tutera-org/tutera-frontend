@@ -113,6 +113,7 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
           showSuccessModal ? "blur-md pointer-events-none" : ""
         }`}
       >
+        
         <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">
             Payment method

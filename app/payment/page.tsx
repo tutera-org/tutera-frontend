@@ -45,12 +45,12 @@ const PaymentRoute = () => {
     );
   }
 
-  return(
+  return (
     <>
-    <PaymentHeader />
-    <PaymentPage selectedPlan={selectedPlan} />
+      <PaymentHeader />
+      <PaymentPage selectedPlan={selectedPlan} />
     </>
-  )
+  );
 };
 
 export default PaymentRoute;
