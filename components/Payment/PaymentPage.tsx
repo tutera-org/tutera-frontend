@@ -21,6 +21,7 @@ interface PaymentPageProps {
 const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
   const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     cardNumber: "",
     expirationDate: "",
@@ -29,7 +30,9 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     postalCode: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,10 +62,44 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add payment API call here
-    setShowSuccessModal(true);
+    setIsProcessing(true);
+
+    try {
+      // TODO: Replace with actual API endpoint when provided
+      // const response = await fetch('/api/payment/process', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     ...formData,
+      //     plan: selectedPlan,
+      //   }),
+      // });
+      //
+      // if (!response.ok) {
+      //   throw new Error('Payment failed');
+      // }
+      //
+      // const data = await response.json();
+      // if (data.success) {
+      //   setShowSuccessModal(true);
+      // }
+
+      // Simulate API call for now
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Show success modal after successful payment
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Payment error:", error);
+      // TODO: Show error message to user
+      alert("Payment failed. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleCreateAccount = () => {
@@ -75,7 +112,11 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
 
   return (
     <>
-      <div className="min-h-screen bg-[#F5F5F5]">
+      <div
+        className={`min-h-screen bg-[#F0F4FF] ${
+          showSuccessModal ? "blur-sm pointer-events-none" : ""
+        }`}
+      >
         {/* Header */}
         <div className="bg-white border-b border-gray-200">
           <div className="w-[90%] max-w-[1240px] mx-auto py-6 ">
@@ -85,14 +126,14 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
           </div>
         </div>
 
-        <div className="w-[90%] max-w-[1240px] mx-auto py-8">
+        <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">
             Payment method
           </h1>
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Side - Payment Form */}
-            <div className="flex-1 bg-white rounded-lg p-6 md:p-8">
+            <div className="flex-1  rounded-lg p-6 md:p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Card Number */}
                 <div>
@@ -115,8 +156,12 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
                       required
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <span className="text-xs font-semibold text-gray-400">VISA</span>
-                      <span className="text-xs font-semibold text-gray-400">Verve</span>
+                      <span className="text-xs font-semibold text-gray-400">
+                        VISA
+                      </span>
+                      <span className="text-xs font-semibold text-gray-400">
+                        Verve
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -255,28 +300,45 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
                 <Button
                   type="submit"
                   variant="primary"
-                  className="w-full py-3 text-lg font-semibold"
+                  disabled={isProcessing}
+                  className="w-full py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Purchase Plan
+                  {isProcessing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    "Purchase Plan"
+                  )}
                 </Button>
-
-                {/* Bank Transfer Link */}
-                <div className="text-center">
-                  <button
-                    type="button"
-                    className="text-[#4977E6] font-semibold hover:underline"
-                  >
-                    Bank Transfer
-                  </button>
-                </div>
 
                 {/* Terms and Info */}
                 <div className="space-y-3 text-sm text-[#4B4B4B]">
                   <p>All transaction are secure and encrypted</p>
                   <p>
                     By purchasing this plan, you agree that you are purchasing a
-                    subscription that is charged on a reoccurring monthly basis. Your
-                    plan will automatically renew until you cancel.
+                    subscription that is charged on a reoccurring monthly basis.
+                    Your plan will automatically renew until you cancel.
                   </p>
                   <p>
                     By purchasing this plan you agree to Tutera&apos;s{" "}
@@ -357,4 +419,3 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
 };
 
 export default PaymentPage;
-
