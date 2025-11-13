@@ -114,17 +114,11 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     <>
       <div
         className={`min-h-screen bg-[#F0F4FF] ${
-          showSuccessModal ? "blur-sm pointer-events-none" : ""
+          showSuccessModal ? "blur-xs pointer-events-none" : ""
         }`}
       >
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="w-[90%] max-w-[1240px] mx-auto py-6 ">
-            <Link href="/">
-              <Image src="/logo.svg" alt="logo" width={120} height={36} />
-            </Link>
-          </div>
-        </div>
+     
+      
 
         <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">

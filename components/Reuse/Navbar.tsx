@@ -74,7 +74,7 @@ const NavBar = () => {
               <Button
                 variant="secondary"
                 onClick={handleCreatorLogin}
-                className="whitespace-nowrap hidden md:block"
+                className="whitespace-nowrap hidden md:block bg-[#ffffff]"
               >
                 Creator Login
               </Button>
