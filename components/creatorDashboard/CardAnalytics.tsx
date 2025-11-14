@@ -4,7 +4,7 @@ export default function CardAnalytics() {
   const cards = [
     {
       title: "Total Users",
-      number: "5000",
+      number: "5,000",
     },
     {
       title: "Courses",
@@ -12,23 +12,26 @@ export default function CardAnalytics() {
     },
     {
       title: "Earnings",
-      number: "670000",
+      number: "670,000",
     },
   ];
+
   return (
-    <section className="grid grid-cols-1 md:grid-cols-3 mt-5 gap-y-4 gap-x-8">
+    <section className="grid grid-cols-1 md:grid-cols-3 mt-5 gap-4">
       {cards.map((card, index) => (
-        <div className="bg-neutral-100 rounded-xl p-5" key={index}>
+        <div className="bg-neutral-100 rounded-xl p-4 sm:p-5" key={index}>
           <aside className="flex justify-between items-start">
-            <h3 className="font-semibold text-xs lg:text-2xl leading-4 md:leading-8 text-neutral-900">
+            <h3 className="font-semibold text-sm sm:text-base lg:text-lg leading-5 text-neutral-900">
               {card.title}
             </h3>
-            <div className="bg-secondary-400 p-0.5 px-3.5 rounded-full">
-              <IoAnalyticsSharp className="text-white text-base" />
+            <div className="bg-secondary-400 p-2 rounded-full">
+              <IoAnalyticsSharp className="text-white text-sm sm:text-base" />
             </div>
           </aside>
-          <aside className="mt-5 lg:text-base text-xs leading-3 md:leading-5 text-Black">
-            <p>{card.number}</p>
+          <aside className="mt-4">
+            <p className="font-semibold text-xl sm:text-2xl lg:text-3xl leading-7 text-black-500">
+              {card.number}
+            </p>
           </aside>
         </div>
       ))}

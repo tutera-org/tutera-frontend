@@ -1,8 +1,9 @@
 "use client";
 import Image from "next/image";
 import NavLink from "../creatorDashboard/NavBar";
-import { FaBell, FaCog, FaUser, FaBars, FaTimes } from "react-icons/fa";
+import { FaBell, FaBars, FaTimes } from "react-icons/fa";
 import { useState } from "react";
+import { SingleAvatar } from "./Avatar";
 
 export default function CreatorHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,22 +25,20 @@ export default function CreatorHeader() {
         {/* Nav bar  */}
         <nav className="bg-neutral-100 font-semibold text-base leading-[120%] rounded-2xl gap-4 px-2.5 py-3 hidden lg:flex items-center">
           <NavLink href="dashboard" linkText="Dashboard" />
-          <NavLink href="courseProgress" linkText="Course Progress" />
           <NavLink href="courseManagement" linkText="Course Management" />
-          <NavLink href="customization" linkText="Customization" />
+          <NavLink href="earnings" linkText="Earnings" />
+          <NavLink href="settings" linkText="Settings" />
         </nav>
 
-        <div className="flex items-center justify-center gap-2.5">
+        <div className="flex items-center justify-center gap-10">
           {/* icons */}
-          <aside className="rounded-[2xl flex gap-2 items-center justify-center bg-neutral-100 px-4 py-4 min-h-10 rounded-2xl">
-            <FaBell className="text-base hover:text-primary-400 cursor-pointer" />
-            <FaCog className="text-base hover:text-primary-400 cursor-pointer" />
-          </aside>
 
-          <aside className="md:bg-neutral-100 bg-transparent flex item-center justify- rounded-2xl px-4 text-xs items-center text-neutral-900 gap-4 py-4 min-h-10">
+          <FaBell className="text-base hover:text-primary-400 cursor-pointer" />
+
+          <aside className="md:bg-neutral-100 bg-transparent flex item-center rounded-2xl px-2 text-xs items-center text-neutral-900 gap-4 py-2 min-h-10">
             {/* creator */}
 
-            <FaUser className="text-base" />
+            <SingleAvatar name="Ansah Chikeh" />
 
             <div className="md:flex hidden flex-col">
               <p>{user.name}</p>
@@ -74,19 +73,19 @@ export default function CreatorHeader() {
               className="flex items-center border-b-2 border-gray-500 py-4"
               onClick={() => setIsMenuOpen(false)}
             >
-              <NavLink href="/courseProgress" linkText="Course Progress" />
-            </div>
-            <div
-              className="flex items-center border-b-2 border-gray-500 py-4"
-              onClick={() => setIsMenuOpen(false)}
-            >
               <NavLink href="/courseManagement" linkText="Course Management" />
             </div>
             <div
               className="flex items-center border-b-2 border-gray-500 py-4"
               onClick={() => setIsMenuOpen(false)}
             >
-              <NavLink href="/customization" linkText="Customization" />
+              <NavLink href="/Earnings" linkText="Earnings" />
+            </div>
+            <div
+              className="flex items-center border-b-2 border-gray-500 py-4"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <NavLink href="/settings" linkText="Settings" />
             </div>
           </nav>
         )}
