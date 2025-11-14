@@ -20,6 +20,8 @@ export default function CourseManagementPage() {
     setCurrentStep,
     deleteCourse,
     updateCurrentCourse,
+    currentCourse,
+    setShowPreview,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
 
@@ -65,9 +67,22 @@ export default function CourseManagementPage() {
       <div className="min-h-screen bg-[#F0F4FF] py-8">
         <div className="w-[90%] lg:max-w-[1240px] mx-auto">
           <div className="mb-6"></div>
-          <h1 className="text-3xl font-bold text-[#101A33] mb-2">
-            Fill in the details to create an engaging course for your students
-          </h1>
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-3xl font-bold text-[#101A33]">
+              {currentStep === 2 && currentCourse?.title
+                ? currentCourse.title
+                : "Fill in the details to create an engaging course for your students"}
+            </h1>
+            {currentStep === 2 && (
+              <Button
+                variant="primary"
+                onClick={() => setShowPreview(true)}
+                className="px-4 py-2"
+              >
+                Preview
+              </Button>
+            )}
+          </div>
           <ProgressStepper currentStep={currentStep} />
           {currentStep === 1 && <BasicInfo />}
           {currentStep === 2 && <Content />}
