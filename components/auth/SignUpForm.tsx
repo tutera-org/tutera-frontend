@@ -29,9 +29,9 @@ export default function SignUpForm() {
           type="text"
           value={tenant}
           onChange={(e) => setTenant(e.target.value)}
-          placeholder="Brand Name"
+          placeholder="Enter brand name..."
           required
-          className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -42,9 +42,9 @@ export default function SignUpForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
+          placeholder="Enter email..."
           required
-          className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -55,10 +55,10 @@ export default function SignUpForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder="Enter password..."
           required
           minLength={8}
-          className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
         />
       </label>
 

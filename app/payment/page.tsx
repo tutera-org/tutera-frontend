@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PaymentPage from "@/components/Payment/PaymentPage";
+import PaymentHeader from "@/components/Payment/PaymentHeader";
 
 interface Plan {
   name: string;
@@ -28,15 +29,22 @@ const getPlanFromStorage = (): Plan | null => {
 
 const PaymentRoute = () => {
   const router = useRouter();
-  const [selectedPlan] = useState<Plan | null>(() => getPlanFromStorage());
+  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
 
+  // Load plan from sessionStorage after mount to avoid hydration mismatch
   useEffect(() => {
-    if (!selectedPlan) {
+    const plan = getPlanFromStorage();
+    setSelectedPlan(plan);
+    setIsHydrated(true);
+    
+    if (!plan) {
       router.push("/Pricing");
     }
-  }, [selectedPlan, router]);
+  }, [router]);
 
-  if (!selectedPlan) {
+  // Show loading state until hydrated
+  if (!isHydrated || !selectedPlan) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4977E6]"></div>
@@ -44,7 +52,12 @@ const PaymentRoute = () => {
     );
   }
 
-  return <PaymentPage selectedPlan={selectedPlan} />;
+  return (
+    <>
+      <PaymentHeader />
+      <PaymentPage selectedPlan={selectedPlan} />
+    </>
+  );
 };
 
 export default PaymentRoute;

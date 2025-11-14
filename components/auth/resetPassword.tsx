@@ -16,7 +16,7 @@ export default function ResetPasswordForm() {
       <input
         type="password"
         placeholder="New Password"
-        className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+        className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
       />
 
       {/* Password */}
@@ -24,7 +24,7 @@ export default function ResetPasswordForm() {
       <input
         type="password"
         placeholder="Password"
-        className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+        className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
       />
 
       {/* Sign up Button */}

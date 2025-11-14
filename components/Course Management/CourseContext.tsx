@@ -2,6 +2,30 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+export interface Lesson {
+  id: string;
+  name: string;
+  description: string;
+  video?: string; // File URL or base64
+  videoFile?: File;
+  order: number;
+}
+
+export interface Quiz {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswer?: number; // Index of correct option
+}
+
+export interface Module {
+  id: string;
+  name: string;
+  lessons: Lesson[];
+  quizzes: Quiz[];
+  order: number;
+}
+
 export interface Course {
   id: string;
   title: string;
@@ -9,18 +33,20 @@ export interface Course {
   thumbnail: string;
   price: number;
   isPaid: boolean;
-  modules: any[];
+  modules: Module[];
   certificate: boolean;
   ratings: boolean;
-  quizzes: any[];
+  quizzes: Quiz[];
   createdAt: string;
-  status?: "draft" | "published"; // Add status field
+  status?: "draft" | "published";
 }
 
 interface CourseContextType {
   courses: Course[];
   currentCourse: Partial<Course> | null;
   currentStep: number;
+  showPreview: boolean;
+  setShowPreview: (show: boolean) => void;
   addCourse: (course: Course, keepStep?: boolean) => void;
   deleteCourse: (courseId: string) => void;
   updateCourseStatus: (courseId: string, status: "draft" | "published") => void;
@@ -33,35 +59,51 @@ const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
 export function CourseProvider({ children }: { children: React.ReactNode }) {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [currentCourse, setCurrentCourse] = useState<Partial<Course> | null>(null);
+  const [currentCourse, setCurrentCourse] = useState<Partial<Course> | null>(
+    null
+  );
   const [currentStep, setCurrentStep] = useState(0);
+  const [showPreview, setShowPreview] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount (client-side only)
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const savedCourses = localStorage.getItem("tutera_courses");
     const savedCurrentCourse = localStorage.getItem("tutera_current_course");
     const savedStep = localStorage.getItem("tutera_current_step");
 
     if (savedCourses) {
-      const parsedCourses = JSON.parse(savedCourses);
-      setCourses(parsedCourses);
-      
-      // If no courses exist, reset step to 0
-      if (parsedCourses.length === 0 && savedStep) {
-        setCurrentStep(0);
-        localStorage.removeItem("tutera_current_step");
-      } else if (savedStep) {
-        setCurrentStep(parseInt(savedStep));
+      try {
+        const parsedCourses = JSON.parse(savedCourses);
+        setCourses(parsedCourses);
+
+        // If no courses exist, reset step to 0
+        if (parsedCourses.length === 0 && savedStep) {
+          setCurrentStep(0);
+          localStorage.removeItem("tutera_current_step");
+        } else if (savedStep) {
+          setCurrentStep(parseInt(savedStep));
+        }
+      } catch (error) {
+        console.error("Error parsing saved courses:", error);
       }
     } else if (savedStep) {
       // If no courses saved but step exists, reset it
       setCurrentStep(0);
       localStorage.removeItem("tutera_current_step");
     }
-    
+
     if (savedCurrentCourse) {
-      setCurrentCourse(JSON.parse(savedCurrentCourse));
+      try {
+        setCurrentCourse(JSON.parse(savedCurrentCourse));
+      } catch (error) {
+        console.error("Error parsing saved current course:", error);
+      }
     }
+
+    setIsHydrated(true);
   }, []);
 
   // Reset step to 0 if courses array becomes empty AND we're not in creation flow
@@ -73,20 +115,26 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   }, [courses.length, currentStep]);
 
-  // Save to localStorage whenever state changes
+  // Save to localStorage whenever state changes (client-side only)
   useEffect(() => {
+    if (typeof window === "undefined" || !isHydrated) return;
     localStorage.setItem("tutera_courses", JSON.stringify(courses));
-  }, [courses]);
+  }, [courses, isHydrated]);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !isHydrated) return;
     if (currentCourse) {
-      localStorage.setItem("tutera_current_course", JSON.stringify(currentCourse));
+      localStorage.setItem(
+        "tutera_current_course",
+        JSON.stringify(currentCourse)
+      );
     }
-  }, [currentCourse]);
+  }, [currentCourse, isHydrated]);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !isHydrated) return;
     localStorage.setItem("tutera_current_step", currentStep.toString());
-  }, [currentStep]);
+  }, [currentStep, isHydrated]);
 
   const addCourse = (course: Course, keepStep: boolean = false) => {
     // Set default status to "draft" if not provided
@@ -99,7 +147,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem("tutera_current_course");
   };
 
-  const updateCourseStatus = (courseId: string, status: "draft" | "published") => {
+  const updateCourseStatus = (
+    courseId: string,
+    status: "draft" | "published"
+  ) => {
     setCourses((prev) =>
       prev.map((course) =>
         course.id === courseId ? { ...course, status } : course
@@ -109,6 +160,13 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCourse = (courseId: string) => {
     setCourses((prev) => prev.filter((c) => c.id !== courseId));
+    // Clean up localStorage if courses become empty
+    if (typeof window !== "undefined") {
+      const updatedCourses = courses.filter((c) => c.id !== courseId);
+      if (updatedCourses.length === 0) {
+        localStorage.removeItem("tutera_courses");
+      }
+    }
   };
 
   const updateCurrentCourse = (data: Partial<Course>) => {
@@ -128,6 +186,8 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         courses,
         currentCourse,
         currentStep,
+        showPreview,
+        setShowPreview,
         addCourse,
         deleteCourse,
         updateCourseStatus,
@@ -148,4 +208,3 @@ export function useCourse() {
   }
   return context;
 }
-

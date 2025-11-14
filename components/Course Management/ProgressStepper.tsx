@@ -1,14 +1,16 @@
 "use client";
 
+import Image from "next/image";
+
 interface ProgressStepperProps {
   currentStep: number;
 }
 
 export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
   const steps = [
-    { number: 1, label: "Basic Info", icon: "📄" },
-    { number: 2, label: "Content", icon: "🎥" },
-    { number: 3, label: "Set Up", icon: "⚙️" },
+    { number: 1, label: "Basic Info", icon: "/document.svg" },
+    { number: 2, label: "Content", icon: "/video.svg" },
+    { number: 3, label: "Set Up", icon: "/Settings.svg" },
   ];
 
   return (
@@ -16,33 +18,38 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
       {steps.map((step, index) => {
         const isCompleted = step.number < currentStep;
         const isCurrent = step.number === currentStep;
-        const isUpcoming = step.number > currentStep;
 
         return (
           <div key={step.number} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center border transition-colors ${
                   isCompleted
-                    ? "bg-green-500 border-green-500 text-white"
+                    ? "bg-green-500 border-green-500 text-black"
                     : isCurrent
-                    ? "bg-yellow-100 border-yellow-500 text-yellow-700"
-                    : "bg-gray-100 border-gray-300 text-gray-400"
+                    ? "bg-[#EED390] border-none"
+                    : "bg-[#E1E1E1] border-none"
                 }`}
               >
                 {isCompleted ? (
                   <svg
                     width="24"
                     height="24"
-                    viewBox="0 0 24 24"
+                    viewBox="0 0 22 22"
                     fill="none"
                     stroke="currentColor"
-                    strokeWidth="3"
+                    strokeWidth="2"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 ) : (
-                  <span className="text-lg">{step.icon}</span>
+                  <Image
+                    src={step.icon}
+                    alt={step.label}
+                    width={54}
+                    height={54}
+                    className="object-contain"
+                  />
                 )}
               </div>
               <span
@@ -51,7 +58,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                     ? "text-[#4977E6]"
                     : isCompleted
                     ? "text-green-600"
-                    : "text-gray-400"
+                    : "text-[#000000]"
                 }`}
               >
                 {step.label}
@@ -59,8 +66,8 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-24 h-1 mx-4 transition-colors ${
-                  isCompleted ? "bg-green-500" : "bg-gray-300"
+                className={`w-40 h-1 mx-10 transition-colors ${
+                  isCompleted ? "bg-green-500" : "bg-[#5D5D5D]"
                 }`}
               />
             )}
@@ -70,4 +77,3 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
     </div>
   );
 }
-
