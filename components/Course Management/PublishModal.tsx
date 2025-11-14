@@ -18,8 +18,8 @@ export default function PublishModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100] backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-md w-[90%] relative z-[101]">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-100 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-md w-[90%] relative z-101">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -41,7 +41,7 @@ export default function PublishModal({
 
         {/* Success icon */}
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shrink-0">
             <svg
               width="32"
               height="32"

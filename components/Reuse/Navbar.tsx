@@ -74,7 +74,7 @@ const NavBar = () => {
               <Button
                 variant="secondary"
                 onClick={handleCreatorLogin}
-                className="whitespace-nowrap hidden md:block"
+                className="whitespace-nowrap hidden md:block bg-[#ffffff]"
               >
                 Creator Login
               </Button>
@@ -118,8 +118,8 @@ const NavBar = () => {
                 <Link
                   href="/"
                   onClick={() => setIsMenuOpen(false)}
-                  className={`text-[16px] font-semibold ${
-                    pathname === "/" ? "text-[#101A33] " : "text-[#101A33]"
+                  className={`text-[16px] font-semibold px-1 py-2 ${
+                    pathname === "/" ? "text-[#FFFFFF] bg-[#ACBEE5] " : "text-[#101A33]"
                   }`}
                 >
                   Home
@@ -127,9 +127,9 @@ const NavBar = () => {
                 <Link
                   href="/Pricing"
                   onClick={() => setIsMenuOpen(false)}
-                  className={`text-[16px] font-semibold ${
+                  className={`text-[16px] font-semibold px-1 py-2 ${
                     pathname === "/Pricing"
-                      ? "text-[#101A33] "
+                      ? "text-[#FFFFFF] bg-[#ACBEE5] "
                       : "text-[#101A33]"
                   }`}
                 >
@@ -138,9 +138,9 @@ const NavBar = () => {
                 <Link
                   href="/contact"
                   onClick={() => setIsMenuOpen(false)}
-                  className={`text-[16px] font-semibold ${
+                  className={`text-[16px] font-semibold px-1 py-2 ${
                     pathname === "/contact"
-                      ? "text-[#101A33] "
+                      ? "text-[#FFFFFF] bg-[#ACBEE5] "
                       : "text-[#101A33]"
                   }`}
                 >

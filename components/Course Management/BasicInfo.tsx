@@ -10,7 +10,6 @@ export default function BasicInfo() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +23,6 @@ export default function BasicInfo() {
         alert("Please select an image file (PNG, JPG)");
         return;
       }
-      setThumbnailFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnail(reader.result as string);
@@ -49,7 +47,6 @@ export default function BasicInfo() {
         alert("Please select an image file (PNG, JPG)");
         return;
       }
-      setThumbnailFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setThumbnail(reader.result as string);
@@ -77,13 +74,10 @@ export default function BasicInfo() {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-        <div className="mb-6">
-          <div className="bg-gray-100 rounded-lg px-4 py-2 inline-block mb-4">
-            <span className="text-[#101A33] font-semibold">Info</span>
-          </div>
-        </div>
-
+      <div className="bg-[#ffffff] rounded-[16px] px-4 py-2 mb-6">
+        <span className="text-[#101A33] font-semibold">Info</span>
+      </div>
+      <div className="bg-white rounded-[16px] text-[20px]shadow-lg p-6 md:p-8">
         <div className="space-y-6">
           <div>
             <label className="block text-[#101A33] font-medium mb-2">
@@ -94,7 +88,7 @@ export default function BasicInfo() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g Complete Web Development Bootcamp"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
+              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
             />
           </div>
 
@@ -107,19 +101,19 @@ export default function BasicInfo() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe what student will learn, who this course is for, and what makes it unique..."
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] resize-none"
+              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] resize-none"
             />
           </div>
 
           <div>
             <label className="block text-[#101A33] font-medium mb-2">
-              Thumbnail
+              Course Cover
             </label>
             <div
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#4977E6] transition-colors"
+              className="border-2 border-dashed border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg p-8 text-center cursor-pointer hover:border-[#5D5D5D] transition-colors"
             >
               <input
                 ref={fileInputRef}
@@ -198,4 +192,3 @@ export default function BasicInfo() {
     </div>
   );
 }
-

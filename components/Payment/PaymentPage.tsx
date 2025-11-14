@@ -29,7 +29,9 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     postalCode: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,10 +61,41 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Add payment API call here
-    setShowSuccessModal(true);
+
+    try {
+      // TODO: Replace with actual API endpoint when provided
+      // const response = await fetch('/api/payment/process', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     ...formData,
+      //     plan: selectedPlan,
+      //   }),
+      // });
+      //
+      // if (!response.ok) {
+      //   throw new Error('Payment failed');
+      // }
+      //
+      // const data = await response.json();
+      // if (data.success) {
+      //   setShowSuccessModal(true);
+      // }
+
+      // Simulate API call for now
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Show success modal after successful payment
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Payment error:", error);
+      // TODO: Show error message to user
+      alert("Payment failed. Please try again.");
+    }
   };
 
   const handleCreateAccount = () => {
@@ -75,30 +108,20 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
 
   return (
     <>
-      <div className="min-h-screen bg-[#F5F5F5]">
-        {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="w-[90%] max-w-[1240px] mx-auto py-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <div className="w-2 h-2 bg-[#4977E6] rounded-full"></div>
-              <span className="text-[#1A1A1A] text-xl font-semibold ml-2">
-                tutera
-              </span>
-            </Link>
-          </div>
-        </div>
-
-        <div className="w-[90%] max-w-[1240px] mx-auto py-8">
+      <div
+        className={`min-h-screen bg-[#F0F4FF] ${
+          showSuccessModal ? "blur-md pointer-events-none" : ""
+        }`}
+      >
+        
+        <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">
             Payment method
           </h1>
 
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Left Side - Payment Form */}
-            <div className="flex-1 bg-white rounded-lg p-6 md:p-8">
+            <div className="flex-1  rounded-lg p-6 md:p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Card Number */}
                 <div>
@@ -121,8 +144,12 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
                       required
                     />
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                      <span className="text-xs font-semibold text-gray-400">VISA</span>
-                      <span className="text-xs font-semibold text-gray-400">Verve</span>
+                      <span className="text-xs font-semibold text-gray-400">
+                        VISA
+                      </span>
+                      <span className="text-xs font-semibold text-gray-400">
+                        Verve
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -266,23 +293,13 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
                   Purchase Plan
                 </Button>
 
-                {/* Bank Transfer Link */}
-                <div className="text-center">
-                  <button
-                    type="button"
-                    className="text-[#4977E6] font-semibold hover:underline"
-                  >
-                    Bank Transfer
-                  </button>
-                </div>
-
                 {/* Terms and Info */}
                 <div className="space-y-3 text-sm text-[#4B4B4B]">
                   <p>All transaction are secure and encrypted</p>
                   <p>
                     By purchasing this plan, you agree that you are purchasing a
-                    subscription that is charged on a reoccurring monthly basis. Your
-                    plan will automatically renew until you cancel.
+                    subscription that is charged on a reoccurring monthly basis.
+                    Your plan will automatically renew until you cancel.
                   </p>
                   <p>
                     By purchasing this plan you agree to Tutera&apos;s{" "}
@@ -363,4 +380,3 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
 };
 
 export default PaymentPage;
-

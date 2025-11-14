@@ -23,9 +23,15 @@ export default function SetUp() {
     }
   }, [currentCourse]);
 
+  // Helper to generate unique ID (client-side only)
+  const generateCourseId = () => {
+    if (typeof window === "undefined") return "temp-id";
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  };
+
   const handleNext = () => {
     const courseData = {
-      id: Date.now().toString(),
+      id: generateCourseId(),
       title: currentCourse?.title || "",
       description: currentCourse?.description || "",
       thumbnail: currentCourse?.thumbnail || "",
@@ -71,7 +77,7 @@ export default function SetUp() {
   const handleSkip = () => {
     // Save as draft and go back to course list without showing modal
     const courseData = {
-      id: Date.now().toString(),
+      id: generateCourseId(),
       title: currentCourse?.title || "",
       description: currentCourse?.description || "",
       thumbnail: currentCourse?.thumbnail || "",

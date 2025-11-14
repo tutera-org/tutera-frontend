@@ -28,7 +28,7 @@ function ForgotPasswordForm() {
           value={email}
           onChange={handleEmail}
           required
-          className="border font-semibold text-base placeholder:text-neutral-700 p-2.5 border-black-400 w-full rounded-lg"
+          className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
         />
       </label>
       <button
