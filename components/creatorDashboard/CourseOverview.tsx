@@ -1,3 +1,5 @@
+import { MultiAvatar } from "../Reuse/Avatar";
+
 export default function CourseOverview() {
   const courses = [
     {
@@ -37,30 +39,78 @@ export default function CourseOverview() {
       ],
     },
   ];
+
   return (
     <section className="mt-10 py-2.5 rounded-xl p-5 bg-neutral-100 flex flex-col gap-10">
-      <aside className="flex justify-between ">
-        {/* Tittle */}
-        <h3 className="font-semibold text-2xl leading-8 text-neutral-900">
+      {/* Header */}
+      <aside className="flex justify-between">
+        <h3 className="font-semibold text-lg sm:text-2xl leading-8 text-neutral-900">
           Course Overview
         </h3>
-        <button className="text-primary-400 font-semibold leading-5 text-base hover:underline cursor-pointer">
+        <button className="text-primary-400 font-semibold leading-5 text-sm sm:text-base hover:underline cursor-pointer">
           More Details
         </button>
       </aside>
 
-      <aside>
-        {/* Course pricing students summary */}
-
-        <div className="grid grid-cols-4">
+      {/* Course Content with Horizontal Scroll */}
+      <aside className="overflow-x-auto">
+        <div className="min-w-[500px] grid grid-cols-4 gap-4">
+          {/* Courses Column */}
           <aside className="col-span-2">
-            <h3 className="font-semibold text-[24px] text-">Courses</h3>
+            <h3 className="font-semibold text-base sm:text-xl leading-6 text-black-600">
+              Courses
+            </h3>
+            <div className="flex flex-col mt-6">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="py-4 min-h-[60px] flex items-center"
+                >
+                  <p className="font-semibold text-xs sm:text-base leading-5 text-black-500">
+                    {course.name}
+                  </p>
+                </div>
+              ))}
+            </div>
           </aside>
+
+          {/* Pricing Column */}
           <aside>
-            <h3>Pricing</h3>
+            <h3 className="font-semibold text-base sm:text-xl leading-6 text-black-600">
+              Pricing
+            </h3>
+            <div className="flex flex-col mt-6">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="py-4 min-h-[60px] flex items-center"
+                >
+                  <p className="font-semibold text-xs sm:text-base leading-5 text-black-500">
+                    {course.pricing}
+                  </p>
+                </div>
+              ))}
+            </div>
           </aside>
+
+          {/* Students Column */}
           <aside>
-            <h3>Students</h3>
+            <h3 className="font-semibold text-base sm:text-xl leading-6 text-black-600">
+              Students
+            </h3>
+            <div className="flex flex-col mt-6">
+              {courses.map((course) => (
+                <div
+                  key={course.id}
+                  className="py-4 min-h-[60px] flex items-center gap-2"
+                >
+                  <MultiAvatar name={course.studentAvatars} />
+                  <span className="font-semibold text-xs sm:text-base leading-5 text-black-500">
+                    +{course.studentCount}
+                  </span>
+                </div>
+              ))}
+            </div>
           </aside>
         </div>
       </aside>
