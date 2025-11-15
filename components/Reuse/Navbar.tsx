@@ -24,7 +24,7 @@ const NavBar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full bg-[#F0F4FF] py-8">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="bg-[#ffffff] rounded-[16px] shadow-md px-5 py-6 relative">
+        <div className="bg-[#ffffff] rounded-2xl shadow-md px-5 py-6 relative">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Image
@@ -113,13 +113,15 @@ const NavBar = () => {
           </div>
 
           {isMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-[16px] shadow-lg px-5 py-4 border border-[#D1D1D1] z-50">
+            <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-lg px-5 py-4 border border-[#D1D1D1] z-50">
               <div className="flex flex-col space-y-4">
                 <Link
                   href="/"
                   onClick={() => setIsMenuOpen(false)}
                   className={`text-[16px] font-semibold px-1 py-2 ${
-                    pathname === "/" ? "text-[#FFFFFF] bg-[#ACBEE5] " : "text-[#101A33]"
+                    pathname === "/"
+                      ? "text-[#FFFFFF] bg-[#ACBEE5] "
+                      : "text-[#101A33]"
                   }`}
                 >
                   Home

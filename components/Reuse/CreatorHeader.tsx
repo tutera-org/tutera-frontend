@@ -24,10 +24,10 @@ export default function CreatorHeader() {
 
         {/* Nav bar  */}
         <nav className="bg-neutral-100 font-semibold text-base leading-[120%] rounded-2xl gap-4 px-2.5 py-3 hidden lg:flex items-center">
-          <NavLink href="dashboard" linkText="Dashboard" />
-          <NavLink href="courseManagement" linkText="Course Management" />
-          <NavLink href="earnings" linkText="Earnings" />
-          <NavLink href="settings" linkText="Settings" />
+          <NavLink href="/dashboard" linkText="Dashboard" />
+          <NavLink href="/courseManagement" linkText="Course Management" />
+          <NavLink href="/earnings" linkText="Earnings" />
+          <NavLink href="/settings" linkText="Settings" />
         </nav>
 
         <div className="flex items-center justify-center gap-10">
@@ -79,7 +79,7 @@ export default function CreatorHeader() {
               className="flex items-center border-b-2 border-gray-500 py-4"
               onClick={() => setIsMenuOpen(false)}
             >
-              <NavLink href="/Earnings" linkText="Earnings" />
+              <NavLink href="/earnings" linkText="Earnings" />
             </div>
             <div
               className="flex items-center border-b-2 border-gray-500 py-4"

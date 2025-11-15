@@ -6,10 +6,10 @@ import GettingStarted from "@/components/creatorDashboard/GettingStarted";
 
 export default function DashboardPage() {
   // check if he has a lesson
-  const ownsLessons = true;
+  const ownsLessons = false;
 
   return (
-    <div className="mt-10 md:mt-14 pb-10 w-full">
+    <div className="mt-10 md:mt-14 w-full">
       {/* welcome area */}
       <section className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10">
         {ownsLessons ? (

@@ -10,7 +10,8 @@ export function proxy(req: NextRequest) {
   if (
     url.pathname.startsWith("/_next") ||
     url.pathname.startsWith("/api/") ||
-    url.pathname === "/favicon.ico"
+    url.pathname === "/favicon.ico" ||
+    url.pathname.match(/\.(svg|png|jpg|jpeg|gif|webp|ico)$/i)
   ) {
     return NextResponse.next();
   }
@@ -62,8 +63,13 @@ export function proxy(req: NextRequest) {
     const token = req.cookies.get("auth_token")?.value;
     const isAuthenticated = !!token;
 
-    // TODO: Remove "/dashboard" when backend API is connected
-    const tenantPublicRoutes = ["/signIn", "/signUp", "/dashboard"];
+    // TODO: Remove "/dashboard" and "/earnings" when backend API is connected
+    const tenantPublicRoutes = [
+      "/signIn",
+      "/signUp",
+      "/dashboard",
+      "/earnings",
+    ];
     const isTenantPublic = tenantPublicRoutes.some((route) =>
       url.pathname.startsWith(route)
     );

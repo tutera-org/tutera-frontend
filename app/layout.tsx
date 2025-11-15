@@ -33,7 +33,7 @@ export default function RootLayout({
           duration={10000}
           richColors
           closeButton
-          expand={false}
+          expand={true}
           visibleToasts={3}
         />
       </body>
