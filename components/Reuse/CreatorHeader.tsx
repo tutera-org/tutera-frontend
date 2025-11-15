@@ -37,7 +37,7 @@ export default function CreatorHeader() {
           <FaBell className="text-lg hover:text-primary-400 cursor-pointer transition-colors" />
 
           {/* Avatar - Hidden on small screens, shown on md and up */}
-          <aside className="md:bg-neutral-100 bg-transparent hidden sm:flex items-center rounded-2xl px-3 py-2.5 text-xs text-neutral-900 gap-3 min-h-[44px]">
+          <aside className="md:bg-neutral-100 bg-transparent hidden sm:flex items-center rounded-2xl px-3 py-2.5 text-xs text-neutral-900 gap-3 min-h-11">
             <SingleAvatar name="Ansah Chikeh" />
 
             <div className="md:flex hidden flex-col">
