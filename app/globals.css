@@ -42,6 +42,7 @@ select:focus {
   --color-gray-700: rgba(65, 70, 81, 1);
   --color-primary-100: rgba(219, 228, 250, 1);
   --color-unnamed-100: rgba(61, 61, 61, 1);
+  --color-secondary-100: rgba(249, 240, 218, 1);
 }
 
 @media (prefers-color-scheme: dark) {
