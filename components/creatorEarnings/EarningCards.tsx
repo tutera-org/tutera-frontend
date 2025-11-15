@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import WithdrawalPopUp from "./WithdrawalPopUp";
+
 export default function EarningCards() {
   interface cardProps {
     icon: string;
@@ -36,6 +41,12 @@ export default function EarningCards() {
     return `₦${number.toLocaleString("en-NG")}`;
   };
 
+  const [popUp, setShowPopUp] = useState<boolean>(false);
+
+  const handleShowPopUp = () => {
+    setShowPopUp((prevState) => !prevState);
+  };
+
   return (
     <section className="my-6 sm:my-10 md:my-15 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {cards.map((card, index) => (
@@ -51,6 +62,7 @@ export default function EarningCards() {
               alt={card.title}
             />
             <button
+              onClick={handleShowPopUp}
               className={
                 index === 0
                   ? `bg-primary-400 hover:bg-transparent hover:border hover:border-primary-400 rounded-lg py-1.5 px-3 sm:py-2 sm:px-5 text-neutral-100 text-xs sm:text-sm font-semibold hover:text-primary-400 transition-colors whitespace-nowrap`
@@ -70,6 +82,9 @@ export default function EarningCards() {
           </aside>
         </div>
       ))}
+
+      {/* Withdrawal popup form */}
+      {popUp && <WithdrawalPopUp closeButton={handleShowPopUp} />}
     </section>
   );
 }

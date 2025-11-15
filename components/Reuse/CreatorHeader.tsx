@@ -6,6 +6,8 @@ import { useState } from "react";
 import { SingleAvatar } from "./Avatar";
 
 export default function CreatorHeader() {
+  // TODO: Fix responsiveness and mobile screen
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const user = {
