@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Button from "../Reuse/Button";
 import { useCourse } from "./CourseContext";
 import PublishModal from "./PublishModal";
@@ -8,20 +8,42 @@ import PublishModal from "./PublishModal";
 export default function SetUp() {
   const { updateCurrentCourse, addCourse, updateCourseStatus, currentCourse, setCurrentStep } =
     useCourse();
-  const [paymentOption, setPaymentOption] = useState<"free" | "paid">(
-    currentCourse?.isPaid ? "paid" : "free"
-  );
-  const [price, setPrice] = useState(
-    currentCourse?.price?.toString() || ""
-  );
+  const [paymentOption, setPaymentOption] = useState<"free" | "paid">("free");
+  const [price, setPrice] = useState("");
   const [showPublishModal, setShowPublishModal] = useState(false);
   const [pendingCourseId, setPendingCourseId] = useState<string | null>(null);
+  const hasLoadedRef = useRef(false);
 
+  // Load existing data from currentCourse
   useEffect(() => {
-    if (currentCourse?.isPaid) {
-      setPaymentOption("paid");
+    if (currentCourse && !hasLoadedRef.current) {
+      if (currentCourse.isPaid) {
+        setPaymentOption("paid");
+      } else {
+        setPaymentOption("free");
+      }
+      if (currentCourse.price) {
+        setPrice(currentCourse.price.toString());
+      }
+      hasLoadedRef.current = true;
+    } else if (!currentCourse) {
+      hasLoadedRef.current = false;
     }
   }, [currentCourse]);
+
+  // Auto-save payment option and price changes
+  useEffect(() => {
+    if (hasLoadedRef.current) {
+      const timeoutId = setTimeout(() => {
+        updateCurrentCourse({
+          isPaid: paymentOption === "paid",
+          price: paymentOption === "paid" ? parseFloat(price) || 0 : 0,
+        });
+      }, 300); // Debounce saves
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [paymentOption, price, updateCurrentCourse]);
 
   // Helper to generate unique ID (client-side only)
   const generateCourseId = () => {
@@ -106,7 +128,6 @@ export default function SetUp() {
           <div
             onClick={() => {
               setPaymentOption("free");
-              updateCurrentCourse({ isPaid: false, price: 0 });
             }}
             className={`flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
               paymentOption === "free"
@@ -134,7 +155,6 @@ export default function SetUp() {
           <div
             onClick={() => {
               setPaymentOption("paid");
-              updateCurrentCourse({ isPaid: true });
             }}
             className={`flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
               paymentOption === "paid"
@@ -170,7 +190,6 @@ export default function SetUp() {
               value={price}
               onChange={(e) => {
                 setPrice(e.target.value);
-                updateCurrentCourse({ price: parseFloat(e.target.value) || 0 });
               }}
               placeholder="Amount"
               min="0"

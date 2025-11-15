@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 export interface Lesson {
   id: string;
@@ -74,30 +74,36 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     const savedCurrentCourse = localStorage.getItem("tutera_current_course");
     const savedStep = localStorage.getItem("tutera_current_step");
 
+    // Load saved courses
     if (savedCourses) {
       try {
         const parsedCourses = JSON.parse(savedCourses);
         setCourses(parsedCourses);
-
-        // If no courses exist, reset step to 0
-        if (parsedCourses.length === 0 && savedStep) {
-          setCurrentStep(0);
-          localStorage.removeItem("tutera_current_step");
-        } else if (savedStep) {
-          setCurrentStep(parseInt(savedStep));
-        }
       } catch (error) {
         console.error("Error parsing saved courses:", error);
       }
-    } else if (savedStep) {
-      // If no courses saved but step exists, reset it
-      setCurrentStep(0);
-      localStorage.removeItem("tutera_current_step");
     }
 
+    // Restore step first (before loading currentCourse)
+    if (savedStep) {
+      const step = parseInt(savedStep);
+      // Only restore step if it's between 1-3 (valid creation steps)
+      if (step >= 1 && step <= 3) {
+        setCurrentStep(step);
+        
+        // If we're restoring a step but no currentCourse exists, initialize it
+        // This handles the case where user refreshed before entering any data
+        if (!savedCurrentCourse) {
+          setCurrentCourse({});
+        }
+      }
+    }
+
+    // Load saved current course (this is the course being created/edited)
     if (savedCurrentCourse) {
       try {
-        setCurrentCourse(JSON.parse(savedCurrentCourse));
+        const parsedCurrentCourse = JSON.parse(savedCurrentCourse);
+        setCurrentCourse(parsedCurrentCourse);
       } catch (error) {
         console.error("Error parsing saved current course:", error);
       }
@@ -108,12 +114,12 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
 
   // Reset step to 0 if courses array becomes empty AND we're not in creation flow
   useEffect(() => {
-    // Don't reset if we're actively creating a course (steps 1-3)
-    if (courses.length === 0 && currentStep > 3) {
+    // Don't reset if we're actively creating a course (steps 1-3) or have a currentCourse
+    if (courses.length === 0 && currentStep > 3 && !currentCourse) {
       setCurrentStep(0);
       localStorage.removeItem("tutera_current_step");
     }
-  }, [courses.length, currentStep]);
+  }, [courses.length, currentStep, currentCourse]);
 
   // Save to localStorage whenever state changes (client-side only)
   useEffect(() => {
@@ -169,9 +175,9 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateCurrentCourse = (data: Partial<Course>) => {
+  const updateCurrentCourse = useCallback((data: Partial<Course>) => {
     setCurrentCourse((prev) => ({ ...prev, ...data }));
-  };
+  }, []);
 
   const resetCurrentCourse = () => {
     setCurrentCourse(null);

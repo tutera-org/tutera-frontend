@@ -64,10 +64,10 @@ export default function CourseManagementPage() {
   // Show course creation steps
   if (currentStep > 0) {
     return (
-      <div className="min-h-screen bg-[#F0F4FF] py-8">
+      <div className="min-h-screen bg-[#F0F4FF] py-6">
         <div className="w-[90%] lg:max-w-[1240px] mx-auto">
           <div className="mb-6"></div>
-          <div className="flex justify-between items-center mb-2">
+          <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-[#101A33]">
               {currentStep === 2 && currentCourse?.title
                 ? currentCourse.title

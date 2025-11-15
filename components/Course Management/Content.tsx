@@ -15,6 +15,7 @@ export default function Content() {
   const { updateCurrentCourse, setCurrentStep, currentCourse, showPreview, setShowPreview } = useCourse();
   const [showQuiz, setShowQuiz] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   
   // Initialize modules from currentCourse or start with empty array
   // Use empty array initially to avoid hydration mismatch, then populate in useEffect
@@ -29,28 +30,31 @@ export default function Content() {
   // Initialize modules after mount to avoid hydration mismatch
   useEffect(() => {
     setIsMounted(true);
-    if (currentCourse?.modules && currentCourse.modules.length > 0) {
-      setModules(currentCourse.modules);
-    } else if (modules.length === 0) {
-      // Only create initial module if we don't have any
-      setModules([
-        {
-          id: generateId("module"),
-          name: "",
-          lessons: [
-            {
-              id: generateId("lesson"),
-              name: "",
-              description: "",
-              order: 1,
-            },
-          ],
-          quizzes: [],
-          order: 1,
-        },
-      ]);
+    if (!isInitialized) {
+      if (currentCourse?.modules && currentCourse.modules.length > 0) {
+        setModules(currentCourse.modules);
+      } else if (modules.length === 0) {
+        // Only create initial module if we don't have any
+        setModules([
+          {
+            id: generateId("module"),
+            name: "",
+            lessons: [
+              {
+                id: generateId("lesson"),
+                name: "",
+                description: "",
+                order: 1,
+              },
+            ],
+            quizzes: [],
+            order: 1,
+          },
+        ]);
+      }
+      setIsInitialized(true);
     }
-  }, []); // Only run once on mount
+  }, [currentCourse?.modules, isInitialized]);
 
   const currentModule = modules[currentModuleIndex];
   const currentLesson = currentModule?.lessons[currentLessonIndex];
@@ -239,7 +243,7 @@ export default function Content() {
               <div className="space-y-6">
                 {modules.map((module, moduleIdx) => (
                   <div key={module.id} className="border-b border-gray-200 pb-4">
-                    <h3 className="text-xl font-semibold text-[#101A33] mb-3">
+                    <h3 className="text-[24px] font-semibold text-[#101A33] mb-3">
                       {module.name || `Module ${moduleIdx + 1}`}
                     </h3>
                     <div className="space-y-2">
@@ -312,11 +316,11 @@ export default function Content() {
 
       {/* Module and Lesson Form */}
       {!showQuiz && (
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6 border-2 border-dashed border-gray-300">
+        <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-6 ">
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-[#101A33] font-medium">
+                <label className="block text-[#101A33] font-semibold text-[24px]">
                   Module Name
                 </label>
                 {modules.length > 1 && (
@@ -350,7 +354,7 @@ export default function Content() {
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className="block text-[#101A33] font-medium">
                   Lesson {currentLessonIndex + 1}
@@ -379,7 +383,7 @@ export default function Content() {
                   value={currentLesson?.name || ""}
                   onChange={(e) => handleLessonNameChange(e.target.value)}
                   placeholder="Enter lesson name"
-                  className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] mb-4"
+                  className="w-full px-4 py-2 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] mb-3"
                 />
               </div>
               <div>
@@ -454,7 +458,7 @@ export default function Content() {
                 <Button
                   variant="secondary"
                   onClick={handleAddQuiz}
-                  className="px-4 py-2 border-orange-500 text-orange-500"
+                  className="px-4 py-2 border-[#DF4623] text-[#DF4623]"
                 >
                   Add Quiz
                 </Button>
