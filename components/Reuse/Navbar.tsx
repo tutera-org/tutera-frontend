@@ -120,7 +120,7 @@ const NavBar = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className={`text-[16px] font-semibold px-1 py-2 ${
                     pathname === "/"
-                      ? "text-[#FFFFFF] bg-[#ACBEE5] "
+                      ? "text-[#FFFFFF] bg-[#ACBEE5]"
                       : "text-[#101A33]"
                   }`}
                 >
