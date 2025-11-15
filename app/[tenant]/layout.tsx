@@ -6,7 +6,7 @@ export default function TenantLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-neutral-200 min-h-screen">
+    <div className="bg-neutral-200 pb-10 min-h-screen">
       <main className="w-[90%] mx-auto pt-5">
         <CreatorHeader />
         {children}

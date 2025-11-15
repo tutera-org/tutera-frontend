@@ -30,10 +30,10 @@ export default function RootLayout({
         {modal}
         <Toaster
           position="top-center"
-          duration={10000}
+          duration={3000}
           richColors
           closeButton
-          expand={false}
+          expand={true}
           visibleToasts={3}
         />
       </body>

@@ -6,7 +6,7 @@ import { MdArrowRight } from "react-icons/md";
 export default function ChartDashboard() {
   return (
     <div className="mt-10 ">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Charts*/}
         <div className="bg-white rounded-2xl shadow-lg p-6 lg:col-span-2">
           {/* <WeeklyActivity apiUrl="/api/courses-sold" / with api endpoint> */}
