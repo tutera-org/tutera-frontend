@@ -2,6 +2,7 @@
 import { useState } from "react";
 import EditPricing from "./EditPricing";
 import Account from "./Account";
+import Customization from "./Customization";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("Edit Profile");
@@ -29,6 +30,9 @@ export default function Settings() {
 
       {/* Edit Profile section */}
       {activeTab == "Edit Profile" && <EditPricing />}
+
+      {/* Customization Section */}
+      {activeTab === "Customization" && <Customization />}
 
       {/* Account section */}
       {activeTab == "Account" && <Account />}

@@ -15,7 +15,7 @@ export default function CreatorHeader() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
+      <header className="flex items-center justify-between">
         <Image
           src="/logo.svg"
           alt="tutera logo"
