@@ -6,7 +6,7 @@ import GettingStarted from "@/components/creatorDashboard/GettingStarted";
 
 export default function DashboardPage() {
   // check if he has a lesson
-  const ownsLessons = false;
+  const ownsLessons = true;
 
   return (
     <div className="mt-10 md:mt-14 w-full">
