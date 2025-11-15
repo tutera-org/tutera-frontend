@@ -28,6 +28,28 @@ export function SingleAvatar({ name }: singleProp) {
   );
 }
 
+export function BigSingleAvatar({ name }: singleProp) {
+  const getInitials = (fullname: string) => {
+    const names = fullname
+      .trim()
+      .split(" ")
+      .filter((n) => n.length > 0);
+
+    if (names.length === 0) return "?";
+    if (names.length === 1) return names[0][0].toUpperCase();
+
+    return (names[0][0] + names[names.length - 1][0]).toUpperCase();
+  };
+
+  const initials = getInitials(name);
+
+  return (
+    <div className="w-30 h-30 text-lg bg-primary-400  rounded-full flex items-center justify-center text-white font-semibold shadow-2xl">
+      {initials}
+    </div>
+  );
+}
+
 export function MultiAvatar({ name }: multiProp) {
   const getInitials = (fullname: string) => {
     const names = fullname

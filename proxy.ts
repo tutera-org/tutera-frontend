@@ -63,12 +63,13 @@ export function proxy(req: NextRequest) {
     const token = req.cookies.get("auth_token")?.value;
     const isAuthenticated = !!token;
 
-    // TODO: Remove "/dashboard" and "/earnings" when backend API is connected
+    // TODO: Remove "/dashboard" and "/earnings" and "/settings" when backend API is connected
     const tenantPublicRoutes = [
       "/signIn",
       "/signUp",
       "/dashboard",
       "/earnings",
+      "/settings",
     ];
     const isTenantPublic = tenantPublicRoutes.some((route) =>
       url.pathname.startsWith(route)
