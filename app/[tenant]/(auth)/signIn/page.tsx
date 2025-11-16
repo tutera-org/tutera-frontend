@@ -5,9 +5,11 @@ import StudentsFormHeader from "@/components/students/StudentsFormHeader";
 export default function SignIn() {
   return (
     <PopUpModal>
-      <StudentsFormHeader header="Sign-In" />
+      <div className="mx-4">
+        <StudentsFormHeader header="Sign-In" />
 
-      <SignInForm />
+        <SignInForm />
+      </div>
     </PopUpModal>
   );
 }

@@ -6,9 +6,11 @@ import StudentsFormHeader from "@/components/students/StudentsFormHeader";
 export default function ForgotPassword() {
   return (
     <PopUpModal>
-      <StudentsFormHeader header="Forgot Password" />
+      <div className="mx-4">
+        <StudentsFormHeader header="Forgot Password" />
 
-      <ForgotPasswordForm />
+        <ForgotPasswordForm />
+      </div>
     </PopUpModal>
   );
 }
