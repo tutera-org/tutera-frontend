@@ -215,7 +215,7 @@ export default function BasicInfo() {
             onClick={() => setCurrentStep(0)}
             className="px-6 py-2"
           >
-            Back
+            Previous
           </Button>
           <Button variant="primary" onClick={handleNext} className="px-6 py-2">
             Next

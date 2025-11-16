@@ -22,6 +22,7 @@ export default function CourseManagementPage() {
     updateCurrentCourse,
     currentCourse,
     setShowPreview,
+    showQuiz,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
 
@@ -73,7 +74,7 @@ export default function CourseManagementPage() {
                 ? currentCourse.title
                 : "Fill in the details to create an engaging course for your students"}
             </h1>
-            {currentStep === 2 && (
+            {currentStep === 2 && !showQuiz && (
               <Button
                 variant="primary"
                 onClick={() => setShowPreview(true)}

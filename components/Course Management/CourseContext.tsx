@@ -47,6 +47,8 @@ interface CourseContextType {
   currentStep: number;
   showPreview: boolean;
   setShowPreview: (show: boolean) => void;
+  showQuiz: boolean;
+  setShowQuiz: (show: boolean) => void;
   addCourse: (course: Course, keepStep?: boolean) => void;
   deleteCourse: (courseId: string) => void;
   updateCourseStatus: (courseId: string, status: "draft" | "published") => void;
@@ -64,6 +66,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
   );
   const [currentStep, setCurrentStep] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load from localStorage on mount (client-side only)
@@ -194,6 +197,8 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         currentStep,
         showPreview,
         setShowPreview,
+        showQuiz,
+        setShowQuiz,
         addCourse,
         deleteCourse,
         updateCourseStatus,
