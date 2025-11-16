@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Button from "../Reuse/Button";
 import { useCourse, Module, Lesson, Quiz } from "./CourseContext";
-import Image from "next/image";
+
 
 // Helper function to generate unique IDs (only called client-side)
 const generateId = (prefix: string) => {
