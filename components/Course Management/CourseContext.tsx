@@ -127,7 +127,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
   // Save to localStorage whenever state changes (client-side only)
   useEffect(() => {
     if (typeof window === "undefined" || !isHydrated) return;
-    localStorage.setItem("tutera_courses", JSON.stringify(courses));
+    // Only save if courses array has changed (not on initial load)
+    if (courses.length > 0 || localStorage.getItem("tutera_courses")) {
+      localStorage.setItem("tutera_courses", JSON.stringify(courses));
+    }
   }, [courses, isHydrated]);
 
   useEffect(() => {
@@ -148,38 +151,82 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
   const addCourse = (course: Course, keepStep: boolean = false) => {
     // Set default status to "draft" if not provided
     const courseWithStatus = { ...course, status: course.status || "draft" };
-    setCourses((prev) => [...prev, courseWithStatus]);
-    setCurrentCourse(null);
+    setCourses((prev) => {
+      // Check if course already exists (for editing)
+      const existingIndex = prev.findIndex((c) => c.id === course.id);
+      let updated;
+      if (existingIndex >= 0) {
+        // Update existing course
+        updated = [...prev];
+        updated[existingIndex] = courseWithStatus;
+      } else {
+        // Add new course
+        updated = [...prev, courseWithStatus];
+      }
+      // Save to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("tutera_courses", JSON.stringify(updated));
+      }
+      return updated;
+    });
+    // Only clear currentCourse if we're not keeping the step (i.e., going back to course list)
     if (!keepStep) {
+      setCurrentCourse(null);
       setCurrentStep(0);
+      localStorage.removeItem("tutera_current_course");
     }
-    localStorage.removeItem("tutera_current_course");
   };
 
   const updateCourseStatus = (
     courseId: string,
     status: "draft" | "published"
   ) => {
-    setCourses((prev) =>
-      prev.map((course) =>
+    setCourses((prev) => {
+      const updated = prev.map((course) =>
         course.id === courseId ? { ...course, status } : course
-      )
-    );
+      );
+      // Save to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("tutera_courses", JSON.stringify(updated));
+      }
+      return updated;
+    });
   };
 
-  const deleteCourse = (courseId: string) => {
-    setCourses((prev) => prev.filter((c) => c.id !== courseId));
-    // Clean up localStorage if courses become empty
-    if (typeof window !== "undefined") {
-      const updatedCourses = courses.filter((c) => c.id !== courseId);
-      if (updatedCourses.length === 0) {
-        localStorage.removeItem("tutera_courses");
+  const deleteCourse = useCallback((courseId: string) => {
+    console.log("deleteCourse called with courseId:", courseId);
+    
+    // Delete from state - the useEffect will handle saving to localStorage
+    setCourses((prev) => {
+      console.log("setCourses prev length:", prev.length, "courseIds:", prev.map(c => c.id));
+      const updated = prev.filter((c) => c.id !== courseId);
+      console.log("setCourses updated length:", updated.length, "courseIds:", updated.map(c => c.id));
+      return updated;
+    });
+    
+    // If the deleted course is the current course being edited, clear it
+    setCurrentCourse((prev) => {
+      if (prev?.id === courseId) {
+        setCurrentStep(0);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("tutera_current_course");
+          localStorage.removeItem("tutera_current_step");
+        }
+        return null;
       }
-    }
-  };
+      return prev;
+    });
+  }, []);
 
   const updateCurrentCourse = useCallback((data: Partial<Course>) => {
-    setCurrentCourse((prev) => ({ ...prev, ...data }));
+    setCurrentCourse((prev) => {
+      const updated = { ...prev, ...data };
+      // Save to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("tutera_current_course", JSON.stringify(updated));
+      }
+      return updated;
+    });
   }, []);
 
   const resetCurrentCourse = () => {

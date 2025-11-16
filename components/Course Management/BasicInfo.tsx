@@ -16,15 +16,20 @@ export default function BasicInfo() {
 
   // Load existing course data when component mounts or currentCourse changes
   useEffect(() => {
-    if (currentCourse && !hasLoadedRef.current) {
-      if (currentCourse.title) setTitle(currentCourse.title);
-      if (currentCourse.description) setDescription(currentCourse.description);
-      if (currentCourse.thumbnail) setThumbnail(currentCourse.thumbnail);
+    if (currentCourse) {
+      // Always load data when currentCourse changes (for editing)
+      if (currentCourse.title !== undefined) setTitle(currentCourse.title);
+      if (currentCourse.description !== undefined) setDescription(currentCourse.description);
+      if (currentCourse.thumbnail !== undefined) setThumbnail(currentCourse.thumbnail || "");
       hasLoadedRef.current = true;
-    } else if (!currentCourse) {
+    } else {
+      // Reset when no currentCourse
+      setTitle("");
+      setDescription("");
+      setThumbnail("");
       hasLoadedRef.current = false;
     }
-  }, [currentCourse]);
+  }, [currentCourse?.id, currentCourse?.title, currentCourse?.description, currentCourse?.thumbnail]);
 
   // Auto-save title and description as user types
   useEffect(() => {

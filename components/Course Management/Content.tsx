@@ -52,16 +52,28 @@ export default function Content() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasInitializedRef = useRef(false);
+  const lastCourseIdRef = useRef<string | undefined>(undefined);
 
   // Initialize modules after mount to avoid hydration mismatch
+  // Reset and reload when course ID changes (for editing)
   useEffect(() => {
+    const currentCourseId = currentCourse?.id;
+
+    // Reset initialization flag when course ID changes (for editing)
+    if (currentCourseId !== lastCourseIdRef.current) {
+      hasInitializedRef.current = false;
+      lastCourseIdRef.current = currentCourseId;
+    }
+
+    // Skip if already initialized for this course
     if (hasInitializedRef.current) return;
 
     if (currentCourse?.modules && currentCourse.modules.length > 0) {
+      // Load modules from currentCourse
       setModules(currentCourse.modules);
       hasInitializedRef.current = true;
-    } else if (modules.length === 0) {
-      // Only create initial module if we don't have any
+    } else if (currentCourse?.id) {
+      // Course exists (editing) but has no modules - create initial module
       setModules([
         {
           id: generateId("module"),
@@ -79,9 +91,30 @@ export default function Content() {
         },
       ]);
       hasInitializedRef.current = true;
+    } else if (!currentCourse || !currentCourse.id) {
+      // New course creation - create initial module
+      if (modules.length === 0) {
+        setModules([
+          {
+            id: generateId("module"),
+            name: "",
+            lessons: [
+              {
+                id: generateId("lesson"),
+                name: "",
+                description: "",
+                order: 1,
+              },
+            ],
+            quizzes: [],
+            order: 1,
+          },
+        ]);
+        hasInitializedRef.current = true;
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCourse?.modules]);
+  }, [currentCourse?.id, currentCourse?.modules]);
 
   const currentModule = modules[currentModuleIndex];
   const currentLesson = currentModule?.lessons[currentLessonIndex];
@@ -256,7 +289,11 @@ export default function Content() {
   };
 
   const handleDeleteLesson = (lessonIndex: number) => {
-    if (currentModule.lessons.length === 1) {
+    if (
+      currentModule &&
+      currentModule.lessons &&
+      currentModule.lessons.length === 1
+    ) {
       alert("You must have at least one lesson");
       return;
     }
@@ -582,7 +619,6 @@ export default function Content() {
           </div>
 
           <div className="flex justify-end gap-4 mt-8">
-           
             <Button
               variant="primary"
               onClick={handleNext}
@@ -597,7 +633,23 @@ export default function Content() {
   }
 
   // Don't render until initialized to avoid hydration mismatch
-  if (modules.length === 0 && !hasInitializedRef.current) {
+  // But allow rendering if we have modules or if we're in edit mode with a course ID
+  if (
+    modules.length === 0 &&
+    !hasInitializedRef.current &&
+    !currentCourse?.id
+  ) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+          <div className="animate-pulse">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check: if no currentModule, show loading
+  if (!currentModule || !currentModule.lessons) {
     return (
       <div className="w-full max-w-4xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
@@ -645,7 +697,7 @@ export default function Content() {
                         Module {idx + 1}
                         {idx === currentModuleIndex && (
                           <div
-                            className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
+                            className="absolute w-6 h-6 bg-gray-400  rounded-full -top-3 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteModule(idx);
@@ -654,8 +706,8 @@ export default function Content() {
                             <Image
                               src="/delete.svg"
                               alt="Delete"
-                              width={20}
-                              height={20}
+                              width={23}
+                              height={23}
                             />
                           </div>
                         )}
@@ -679,47 +731,49 @@ export default function Content() {
                   Lesson {currentLessonIndex + 1}
                 </label>
               </div>
-              {currentModule.lessons.length > 1 && (
-                <div className="flex gap-2 mb-3 justify-end">
-                  {currentModule.lessons.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="relative group"
-                      draggable
-                      onDragStart={(e) => handleLessonDragStart(e, idx)}
-                      onDragOver={handleLessonDragOver}
-                      onDrop={(e) => handleLessonDrop(e, idx)}
-                    >
-                      <button
-                        onClick={() => setCurrentLessonIndex(idx)}
-                        className={`px-3 py-1 rounded text-sm relative cursor-move ${
-                          idx === currentLessonIndex
-                            ? "bg-[#4977E6] text-white"
-                            : "bg-gray-200 text-gray-700"
-                        }`}
+              {currentModule &&
+                currentModule.lessons &&
+                currentModule.lessons.length > 1 && (
+                  <div className="flex gap-2 mb-3 justify-end">
+                    {currentModule.lessons.map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group"
+                        draggable
+                        onDragStart={(e) => handleLessonDragStart(e, idx)}
+                        onDragOver={handleLessonDragOver}
+                        onDrop={(e) => handleLessonDrop(e, idx)}
                       >
-                        {idx + 1}
-                        {idx === currentLessonIndex && (
-                          <div
-                            className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteLesson(idx);
-                            }}
-                          >
-                            <Image
-                              src="/delete.svg"
-                              alt="Delete"
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                        )}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
+                        <button
+                          onClick={() => setCurrentLessonIndex(idx)}
+                          className={`px-3 py-1 rounded text-sm relative cursor-move ${
+                            idx === currentLessonIndex
+                              ? "bg-[#4977E6] text-white"
+                              : "bg-gray-200 text-gray-700"
+                          }`}
+                        >
+                          {idx + 1}
+                          {idx === currentLessonIndex && (
+                            <div
+                              className="absolute w-5 h-5 bg-gray-400  rounded-full -top-3 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteLesson(idx);
+                              }}
+                            >
+                              <Image
+                                src="/delete.svg"
+                                alt="Delete"
+                                width={21}
+                                height={21}
+                              />
+                            </div>
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               <div>
                 <input
                   type="text"
@@ -836,47 +890,50 @@ export default function Content() {
               Back to Module
             </Button>
           </div>
-          {currentModule.quizzes.length > 1 && (
-            <div className="flex gap-2 mb-6 justify-end">
-              {currentModule.quizzes.map((_, idx) => (
-                <div
-                  key={idx}
-                  className="relative group"
-                  draggable
-                  onDragStart={(e) => handleQuizDragStart(e, idx)}
-                  onDragOver={handleQuizDragOver}
-                  onDrop={(e) => handleQuizDrop(e, idx)}
-                >
-                  <button
-                    onClick={() => setCurrentQuizIndex(idx)}
-                    className={`px-3 py-1 rounded text-sm relative cursor-move ${
-                      idx === currentQuizIndex
-                        ? "bg-[#4977E6] text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
+          {currentModule &&
+            currentModule.quizzes &&
+            currentModule.quizzes.length > 1 && (
+              <div className="flex gap-2 mb-6 justify-end">
+                {currentModule.quizzes.map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="relative group"
+                    draggable
+                    onDragStart={(e) => handleQuizDragStart(e, idx)}
+                    onDragOver={handleQuizDragOver}
+                    onDrop={(e) => handleQuizDrop(e, idx)}
                   >
-                    Quiz {idx + 1}
-                    {idx === currentQuizIndex && (
-                      <div
-                        className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteQuiz(idx);
-                        }}
-                      >
-                        <Image
-                          src="/delete.svg"
-                          alt="Delete"
-                          width={20}
-                          height={20}
-                        />
-                      </div>
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+                    <button
+                      onClick={() => setCurrentQuizIndex(idx)}
+                      className={`px-3 py-1 rounded text-sm relative cursor-move ${
+                        idx === currentQuizIndex
+                          ? "bg-[#4977E6] text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      Quiz {idx + 1}
+                      {idx === currentQuizIndex && (
+                        <div
+                          className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteQuiz(idx);
+                          }}
+                        >
+                          <Image
+                            src="/delete.svg"
+                            alt="Delete"
+                            width={20}
+                            height={20}
+                     
+                          />
+                        </div>
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           <div className="space-y-4">
             <div>
               <label className="block text-[#101A33] text-[20px] font-semibold mb-2">
