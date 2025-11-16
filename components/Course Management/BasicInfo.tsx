@@ -1,16 +1,50 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "../Reuse/Button";
 import { useCourse } from "./CourseContext";
 import Image from "next/image";
 
 export default function BasicInfo() {
-  const { updateCurrentCourse, setCurrentStep } = useCourse();
+  const { updateCurrentCourse, setCurrentStep, currentCourse } = useCourse();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const hasLoadedRef = useRef(false);
+
+  // Load existing course data when component mounts or currentCourse changes
+  useEffect(() => {
+    if (currentCourse) {
+      // Always load data when currentCourse changes (for editing)
+      if (currentCourse.title !== undefined) setTitle(currentCourse.title);
+      if (currentCourse.description !== undefined) setDescription(currentCourse.description);
+      if (currentCourse.thumbnail !== undefined) setThumbnail(currentCourse.thumbnail || "");
+      hasLoadedRef.current = true;
+    } else {
+      // Reset when no currentCourse
+      setTitle("");
+      setDescription("");
+      setThumbnail("");
+      hasLoadedRef.current = false;
+    }
+  }, [currentCourse?.id, currentCourse?.title, currentCourse?.description, currentCourse?.thumbnail]);
+
+  // Auto-save title and description as user types
+  useEffect(() => {
+    if (hasLoadedRef.current) {
+      const timeoutId = setTimeout(() => {
+        updateCurrentCourse({
+          title,
+          description,
+          thumbnail: thumbnail || "",
+        });
+      }, 300); // Debounce saves
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [title, description, thumbnail, updateCurrentCourse]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -25,7 +59,9 @@ export default function BasicInfo() {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setThumbnail(reader.result as string);
+        const thumbnailData = reader.result as string;
+        setThumbnail(thumbnailData);
+        updateCurrentCourse({ thumbnail: thumbnailData });
       };
       reader.readAsDataURL(file);
     }
@@ -49,7 +85,9 @@ export default function BasicInfo() {
       }
       const reader = new FileReader();
       reader.onloadend = () => {
-        setThumbnail(reader.result as string);
+        const thumbnailData = reader.result as string;
+        setThumbnail(thumbnailData);
+        updateCurrentCourse({ thumbnail: thumbnailData });
       };
       reader.readAsDataURL(file);
     }
@@ -74,11 +112,11 @@ export default function BasicInfo() {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <div className="bg-[#ffffff] rounded-[16px] px-4 py-2 mb-6">
+      <div className="bg-[#ffffff] rounded-[16px] px-4 py-2 mb-4">
         <span className="text-[#101A33] font-semibold">Info</span>
       </div>
       <div className="bg-white rounded-[16px] text-[20px]shadow-lg p-6 md:p-8">
-        <div className="space-y-6">
+        <div className="space-y-5">
           <div>
             <label className="block text-[#101A33] font-medium mb-2">
               Course Title
@@ -182,7 +220,7 @@ export default function BasicInfo() {
             onClick={() => setCurrentStep(0)}
             className="px-6 py-2"
           >
-            Back
+            Previous
           </Button>
           <Button variant="primary" onClick={handleNext} className="px-6 py-2">
             Next

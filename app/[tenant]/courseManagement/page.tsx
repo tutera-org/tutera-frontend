@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   useCourse,
   Course,
@@ -14,6 +15,7 @@ import ProgressStepper from "@/components/Course Management/ProgressStepper";
 import Button from "@/components/Reuse/Button";
 
 export default function CourseManagementPage() {
+  const router = useRouter();
   const {
     courses,
     currentStep,
@@ -22,6 +24,8 @@ export default function CourseManagementPage() {
     updateCurrentCourse,
     currentCourse,
     setShowPreview,
+    showQuiz,
+    updateCourseStatus,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
 
@@ -40,10 +44,22 @@ export default function CourseManagementPage() {
     console.log("View course:", course);
   };
 
+  const handleEditCourse = (course: Course) => {
+    // Load the full course data into currentCourse for editing
+    // This will trigger all form components to reload with the course data
+    updateCurrentCourse({ ...course });
+    setCurrentStep(1);
+  };
+
   const handleDeleteCourse = (courseId: string) => {
-    if (confirm("Are you sure you want to delete this course?")) {
-      deleteCourse(courseId);
-    }
+    // Delete is handled by CourseCard with custom modal
+    console.log("handleDeleteCourse called with courseId:", courseId);
+    deleteCourse(courseId);
+  };
+
+  const handleTogglePublish = (course: Course) => {
+    const newStatus = course.status === "published" ? "draft" : "published";
+    updateCourseStatus(course.id, newStatus);
   };
 
   // Show empty state if no courses and not in creation flow
@@ -64,16 +80,16 @@ export default function CourseManagementPage() {
   // Show course creation steps
   if (currentStep > 0) {
     return (
-      <div className="min-h-screen bg-[#F0F4FF] py-8">
+      <div className="min-h-screen bg-[#F0F4FF] py-6">
         <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-          <div className="mb-6"></div>
-          <div className="flex justify-between items-center mb-2">
+          <div className="mb-6 mt-8"></div>
+          <div className="flex justify-between items-center mb-15">
             <h1 className="text-3xl font-bold text-[#101A33]">
               {currentStep === 2 && currentCourse?.title
                 ? currentCourse.title
                 : "Fill in the details to create an engaging course for your students"}
             </h1>
-            {currentStep === 2 && (
+            {currentStep === 2 && !showQuiz && (
               <Button
                 variant="primary"
                 onClick={() => setShowPreview(true)}
@@ -108,10 +124,10 @@ export default function CourseManagementPage() {
             <div className="flex gap-4">
               <Button
                 variant="secondary"
-                onClick={() => setViewingDrafts(true)}
+                onClick={() => router.push("/dashboard")}
                 className="px-4 py-2"
               >
-                View Draft
+                View Analytics
               </Button>
               <Button
                 variant="primary"
@@ -177,8 +193,9 @@ export default function CourseManagementPage() {
               <CourseCard
                 key={course.id}
                 course={course}
-                onView={handleViewCourse}
+                onEdit={handleEditCourse}
                 onDelete={handleDeleteCourse}
+                onTogglePublish={handleTogglePublish}
               />
             ))}
           </div>

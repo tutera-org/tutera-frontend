@@ -10,7 +10,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
   const steps = [
     { number: 1, label: "Basic Info", icon: "/document.svg" },
     { number: 2, label: "Content", icon: "/video.svg" },
-    { number: 3, label: "Set Up", icon: "/Settings.svg" },
+    { number: 3, label: "Set Up", icon: "/setting.svg" },
   ];
 
   return (
@@ -25,7 +25,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center border transition-colors ${
                   isCompleted
-                    ? "bg-green-500 border-green-500 text-black"
+                    ? "bg-[#0EB137] text-black"
                     : isCurrent
                     ? "bg-[#EED390] border-none"
                     : "bg-[#E1E1E1] border-none"
@@ -46,8 +46,8 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                   <Image
                     src={step.icon}
                     alt={step.label}
-                    width={54}
-                    height={54}
+                    width={30}
+                    height={30}
                     className="object-contain"
                   />
                 )}
@@ -57,7 +57,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                   isCurrent
                     ? "text-[#4977E6]"
                     : isCompleted
-                    ? "text-green-600"
+                    ? "text-[#0EB137]"
                     : "text-[#000000]"
                 }`}
               >
@@ -67,7 +67,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
             {index < steps.length - 1 && (
               <div
                 className={`w-40 h-1 mx-10 transition-colors ${
-                  isCompleted ? "bg-green-500" : "bg-[#5D5D5D]"
+                  isCompleted ? "bg-[#0EB137]" : "bg-[#5D5D5D]"
                 }`}
               />
             )}
