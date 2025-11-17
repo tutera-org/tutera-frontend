@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import StudentButton from "./Button";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -20,7 +21,6 @@ export default function ResetPasswordForm() {
       />
 
       {/* Confirm Password */}
-
       <input
         type="password"
         placeholder="Confirm Password"
@@ -28,9 +28,7 @@ export default function ResetPasswordForm() {
       />
 
       {/* Reset Button */}
-      <button className="bg-primary-400 rounded-lg py-2 px-6 font-bold leading-[120%] text-base hover:bg-blue-600 text-neutral-100">
-        Reset Password
-      </button>
+      <StudentButton type="submit">Reset Password</StudentButton>
 
       <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Return to{" "}

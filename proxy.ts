@@ -65,8 +65,12 @@ export function proxy(req: NextRequest) {
 
     // TODO: Remove anything asides from signIn and SignUp from publicroutes
     const tenantPublicRoutes = [
+      "/forgotPassword",
+      "/resetPassword",
+      "/resetSuccess",
       "/signIn",
       "/signUp",
+      "/verifyOtp",
       "/dashboard",
       "/courseManagement",
       "/earnings",

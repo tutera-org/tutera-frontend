@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Button from "../Reuse/Button";
 import { useCourse, Module, Lesson, Quiz } from "./CourseContext";
 
-
 // Helper function to generate unique IDs (only called client-side)
 const generateId = (prefix: string) => {
   if (typeof window === "undefined") return `${prefix}-temp`;
@@ -12,10 +11,16 @@ const generateId = (prefix: string) => {
 };
 
 export default function Content() {
-  const { updateCurrentCourse, setCurrentStep, currentCourse, showPreview, setShowPreview } = useCourse();
+  const {
+    updateCurrentCourse,
+    setCurrentStep,
+    currentCourse,
+    showPreview,
+    setShowPreview,
+  } = useCourse();
   const [showQuiz, setShowQuiz] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  
+
   // Initialize modules from currentCourse or start with empty array
   // Use empty array initially to avoid hydration mismatch, then populate in useEffect
   const [modules, setModules] = useState<Module[]>([]);
@@ -72,7 +77,8 @@ export default function Content() {
 
   const handleLessonDescriptionChange = (value: string) => {
     const updatedModules = [...modules];
-    updatedModules[currentModuleIndex].lessons[currentLessonIndex].description = value;
+    updatedModules[currentModuleIndex].lessons[currentLessonIndex].description =
+      value;
     setModules(updatedModules);
     updateCurrentCourse({ modules: updatedModules });
   };
@@ -87,8 +93,11 @@ export default function Content() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const updatedModules = [...modules];
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = reader.result as string;
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].videoFile = file;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video =
+          reader.result as string;
+        updatedModules[currentModuleIndex].lessons[
+          currentLessonIndex
+        ].videoFile = file;
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
       };
@@ -111,8 +120,11 @@ export default function Content() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const updatedModules = [...modules];
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = reader.result as string;
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].videoFile = file;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video =
+          reader.result as string;
+        updatedModules[currentModuleIndex].lessons[
+          currentLessonIndex
+        ].videoFile = file;
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
       };
@@ -122,7 +134,8 @@ export default function Content() {
 
   const handleAddLesson = () => {
     const updatedModules = [...modules];
-    const newLessonNumber = updatedModules[currentModuleIndex].lessons.length + 1;
+    const newLessonNumber =
+      updatedModules[currentModuleIndex].lessons.length + 1;
     updatedModules[currentModuleIndex].lessons.push({
       id: generateId("lesson"),
       name: "",
@@ -175,14 +188,17 @@ export default function Content() {
 
   const handleQuizQuestionChange = (value: string) => {
     const updatedModules = [...modules];
-    updatedModules[currentModuleIndex].quizzes[currentQuizIndex].question = value;
+    updatedModules[currentModuleIndex].quizzes[currentQuizIndex].question =
+      value;
     setModules(updatedModules);
     updateCurrentCourse({ modules: updatedModules });
   };
 
   const handleQuizOptionChange = (optionIndex: number, value: string) => {
     const updatedModules = [...modules];
-    updatedModules[currentModuleIndex].quizzes[currentQuizIndex].options[optionIndex] = value;
+    updatedModules[currentModuleIndex].quizzes[currentQuizIndex].options[
+      optionIndex
+    ] = value;
     setModules(updatedModules);
     updateCurrentCourse({ modules: updatedModules });
   };
@@ -238,7 +254,10 @@ export default function Content() {
 
               <div className="space-y-6">
                 {modules.map((module, moduleIdx) => (
-                  <div key={module.id} className="border-b border-gray-200 pb-4">
+                  <div
+                    key={module.id}
+                    className="border-b border-gray-200 pb-4"
+                  >
                     <h3 className="text-xl font-semibold text-[#101A33] mb-3">
                       {module.name || `Module ${moduleIdx + 1}`}
                     </h3>
@@ -251,7 +270,9 @@ export default function Content() {
                           <div className="w-8 h-8 rounded-full bg-[#4977E6] text-white flex items-center justify-center text-sm font-semibold">
                             {lessonIdx + 1}
                           </div>
-                          <span>{lesson.name || `Lesson ${lessonIdx + 1}`}</span>
+                          <span>
+                            {lesson.name || `Lesson ${lessonIdx + 1}`}
+                          </span>
                           <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center ml-auto">
                             <svg
                               width="12"
@@ -287,7 +308,11 @@ export default function Content() {
             >
               Back
             </Button>
-            <Button variant="primary" onClick={handleNext} className="px-6 py-2">
+            <Button
+              variant="primary"
+              onClick={handleNext}
+              className="px-6 py-2"
+            >
               Next
             </Button>
           </div>
@@ -309,7 +334,6 @@ export default function Content() {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-
       {/* Module and Lesson Form */}
       {!showQuiz && (
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-6 border-2 border-dashed border-gray-300">
@@ -388,7 +412,9 @@ export default function Content() {
                 </label>
                 <textarea
                   value={currentLesson?.description || ""}
-                  onChange={(e) => handleLessonDescriptionChange(e.target.value)}
+                  onChange={(e) =>
+                    handleLessonDescriptionChange(e.target.value)
+                  }
                   placeholder="Enter lesson description"
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] resize-none"
@@ -433,9 +459,12 @@ export default function Content() {
                         </svg>
                       </div>
                       <p className="text-gray-600 mb-2">
-                        Drag and drop a video, pdf, audio here, or click to select
+                        Drag and drop a video, pdf, audio here, or click to
+                        select
                       </p>
-                      <p className="text-sm text-gray-400">PNG, JPG up to 10MB</p>
+                      <p className="text-sm text-gray-400">
+                        PNG, JPG up to 10MB
+                      </p>
                     </>
                   )}
                 </div>
@@ -524,7 +553,9 @@ export default function Content() {
                   <input
                     type="text"
                     value={currentQuiz?.options[index] || ""}
-                    onChange={(e) => handleQuizOptionChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleQuizOptionChange(index, e.target.value)
+                    }
                     placeholder={`Option ${index + 1}`}
                     className="flex-1 px-4 py-2 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
                   />
@@ -546,11 +577,7 @@ export default function Content() {
 
       {/* Navigation Buttons */}
       <div className="flex justify-end gap-4 mt-8">
-        <Button
-          variant="secondary"
-          onClick={handleBack}
-          className="px-6 py-2"
-        >
+        <Button variant="secondary" onClick={handleBack} className="px-6 py-2">
           Back
         </Button>
         <Button variant="primary" onClick={handleNext} className="px-6 py-2">
