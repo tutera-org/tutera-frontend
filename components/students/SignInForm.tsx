@@ -1,8 +1,18 @@
+"use client";
 import Link from "next/link";
+import StudentButton from "./Button";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push("/dashboard");
+  };
+
   return (
-    <form className="flex py-8 flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex py-8 flex-col gap-6">
       {/* Email */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
@@ -32,9 +42,7 @@ export default function SignInForm() {
       </Link>
 
       {/* Sign In Button */}
-      <button className="bg-primary-400 rounded-lg py-1.5 px-6 font-bold leading-[120%] text-base text-neutral-100">
-        Sign In
-      </button>
+      <StudentButton type="submit">Sign In</StudentButton>
 
       <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Already have an account?{" "}
