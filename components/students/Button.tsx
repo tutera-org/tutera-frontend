@@ -23,7 +23,7 @@ const StudentButton: React.FC<ButtonProps> = ({
     primary:
       "bg-orange-300 hover:border hover:border-orange-300 text-white hover:text-orange-300 hover:bg-transparent ",
     secondary:
-      "bg-neutral-100 text-orange-300 hover:bg-orange-300 border border-orange-300 hover:text-white",
+      "bg-transparent text-orange-300 hover:bg-orange-300 border border-orange-300 hover:text-white",
   };
 
   return (

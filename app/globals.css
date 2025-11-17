@@ -358,3 +358,8 @@ select:focus {
 .animate-shake-infinite {
   animation: shake 0.5s ease-in-out infinite;
 }
+
+.search:focus {
+  outline: none;
+  border: none;
+}
