@@ -171,13 +171,13 @@ export default function SetUp() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto relative">
-      <h3 className="text-xl font-semibold text-[#101A33] mb-6">
+    <div className="w-full  mx-auto relative">
+      <h3 className="text-xl font-semibold text-[#4977E6] mb-6 mt-12">
         Select the features you want to include in your course
       </h3>
 
       <div
-        className={` rounded-2xl p-6 md:p-8 ${
+        className={` rounded-2xl  ${
           showPublishModal ? "blur-sm pointer-events-none" : ""
         }`}
       >

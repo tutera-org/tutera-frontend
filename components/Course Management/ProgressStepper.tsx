@@ -23,7 +23,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
           <div key={step.number} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center border transition-colors ${
+                className={`w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-colors ${
                   isCompleted
                     ? "bg-[#0EB137] text-black"
                     : isCurrent
@@ -39,6 +39,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
+                    className="w-4 h-4 md:w-[24px] md:h-[24px]"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -48,12 +49,12 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                     alt={step.label}
                     width={30}
                     height={30}
-                    className="object-contain"
+                    className="object-contain w-4 h-4 md:w-[30px] md:h-[30px]"
                   />
                 )}
               </div>
               <span
-                className={`mt-2 text-sm font-medium ${
+                className={`mt-2 text-xs md:text-sm font-medium ${
                   isCurrent
                     ? "text-[#4977E6]"
                     : isCompleted
@@ -66,7 +67,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-40 h-1 mx-10 transition-colors ${
+                className={`w-15 h-1 md:w-40 md:h-1 md:mx-10 mx-2 transition-colors ${
                   isCompleted ? "bg-[#0EB137]" : "bg-[#5D5D5D]"
                 }`}
               />

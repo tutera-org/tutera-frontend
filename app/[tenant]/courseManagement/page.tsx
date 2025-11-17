@@ -66,7 +66,7 @@ export default function CourseManagementPage() {
   if (courses.length === 0 && currentStep === 0) {
     return (
       <div className="min-h-screen bg-[#F0F4FF] py-8">
-        <div className="w-[90%] lg:max-w-[1240px] mx-auto">
+        <div className="w-[99%] mx-auto">
           <div className="mb-6"></div>
           <h1 className="text-3xl font-bold text-[#101A33] mb-8">
             Course Management
@@ -81,10 +81,10 @@ export default function CourseManagementPage() {
   if (currentStep > 0) {
     return (
       <div className="min-h-screen bg-[#F0F4FF] py-6">
-        <div className="w-[90%] lg:max-w-[1240px] mx-auto">
+        <div className="w-[99%] mx-auto">
           <div className="mb-6 mt-8"></div>
-          <div className="flex justify-between items-center mb-15">
-            <h1 className="text-3xl font-bold text-[#101A33]">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-15  mx-auto">
+            <h1 className="text-3xl font-semibold text-[#101A33] text-center">
               {currentStep === 2 && currentCourse?.title
                 ? currentCourse.title
                 : "Fill in the details to create an engaging course for your students"}
@@ -93,7 +93,7 @@ export default function CourseManagementPage() {
               <Button
                 variant="primary"
                 onClick={() => setShowPreview(true)}
-                className="px-4 py-2"
+                className="px-6 py-2"
               >
                 Preview
               </Button>
@@ -115,16 +115,16 @@ export default function CourseManagementPage() {
   // Show course list or draft view
   return (
     <div className="min-h-screen bg-[#F0F4FF] py-8">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-[#101A33]">
+      <div className="w-[99%]  mx-auto">
+        <div className="flex justify-between items-center mt-6 mb-12">
+          <h1 className="text-[40px] font-bold text-[#101A33]">
             {viewingDrafts ? "Draft Courses" : "Course Management"}
           </h1>
           {!viewingDrafts && (
             <div className="flex gap-4">
               <Button
                 variant="secondary"
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/courseManagement/analytics")}
                 className="px-4 py-2"
               >
                 View Analytics
@@ -188,7 +188,7 @@ export default function CourseManagementPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-[95%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayedCourses.map((course) => (
               <CourseCard
                 key={course.id}

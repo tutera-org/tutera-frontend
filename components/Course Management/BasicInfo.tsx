@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import Button from "../Reuse/Button";
 import { useCourse } from "./CourseContext";
 import Image from "next/image";
@@ -16,20 +16,23 @@ export default function BasicInfo() {
 
   // Load existing course data when component mounts or currentCourse changes
   useEffect(() => {
-    if (currentCourse) {
-      // Always load data when currentCourse changes (for editing)
-      if (currentCourse.title !== undefined) setTitle(currentCourse.title);
-      if (currentCourse.description !== undefined) setDescription(currentCourse.description);
-      if (currentCourse.thumbnail !== undefined) setThumbnail(currentCourse.thumbnail || "");
-      hasLoadedRef.current = true;
-    } else {
-      // Reset when no currentCourse
-      setTitle("");
-      setDescription("");
-      setThumbnail("");
-      hasLoadedRef.current = false;
-    }
-  }, [currentCourse?.id, currentCourse?.title, currentCourse?.description, currentCourse?.thumbnail]);
+    // Use startTransition to batch state updates and avoid cascading renders
+    startTransition(() => {
+      if (currentCourse) {
+        // Always load data when currentCourse changes (for editing)
+        setTitle(currentCourse.title ?? "");
+        setDescription(currentCourse.description ?? "");
+        setThumbnail(currentCourse.thumbnail ?? "");
+        hasLoadedRef.current = true;
+      } else {
+        // Reset when no currentCourse
+        setTitle("");
+        setDescription("");
+        setThumbnail("");
+        hasLoadedRef.current = false;
+      }
+    });
+  }, [currentCourse]);
 
   // Auto-save title and description as user types
   useEffect(() => {
@@ -111,7 +114,7 @@ export default function BasicInfo() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full  mx-auto">
       <div className="bg-[#ffffff] rounded-[16px] px-4 py-2 mb-4">
         <span className="text-[#101A33] font-semibold">Info</span>
       </div>

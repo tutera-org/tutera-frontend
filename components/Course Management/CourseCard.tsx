@@ -24,9 +24,9 @@ export default function CourseCard({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow relative">
+      <div className="bg-white rounded-[16px] shadow-md overflow-hidden hover:shadow-lg transition-shadow relative pb-6">
         {/* Course Image */}
-        <div className="relative h-48 w-full">
+        <div className="relative h-50 w-full">
           {course.thumbnail ? (
             <Image
               src={course.thumbnail}
@@ -80,13 +80,13 @@ export default function CourseCard({
                 </svg>
               </button>
               {showMenu && (
-                <div className="absolute right-0 mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
+                <div className="absolute right-0 mt-1 w-24 bg-white shadow-sm rounded-lg  border border-gray-200 py-2 z-20">
                   <button
                     onClick={() => {
                       setShowDeleteModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors"
+                    className="w-full text-center px-3 text-red-600 transition-colors"
                   >
                     Delete
                   </button>
@@ -106,18 +106,18 @@ export default function CourseCard({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-2">
+          <div className="flex gap-8">
             <Button
-              variant="secondary"
+              variant="primary"
               onClick={() => onEdit(course)}
-              className="flex-1"
+              className="flex-1 text-base py-3"
             >
               Edit
             </Button>
             <Button
               variant={course.status === "published" ? "secondary" : "primary"}
               onClick={() => onTogglePublish(course)}
-              className="flex-1"
+              className="flex-1 text-base py-3"
             >
               {course.status === "published" ? "Unpublish" : "Publish"}
             </Button>

@@ -477,7 +477,7 @@ export default function Content() {
     }
 
     return (
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full  mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <Button
@@ -537,7 +537,7 @@ export default function Content() {
   // Course Preview component
   if (showPreview && selectedLesson === null) {
     return (
-      <div className="w-full max-w-6xl mx-auto">
+      <div className="w-full  mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <Button
@@ -640,7 +640,7 @@ export default function Content() {
     !currentCourse?.id
   ) {
     return (
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-[1240px] mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="animate-pulse">Loading...</div>
         </div>
@@ -651,7 +651,7 @@ export default function Content() {
   // Safety check: if no currentModule, show loading
   if (!currentModule || !currentModule.lessons) {
     return (
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full mx-auto">
         <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
           <div className="animate-pulse">Loading...</div>
         </div>
@@ -660,7 +660,7 @@ export default function Content() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full  mx-auto">
       {/* Module and Lesson Form */}
       {!showQuiz && (
         <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 mb-6 ">
