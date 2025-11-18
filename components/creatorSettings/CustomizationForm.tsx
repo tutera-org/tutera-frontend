@@ -101,7 +101,7 @@ export default function CustomizationForm() {
               Previous
             </Button>
           )}
-          <Button variant="primary" onClick={handleNext} className="w-[40%]">
+          <Button variant="primary" onClick={handleNext} className="px-8">
             {currentStep === 4 ? "Done" : "Next"}
           </Button>
         </div>
