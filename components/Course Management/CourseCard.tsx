@@ -17,7 +17,6 @@ export default function CourseCard({
 }: CourseCardProps) {
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
     return (
       <div className="flex items-center gap-1">
         {[...Array(5)].map((_, i) => (
@@ -131,4 +130,3 @@ export default function CourseCard({
     </div>
   );
 }
-

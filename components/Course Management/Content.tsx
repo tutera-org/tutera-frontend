@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Button from "../Reuse/Button";
-import { useCourse, Module, Lesson, Quiz } from "./CourseContext";
+import { useCourse, Module } from "./CourseContext";
 
 // Helper function to generate unique IDs (only called client-side)
 const generateId = (prefix: string) => {
@@ -30,14 +30,16 @@ export default function Content() {
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasInitializedRef = useRef(false);
 
   // Initialize modules after mount to avoid hydration mismatch
   useEffect(() => {
     setIsMounted(true);
     if (currentCourse?.modules && currentCourse.modules.length > 0) {
       setModules(currentCourse.modules);
-    } else if (modules.length === 0) {
-      // Only create initial module if we don't have any
+      hasInitializedRef.current = true;
+    } else if (!hasInitializedRef.current && modules.length === 0) {
+      // Only create initial module if we don't have any and haven't initialized
       setModules([
         {
           id: generateId("module"),
@@ -54,8 +56,10 @@ export default function Content() {
           order: 1,
         },
       ]);
+      hasInitializedRef.current = true;
     }
-  }, []); // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentCourse?.modules]);
 
   const currentModule = modules[currentModuleIndex];
   const currentLesson = currentModule?.lessons[currentLessonIndex];
