@@ -1,5 +1,5 @@
 import { CourseProvider } from "@/components/Course Management/CourseContext";
-import CreatorHeader from "@/components/Reuse/CreatorHeader";
+
 
 
 
@@ -11,7 +11,7 @@ export default function CourseManagementLayout({
   return (
   
     <CourseProvider>
-      <CreatorHeader />
+   
       {children}
     </CourseProvider>
   );

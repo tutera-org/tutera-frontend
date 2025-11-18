@@ -1,134 +1,154 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Button from "../Reuse/Button";
 import { Course } from "./CourseContext";
+import CourseDeleteModal from "./CourseDeleteModal";
 
 interface CourseCardProps {
   course: Course;
-  onView: (course: Course) => void;
+  onEdit: (course: Course) => void;
   onDelete: (courseId: string) => void;
+  onTogglePublish: (course: Course) => void;
 }
 
 export default function CourseCard({
   course,
-  onView,
+  onEdit,
   onDelete,
+  onTogglePublish,
 }: CourseCardProps) {
-  const renderStars = (rating: number) => {
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
-    return (
-      <div className="flex items-center gap-1">
-        {[...Array(5)].map((_, i) => (
-          <svg
-            key={i}
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill={i < fullStars ? "#FBBF24" : "none"}
-            stroke="#FBBF24"
-            strokeWidth="2"
-          >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-        ))}
-      </div>
-    );
-  };
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="relative h-48 w-full">
-        {course.thumbnail ? (
-          <Image
-            src={course.thumbnail}
-            alt={course.title}
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <svg
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-gray-400"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-          </div>
-        )}
-      </div>
-
-      <div className="p-4">
-        <h3 className="font-bold text-lg text-[#101A33] mb-2">
-          {course.title}
-        </h3>
-
-        <div className="flex items-center gap-2 mb-2">
-          {renderStars(4.8)}
-          <span className="text-sm text-gray-600">4.8 (2,450)</span>
-        </div>
-
-        <div className="flex items-center gap-2 mb-2 text-sm text-gray-600">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-          </svg>
-          <span>90,230 students</span>
-        </div>
-
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-600">
-            {course.isPaid ? "Paid" : "Free"} Course
-          </span>
-          {course.isPaid && (
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-[#101A33]">
-                ₦{course.price.toLocaleString()}
-              </span>
-              {course.price < 20000 && (
-                <span className="text-sm text-gray-400 line-through">
-                  ₦20,000
-                </span>
-              )}
+    <>
+      <div className="bg-white rounded-[16px] shadow-md overflow-hidden hover:shadow-lg transition-shadow relative pb-6">
+        {/* Course Image */}
+        <div className="relative h-50 w-full">
+          {course.thumbnail ? (
+            <Image
+              src={course.thumbnail}
+              alt={course.title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+              <svg
+                width="64"
+                height="64"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="text-gray-400"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
             </div>
           )}
         </div>
 
-        <div className="flex gap-2">
-          <Button
-            variant="secondary"
-            onClick={() => onDelete(course.id)}
-            className="flex-1"
-          >
-            Delete
-          </Button>
-          <Button
-            variant="primary"
-            onClick={() => onView(course)}
-            className="flex-1"
-          >
-            View
-          </Button>
+        {/* Course Content */}
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-2 mb-2 relative">
+            <h3 className="font-bold text-[1.25rem] text-[#101A33] line-clamp-1 flex-1">
+              {course.title}
+            </h3>
+            <div className="relative shrink-0">
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="p-1 hover:bg-gray-100 rounded transition-colors"
+                title="Options"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-gray-600"
+                >
+                  <circle cx="12" cy="5" r="1" />
+                  <circle cx="12" cy="12" r="1" />
+                  <circle cx="12" cy="19" r="1" />
+                </svg>
+              </button>
+              {showMenu && (
+                <div className="absolute right-0 mt-1 w-24 bg-white shadow-sm rounded-lg  border border-gray-200 py-2 z-20">
+                  <button
+                    onClick={() => {
+                      setShowDeleteModal(true);
+                      setShowMenu(false);
+                    }}
+                    className="w-full text-center px-3 text-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <p className="text-[0.75rem] text-[#101A33] mb-4 line-clamp-4 w-[90%] text-start">
+            {course.description}
+          </p>
+
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[1.25rem] font-semibold text-[#101A33]">
+              {course.isPaid ? `₦${course.price.toLocaleString()}` : "Free"}
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-8">
+            <Button
+              variant="primary"
+              onClick={() => onEdit(course)}
+              className="flex-1 text-base py-3"
+            >
+              Edit
+            </Button>
+            <Button
+              variant={course.status === "published" ? "secondary" : "primary"}
+              onClick={() => onTogglePublish(course)}
+              className="flex-1 text-base py-3"
+            >
+              {course.status === "published" ? "Unpublish" : "Publish"}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Delete Confirmation Modal */}
+      <CourseDeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setShowMenu(false);
+        }}
+        onConfirm={() => {
+          // Delete the course - this will remove it from the courses array
+          console.log("CourseCard onConfirm called, course.id:", course.id);
+          onDelete(course.id);
+          setShowDeleteModal(false);
+          setShowMenu(false);
+        }}
+        courseTitle={course.title}
+      />
+
+      {/* Click outside to close menu */}
+      {showMenu && !showDeleteModal && (
+        <div
+          className="fixed inset-0 z-10"
+          onClick={() => setShowMenu(false)}
+        />
+      )}
+    </>
   );
 }
-

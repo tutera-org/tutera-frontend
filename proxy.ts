@@ -77,6 +77,7 @@ export function proxy(req: NextRequest) {
       "/signUp",
       "/verifyOtp",
       "/dashboard",
+      "/courseManagement",
       "/earnings",
       "/settings",
       "/customization",

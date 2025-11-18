@@ -3,7 +3,6 @@ import React from "react";
 type ButtonProps = {
   variant?: "primary" | "secondary";
   children: React.ReactNode;
-  onClick?: () => void;
   type?: "button" | "submit" | "reset";
   className?: string;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;

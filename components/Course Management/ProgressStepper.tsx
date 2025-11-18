@@ -10,7 +10,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
   const steps = [
     { number: 1, label: "Basic Info", icon: "/document.svg" },
     { number: 2, label: "Content", icon: "/video.svg" },
-    { number: 3, label: "Set Up", icon: "/Settings.svg" },
+    { number: 3, label: "Set Up", icon: "/setting.svg" },
   ];
 
   return (
@@ -23,9 +23,9 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
           <div key={step.number} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center border transition-colors ${
+                className={`w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-colors ${
                   isCompleted
-                    ? "bg-green-500 border-green-500 text-black"
+                    ? "bg-[#0EB137] text-black"
                     : isCurrent
                     ? "bg-[#EED390] border-none"
                     : "bg-[#E1E1E1] border-none"
@@ -39,6 +39,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
+                    className="w-4 h-4 md:w-[24px] md:h-[24px]"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -46,18 +47,18 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
                   <Image
                     src={step.icon}
                     alt={step.label}
-                    width={54}
-                    height={54}
-                    className="object-contain"
+                    width={30}
+                    height={30}
+                    className="object-contain w-4 h-4 md:w-[30px] md:h-[30px]"
                   />
                 )}
               </div>
               <span
-                className={`mt-2 text-sm font-medium ${
+                className={`mt-2 text-xs md:text-sm font-medium ${
                   isCurrent
                     ? "text-[#4977E6]"
                     : isCompleted
-                    ? "text-green-600"
+                    ? "text-[#0EB137]"
                     : "text-[#000000]"
                 }`}
               >
@@ -66,8 +67,8 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
             </div>
             {index < steps.length - 1 && (
               <div
-                className={`w-40 h-1 mx-10 transition-colors ${
-                  isCompleted ? "bg-green-500" : "bg-[#5D5D5D]"
+                className={`w-15 h-1 md:w-40 md:h-1 md:mx-10 mx-2 transition-colors ${
+                  isCompleted ? "bg-[#0EB137]" : "bg-[#5D5D5D]"
                 }`}
               />
             )}

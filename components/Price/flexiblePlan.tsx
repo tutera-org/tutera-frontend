@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 const plans = [
   {
     name: "Basic",
-    price: "Free Trial",
-    period: "Per Month",
+    price: "₦Free",
+    period: "Free Trial for 30 days",
     features: [
       "Full access to course management tools",
       "Seamless course builder",

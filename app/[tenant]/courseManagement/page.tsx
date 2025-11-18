@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   useCourse,
   Course,
@@ -14,6 +15,7 @@ import ProgressStepper from "@/components/Course Management/ProgressStepper";
 import Button from "@/components/Reuse/Button";
 
 export default function CourseManagementPage() {
+  const router = useRouter();
   const {
     courses,
     currentStep,
@@ -21,7 +23,10 @@ export default function CourseManagementPage() {
     deleteCourse,
     updateCurrentCourse,
     currentCourse,
+    showPreview,
     setShowPreview,
+    showQuiz,
+    updateCourseStatus,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
 
@@ -40,17 +45,29 @@ export default function CourseManagementPage() {
     console.log("View course:", course);
   };
 
+  const handleEditCourse = (course: Course) => {
+    // Load the full course data into currentCourse for editing
+    // This will trigger all form components to reload with the course data
+    updateCurrentCourse({ ...course });
+    setCurrentStep(1);
+  };
+
   const handleDeleteCourse = (courseId: string) => {
-    if (confirm("Are you sure you want to delete this course?")) {
-      deleteCourse(courseId);
-    }
+    // Delete is handled by CourseCard with custom modal
+    console.log("handleDeleteCourse called with courseId:", courseId);
+    deleteCourse(courseId);
+  };
+
+  const handleTogglePublish = (course: Course) => {
+    const newStatus = course.status === "published" ? "draft" : "published";
+    updateCourseStatus(course.id, newStatus);
   };
 
   // Show empty state if no courses and not in creation flow
   if (courses.length === 0 && currentStep === 0) {
     return (
       <div className="min-h-screen bg-[#F0F4FF] py-8">
-        <div className="w-[90%] lg:max-w-[1240px] mx-auto">
+        <div className="w-[99%] mx-auto">
           <div className="mb-6"></div>
           <h1 className="text-3xl font-bold text-[#101A33] mb-8">
             Course Management
@@ -64,26 +81,43 @@ export default function CourseManagementPage() {
   // Show course creation steps
   if (currentStep > 0) {
     return (
-      <div className="min-h-screen bg-[#F0F4FF] py-8">
-        <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-          <div className="mb-6"></div>
-          <div className="flex justify-between items-center mb-2">
-            <h1 className="text-3xl font-bold text-[#101A33]">
-              {currentStep === 2 && currentCourse?.title
-                ? currentCourse.title
-                : "Fill in the details to create an engaging course for your students"}
-            </h1>
-            {currentStep === 2 && (
+      <div className="min-h-screen bg-[#F0F4FF] py-6">
+        <div className="w-[99%] mx-auto">
+          <div className="mb-6 mt-8"></div>
+
+          {!showPreview && (
+            <div className="flex justify-end md:hidden mb-4 ">
               <Button
                 variant="primary"
                 onClick={() => setShowPreview(true)}
-                className="px-4 py-2"
+                className="px-2 py-2  text-[0.7rem]"
               >
                 Preview
               </Button>
-            )}
-          </div>
-          <ProgressStepper currentStep={currentStep} />
+            </div>
+          )}
+
+          {!showPreview && (
+            <>
+              <div className="flex flex-col-reverse md:flex-row justify-between items-start md:mb-15 mb-5  mx-auto">
+                <h1 className="text-[1.5rem] md:text-[2.5rem] font-semibold text-[#101A33] ">
+                  {currentStep === 2 && currentCourse?.title
+                    ? currentCourse.title
+                    : "Fill in the details to create an engaging course for your students"}
+                </h1>
+                {currentStep === 2 && !showQuiz && !showPreview && (
+                  <Button
+                    variant="primary"
+                    onClick={() => setShowPreview(true)}
+                    className="px-6 py-2 md:block hidden "
+                  >
+                    Preview
+                  </Button>
+                )}
+              </div>
+              <ProgressStepper currentStep={currentStep} />
+            </>
+          )}
           {currentStep === 1 && <BasicInfo />}
           {currentStep === 2 && <Content />}
           {currentStep === 3 && <SetUp />}
@@ -99,24 +133,24 @@ export default function CourseManagementPage() {
   // Show course list or draft view
   return (
     <div className="min-h-screen bg-[#F0F4FF] py-8">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-[#101A33]">
+      <div className="w-[99%]  mx-auto">
+        <div className="flex flex-col md:flex-row justify-between md:items-center  mt-6 mb-12">
+          <h1 className="text-[1.5rem] md:text-[2.5rem] font-bold text-[#101A33] mb-6 ">
             {viewingDrafts ? "Draft Courses" : "Course Management"}
           </h1>
           {!viewingDrafts && (
-            <div className="flex gap-4">
+            <div className="flex justify-between md:gap-4 text-[0.95rem]">
               <Button
                 variant="secondary"
-                onClick={() => setViewingDrafts(true)}
-                className="px-4 py-2"
+                onClick={() => router.push("/courseManagement/analytics")}
+                className="px-9 md:px-8 md:py-4 py-3"
               >
-                View Draft
+                View Analytics
               </Button>
               <Button
                 variant="primary"
                 onClick={handleCreateModule}
-                className="px-4 py-2"
+                className="px-9 md:px-8 md:py-4 py-3"
               >
                 Create Course
               </Button>
@@ -172,13 +206,14 @@ export default function CourseManagementPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-[95%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {displayedCourses.map((course) => (
               <CourseCard
                 key={course.id}
                 course={course}
-                onView={handleViewCourse}
+                onEdit={handleEditCourse}
                 onDelete={handleDeleteCourse}
+                onTogglePublish={handleTogglePublish}
               />
             ))}
           </div>

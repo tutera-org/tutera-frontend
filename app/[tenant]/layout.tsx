@@ -6,7 +6,7 @@ export default function TenantLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let role = "student";
+  const role = "creator" as "creator" | "student";
   return (
     <div className="bg-neutral-200 pb-10 min-h-screen">
       <main className="w-[90%] mx-auto pt-5">
