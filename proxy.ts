@@ -28,6 +28,11 @@ export function proxy(req: NextRequest) {
     tenant = hostname.replace(`.${baseDomain}`, "");
   }
 
+  // --- EXCLUDE "www" from being treated as a tenant ---
+  if (tenant === "www") {
+    tenant = null;
+  }
+
   // --- Handle main-domain public routes (only if no tenant) ---
   if (!tenant) {
     const mainPublicRoutes = [
