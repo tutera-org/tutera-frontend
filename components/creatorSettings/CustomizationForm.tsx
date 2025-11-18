@@ -49,15 +49,15 @@ export default function CustomizationForm() {
 
   return (
     <div className="min-h-screen bg-[#F0F4FF] py-8">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto">
+      <div className="w-full  mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#101A33] mb-2">
+          <h1 className="md:text-[32px] text-[20px] font-bold text-[#101A33]  mb-2">
             {stepTitles[currentStep - 1]}
           </h1>
           <button
             onClick={handleBack}
-            className="text-[#4977E6] hover:text-[#3d66d4] font-medium"
+            className="text-[#101A33] hover:text-[#4977E6] md:text-[20px] text-[16px] font-Bold "
           >
             &lt; Back
           </button>
@@ -101,7 +101,7 @@ export default function CustomizationForm() {
               Previous
             </Button>
           )}
-          <Button variant="primary" onClick={handleNext}>
+          <Button variant="primary" onClick={handleNext} className="w-[40%]">
             {currentStep === 4 ? "Done" : "Next"}
           </Button>
         </div>

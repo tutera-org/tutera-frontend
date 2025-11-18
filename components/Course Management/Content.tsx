@@ -538,29 +538,30 @@ export default function Content() {
   if (showPreview && selectedLesson === null) {
     return (
       <div className="w-full  mx-auto">
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
+        <div className=" p-6 md:p-8">
+          <h3 className="text-[1.25rem] md:text-[1.75rem] font-semibold text-[#101A33] ">Preview</h3>
+          <div className="flex justify-between items-center mb-6 text-[#101A33] ">
             <Button
               variant="secondary"
               onClick={() => {
                 setShowPreview(false);
                 setSelectedLesson(null);
               }}
-              className="px-4 py-2 border-none  text-[18px]"
+              className=" border-none  md:text-[1.25rem] text-[0.8rem] text-black font-semibold "
             >
-              ← Back
+               &lt; Back
             </Button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
-              <h2 className="text-3xl font-bold text-[#101A33] mb-4">
+              <h2 className="text-[1.25rem] md:text-[3rem] font-bold text-[#101A33] mb-4">
                 {currentCourse?.title || "Course Title"}
               </h2>
-              <p className="text-gray-600 mb-4">
+              <p className="text-[#101A33] md:text-[1.5rem] text-[1rem] mb-4">
                 {currentCourse?.description || "Course description"}
               </p>
-              <p className="text-gray-500 mb-6">
+              <p className="text-[#101A33] font-semibold  mb-6 text-[1rem] md:text-[1.5rem] md:mt-30">
                 Learn at your own pace with structured modules and lessons
               </p>
 
@@ -588,21 +589,10 @@ export default function Content() {
                           <div className="w-8 h-8 rounded-full bg-[#4977E6] text-white flex items-center justify-center text-sm font-semibold">
                             {lessonIdx + 1}
                           </div>
-                          <span className="flex-1">
+                          <span className="flex">
                             {lesson.name || `Lesson ${lessonIdx + 1}`}
                           </span>
-                          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
-                            <svg
-                              width="12"
-                              height="12"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="white"
-                              strokeWidth="3"
-                            >
-                              <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                          </div>
+                         
                         </div>
                       ))}
                     </div>
@@ -847,27 +837,28 @@ export default function Content() {
                 </div>
               </div>
             </div>
-
-            <div className="flex justify-between items-center pt-4">
-              <Button
+            <Button
                 variant="secondary"
                 onClick={handleAddLesson}
-                className="px-4 py-2"
+                className="px-4 py-2 border-none text-black text-[1rem] font-semibold bg-transparent"
               >
-                (+) Add lesson
+               <span className="text-[#0EB137]">(+)</span> Add Lesson
               </Button>
-              <div className="flex gap-4">
+
+            <div className="flex justify-end items-center  pt-4">
+              
+              <div className="flex gap-5">
                 <Button
                   variant="secondary"
                   onClick={handleAddQuiz}
-                  className="px-4 py-2 border-[#DF4623] text-[#DF4623]"
+                  className="px-5 py-2 border-[#DF4623] text-[#DF4623] bg-transparent"
                 >
                   Add Quiz
                 </Button>
                 <Button
                   variant="primary"
                   onClick={handleAddModule}
-                  className="px-4 py-2"
+                  className="px-5 py-2"
                 >
                   Add Module
                 </Button>
@@ -979,11 +970,11 @@ export default function Content() {
       )}
 
       {/* Navigation Buttons */}
-      <div className="flex justify-end gap-4 mt-8">
-        <Button variant="secondary" onClick={handleBack} className="px-6 py-2">
+      <div className="flex justify-center md:justify-end gap-4 mt-8">
+        <Button variant="secondary" onClick={handleBack} className="px-10 py-2">
           Previous
         </Button>
-        <Button variant="primary" onClick={handleNext} className="px-6 py-2">
+        <Button variant="primary" onClick={handleNext} className="px-13 py-2">
           Next
         </Button>
       </div>

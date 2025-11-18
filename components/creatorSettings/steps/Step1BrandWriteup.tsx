@@ -12,11 +12,11 @@ export default function Step1BrandWriteup({
   onChange,
 }: Step1BrandWriteupProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-xl font-bold text-[#101A33] mb-6">Brand write up</h2>
-      <div className="flex flex-col gap-6">
+    <div >
+      <h2 className="text-xl font-bold text-[#101A33] bg-white p-2 md:p-3 rounded-2xl mb-6">Brand write up</h2>
+      <div className="flex flex-col gap-6 bg-white p-6 md:p-8 rounded-2xl">
         <div>
-          <label className="block text-sm font-medium text-[#101A33] mb-2">
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
             Brand name
           </label>
           <input
@@ -24,11 +24,11 @@ export default function Step1BrandWriteup({
             placeholder="Name"
             value={formData.brandName || ""}
             onChange={(e) => onChange({ brandName: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#101A33] mb-2">
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
             Bio
           </label>
           <input
@@ -36,11 +36,11 @@ export default function Step1BrandWriteup({
             placeholder="About Yourself"
             value={formData.bio || ""}
             onChange={(e) => onChange({ bio: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#101A33] mb-2">
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
             Headline
           </label>
           <input
@@ -48,11 +48,11 @@ export default function Step1BrandWriteup({
             placeholder="Headline"
             value={formData.headline || ""}
             onChange={(e) => onChange({ headline: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#101A33] mb-2">
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
             What you learn
           </label>
           <input
@@ -60,11 +60,11 @@ export default function Step1BrandWriteup({
             placeholder="Add text"
             value={formData.whatYouLearn || ""}
             onChange={(e) => onChange({ whatYouLearn: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-[#101A33] mb-2">
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
             What you gain
           </label>
           <input
@@ -72,7 +72,7 @@ export default function Step1BrandWriteup({
             placeholder="Add text"
             value={formData.whatYouGain || ""}
             onChange={(e) => onChange({ whatYouGain: e.target.value })}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
       </div>

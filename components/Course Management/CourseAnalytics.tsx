@@ -106,21 +106,12 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
       <div className="mb-6">
         <button
           onClick={handleBack}
-          className="text-[#4977E6] hover:text-[#3d66d4] mb-4 flex items-center gap-2 transition-colors"
+          className="text-[#101A33] hover:text-[#3d66d4] mb-4 text-[1rem] md:text-[1.25rem] flex items-center gap-2 transition-colors"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back
+         
+          &lt; Back
         </button>
-        <h1 className="text-3xl font-bold text-[#101A33] mb-6">
+        <h1 className="text-[1.5rem] md:text-[2.5rem] font-bold text-[#101A33] mb-6">
           Course Analytics
         </h1>
       </div>
@@ -157,7 +148,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                 className="fixed inset-0 z-10"
                 onClick={() => setIsDropdownOpen(false)}
               />
-              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-20 min-w-[200px]">
+              <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-sm z-20 min-w-[200px]">
                 {courses.map((course) => (
                   <button
                     key={course.id}
@@ -209,31 +200,31 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
       </div>
 
       {/* Analytics Table */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-lg shadow-sm h-160  overflow-y-scroll">
+        <div className="">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className=" border-b border-[#EAECF0]">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#101A33]">
+                <th className="px-2 md:px-6 py-4 text-left md:text-sm text-[0.5rem] font-semibold text-[#5D5D5D]">
                   Student Name
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#101A33]">
+                <th className="px-1 md:px-6 py-4 text-left md:text-sm text-[0.5rem] font-semibold text-[#5D5D5D]">
                   Quiz Score
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#101A33]">
+                <th className="px-1 md:px-6 py-4 text-left md:text-sm text-[0.5rem] font-semibold text-[#5D5D5D]">
                   Progress
                 </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-[#101A33]">
+                <th className="px-3 md:px-6 py-4 text-center md:text-sm text-[0.5rem] font-semibold text-[#5D5D5D]">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-[#EAECF0]">
               {filteredStudents.length === 0 ? (
                 <tr>
                   <td
                     colSpan={4}
-                    className="px-6 py-8 text-center text-gray-500"
+                    className="px-2 md:px-6 py-8 text-start text-gray-500"
                   >
                     No students found
                   </td>
@@ -244,34 +235,34 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                     key={student.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-[#101A33]">
+                    <td className="px-2 w-25 md:px-6 py-4 md:text-[1rem] text-[0.75rem] font-semibold md:font-bold text-[#101A33] md:w-[20%]">
                       {student.name}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
+                    <td className="px-1 w-15 md:px-6 py-4 text-[12px] md:text-[1rem] text-gray-600 font-semibold md:w-[15%]">
                       {student.quizScore}%
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2 max-w-[200px]">
+                    <td className="md:px-6 px-1 py-4 w-[28%] md:w-[50%] ">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2 ">
                           <div
-                            className="bg-[#4977E6] h-2 rounded-full transition-all"
+                            className="bg-[#4977E6]  h-2 rounded-full transition-all"
                             style={{ width: `${student.progress}%` }}
                           />
                         </div>
-                        <span className="text-sm text-gray-600 min-w-[40px]">
+                        <span className="text-[12px] md:text-[1rem] font-semibold text-gray-600 ">
                           {student.progress}%
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 md:px-6 py-4 w-[25%] md:w-[25%] md:text-center">
                       <span
-                        className={`text-sm font-medium ${
+                        className={`text-[8px] md:text-[0.75rem] font-semibold ${
                           student.status === "completed"
                             ? "text-[#0EB137]"
                             : "text-red-600"
                         }`}
                       >
-                        {student.progress}%{" "}
+                        
                         {student.status === "completed"
                           ? "Completed"
                           : "Not Completed"}
@@ -292,7 +283,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Total Students
             </h3>
-            <p className="text-2xl font-bold text-[#101A33]">
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
               {filteredStudents.length}
             </p>
           </div>
@@ -300,7 +291,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Average Quiz Score
             </h3>
-            <p className="text-2xl font-bold text-[#101A33]">
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
               {Math.round(
                 filteredStudents.reduce(
                   (sum, s) => sum + s.quizScore,
@@ -314,7 +305,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Completion Rate
             </h3>
-            <p className="text-2xl font-bold text-[#101A33]">
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
               {Math.round(
                 (filteredStudents.filter((s) => s.status === "completed")
                   .length /

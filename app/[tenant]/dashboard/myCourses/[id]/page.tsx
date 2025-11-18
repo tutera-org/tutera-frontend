@@ -1,12 +1,14 @@
+"use client";
+
+import { useRouter, useParams } from "next/navigation";
 import StudentButton from "@/components/students/Button";
 import CourseCurriculum from "@/components/students/CourseCurriculum";
+import Image from "next/image";
 
-export default async function BuyCourseId({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+export default function BuyCourseId() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params?.id as string;
 
   const course = {
     id: 1,
@@ -54,7 +56,9 @@ export default async function BuyCourseId({
           </p>
         </aside>
         <aside className="w-full lg:basis-[45%]">
-          <img
+          <Image
+            width={100}
+            height={100}
             className="w-full h-auto rounded-lg"
             src={course.img}
             alt={`${course.title} image`}
@@ -66,7 +70,12 @@ export default async function BuyCourseId({
         <p className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-900">
           Learn at your own pace with structured modules and lessons
         </p>
-        <StudentButton className="w-full sm:w-auto">Start Lesson</StudentButton>
+        <StudentButton
+          className="w-full sm:w-auto"
+          onClick={() => router.push(`/dashboard/myCourses/${id}/lesson`)}
+        >
+          Start Lesson
+        </StudentButton>
       </div>
 
       {/* Course Curriculum Section */}

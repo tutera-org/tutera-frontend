@@ -56,7 +56,7 @@ export default function CourseCard({
         {/* Course Content */}
         <div className="p-4">
           <div className="flex items-start justify-between gap-2 mb-2 relative">
-            <h3 className="font-bold text-lg text-[#101A33] line-clamp-1 flex-1">
+            <h3 className="font-bold text-[1.25rem] text-[#101A33] line-clamp-1 flex-1">
               {course.title}
             </h3>
             <div className="relative shrink-0">
@@ -95,12 +95,12 @@ export default function CourseCard({
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 mb-4 line-clamp-4 w-[90%] text-start">
+          <p className="text-[0.75rem] text-[#101A33] mb-4 line-clamp-4 w-[90%] text-start">
             {course.description}
           </p>
 
           <div className="flex items-center justify-between mb-4">
-            <span className="text-lg font-bold text-[#101A33]">
+            <span className="text-[1.25rem] font-semibold text-[#101A33]">
               {course.isPaid ? `₦${course.price.toLocaleString()}` : "Free"}
             </span>
           </div>
