@@ -1,85 +1,224 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { api } from "@/lib/axiosClientInstance";
+import TuteraLoading from "../Reuse/Loader";
+import { useRouter } from "next/navigation";
+
+// Define validation rules for the signup form
+const formSchema = z.object({
+  // Brand name (tenant/subdomain)
+  tenant: z
+    .string()
+    .min(1, "Brand name cannot be empty")
+    .max(20, "Brand name must be 20 characters or less")
+    .trim()
+    .toLowerCase()
+    .regex(
+      /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
+      "Brand name must contain only lowercase letters, numbers, and hyphens. Cannot start or end with a hyphen."
+    )
+    .refine(
+      (val) =>
+        ![
+          "www",
+          "api",
+          "admin",
+          "app",
+          "mail",
+          "ftp",
+          "smtp",
+          "support",
+          "help",
+          "blog",
+          "dev",
+          "staging",
+          "test",
+        ].includes(val),
+      { message: "This subdomain is reserved and cannot be used" }
+    ),
+
+  // Email validation
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Invalid email address")
+    .toLowerCase()
+    .trim(),
+
+  // Password validation
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters long")
+    .max(100, "Password is too long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    ),
+
+  // Terms and conditions acceptance
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 export default function SignUpForm() {
-  const [tenant, setTenant] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      tenant: "",
+      email: "",
+      password: "",
+      termsAccepted: false,
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Track loading and error states
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    // Fake auth token for testing
-    document.cookie =
-      "auth_token=fake_token_for_testing; path=/; domain=.localhost";
+  const signUpCreator = async (formData: FormData) => {
+    // Clear any previous errors
+    setErrorMessage(null);
+    setIsLoading(true);
 
-    // Redirect to tenant subdomain
-    const protocol = window.location.protocol;
-    const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "localhost:3000";
-    window.location.href = `${protocol}//${tenant}.${baseDomain}/dashboard`;
+    try {
+      // Call Next.js API route which forwards to backend
+      const response = await api.post("/api/signUp", {
+        tenant: formData.tenant,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Redirect to tenant subdomain dashboard
+      router.push(
+        `/signIn?email=${encodeURIComponent(formData.email)}&registered=true`
+      );
+    } catch (error: any) {
+      // Handle errors from the API
+      const message =
+        error.response?.data?.error || "Sign up failed. Please try again.";
+      setErrorMessage(message);
+      setIsLoading(false);
+    }
   };
 
+  // Show loading spinner during form submission
+  if (isLoading) {
+    return <TuteraLoading />;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="flex py-8 flex-col gap-6">
-      {/* Brand Name */}
+    <form
+      onSubmit={handleSubmit(signUpCreator)}
+      className="flex py-8 flex-col gap-6"
+    >
+      {/* Display error message if signup fails */}
+      {errorMessage && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* ==================== BRAND NAME INPUT ==================== */}
       <label className="flex flex-col mt-3 gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Brand Name
         <input
           type="text"
-          value={tenant}
-          onChange={(e) => setTenant(e.target.value)}
+          {...register("tenant")}
           placeholder="Enter brand name..."
-          required
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className={`border text-base p-2.5 w-full rounded-lg ${
+            errors.tenant ? "border-red-500" : "border-black-400"
+          }`}
         />
+        {/* Show validation error if exists */}
+        {errors.tenant && (
+          <span className="text-red-500 text-xs font-normal">
+            {errors.tenant.message}
+          </span>
+        )}
       </label>
 
-      {/* Email */}
+      {/* ==================== EMAIL INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
         <input
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          {...register("email")}
           placeholder="Enter email..."
-          required
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className={`border text-base p-2.5 w-full rounded-lg ${
+            errors.email ? "border-red-500" : "border-black-400"
+          }`}
         />
+        {/* Show validation error if exists */}
+        {errors.email && (
+          <span className="text-red-500 text-xs font-normal">
+            {errors.email.message}
+          </span>
+        )}
       </label>
 
-      {/* Password */}
+      {/* ==================== PASSWORD INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
         <input
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          {...register("password")}
           placeholder="Enter password..."
-          required
-          minLength={8}
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className={`border text-base p-2.5 w-full rounded-lg ${
+            errors.password ? "border-red-500" : "border-black-400"
+          }`}
         />
+        {/* Show validation error if exists */}
+        {errors.password && (
+          <span className="text-red-500 text-xs font-normal">
+            {errors.password.message}
+          </span>
+        )}
       </label>
 
-      {/* Terms and policy agreement */}
+      {/* ==================== TERMS CHECKBOX ==================== */}
       <label className="leading-5 text-neutral-900 mt-6 text-center flex items-center justify-center space-x-4 text-xs sm:text-sm">
-        <input type="checkbox" className="mr-3" required />
-        By signing in, I agree to the terms of use and privacy policy
+        <input
+          type="checkbox"
+          {...register("termsAccepted")}
+          className="mr-3"
+        />
+        By signing up, I agree to the terms of use and privacy policy
       </label>
+      {/* Show validation error if checkbox not checked */}
+      {errors.termsAccepted && (
+        <span className="text-red-500 text-xs font-normal text-center -mt-4">
+          {errors.termsAccepted.message}
+        </span>
+      )}
 
-      {/* Sign up Button */}
+      {/* ==================== SUBMIT BUTTON ==================== */}
       <button
         type="submit"
-        className="bg-primary-400 rounded-lg py-1.5 px-6 font-bold leading-[120%] text-base text-neutral-100"
+        disabled={isSubmitting || isLoading}
+        className={`bg-primary-400 rounded-lg py-1.5 px-6 font-bold leading-[120%] text-base text-neutral-100 ${
+          isSubmitting || isLoading ? "opacity-50 cursor-not-allowed" : ""
+        }`}
       >
-        Sign Up
+        {isSubmitting || isLoading ? "Creating account..." : "Sign Up"}
       </button>
 
+      {/* ==================== SIGN IN LINK ==================== */}
       <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Already have an account?{" "}
-        <Link href="/signIn" className="text-red-500">
-          Sign-In
+        <Link href="/signIn" className="text-red-500 hover:underline">
+          Sign In
         </Link>
       </p>
     </form>
