@@ -40,11 +40,6 @@ export default function CourseManagementPage() {
     setCurrentStep(1);
   };
 
-  const handleViewCourse = (course: Course) => {
-    // Navigate to course view page (to be implemented)
-    console.log("View course:", course);
-  };
-
   const handleEditCourse = (course: Course) => {
     // Load the full course data into currentCourse for editing
     // This will trigger all form components to reload with the course data
@@ -67,7 +62,7 @@ export default function CourseManagementPage() {
   if (courses.length === 0 && currentStep === 0) {
     return (
       <div className="min-h-screen bg-[#F0F4FF] py-8">
-        <div className="w-[99%] mx-auto">
+        <div className=" mx-auto">
           <div className="mb-6"></div>
           <h1 className="text-3xl font-bold text-[#101A33] mb-8">
             Course Management
@@ -81,11 +76,11 @@ export default function CourseManagementPage() {
   // Show course creation steps
   if (currentStep > 0) {
     return (
-      <div className="min-h-screen bg-[#F0F4FF] py-6">
-        <div className="w-[99%] mx-auto">
+      <div className="min-h-screen pb-6">
+        <div>
           <div className="mb-6 mt-8"></div>
 
-          {!showPreview && (
+          {currentStep === 2 && !showPreview && !showQuiz && (
             <div className="flex justify-end md:hidden mb-4 ">
               <Button
                 variant="primary"
@@ -97,10 +92,10 @@ export default function CourseManagementPage() {
             </div>
           )}
 
-          {!showPreview && (
+          {!showPreview && !showQuiz && (
             <>
-              <div className="flex flex-col-reverse md:flex-row justify-between items-start md:mb-15 mb-5  mx-auto">
-                <h1 className="text-[1.5rem] md:text-[2.5rem] font-semibold text-[#101A33] ">
+              <div className="flex flex-col-reverse md:flex-row justify-between items-start md:mb-5 mb-2  mx-auto">
+                <h1 className="text-[1rem] md:text-[2rem] font-semibold text-[#101A33] ">
                   {currentStep === 2 && currentCourse?.title
                     ? currentCourse.title
                     : "Fill in the details to create an engaging course for your students"}
@@ -115,6 +110,13 @@ export default function CourseManagementPage() {
                   </Button>
                 )}
               </div>
+              <Button
+                variant="secondary"
+                onClick={() => setCurrentStep(0)}
+                className=" border-none bg-transparent text-black font-semibold md:text-[1.25rem] text-[1rem] mb-4 hover:text-primary-400 focus:text-primary-400 hover:border-none hover:bg-transparent"
+              >
+                &lt; Back
+              </Button>
               <ProgressStepper currentStep={currentStep} />
             </>
           )}
@@ -132,8 +134,8 @@ export default function CourseManagementPage() {
 
   // Show course list or draft view
   return (
-    <div className="min-h-screen bg-[#F0F4FF] py-8">
-      <div className="w-[99%]  mx-auto">
+    <div className="min-h-screen py-8">
+      <div>
         <div className="flex flex-col md:flex-row justify-between md:items-center  mt-6 mb-12">
           <h1 className="text-[1.5rem] md:text-[2.5rem] font-bold text-[#101A33] mb-6 ">
             {viewingDrafts ? "Draft Courses" : "Course Management"}
@@ -143,7 +145,7 @@ export default function CourseManagementPage() {
               <Button
                 variant="secondary"
                 onClick={() => router.push("/courseManagement/analytics")}
-                className="px-9 md:px-8 md:py-4 py-3"
+                className="px-9 md:px-8 md:py-4 py-3 bg-white"
               >
                 View Analytics
               </Button>

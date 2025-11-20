@@ -31,7 +31,7 @@ export default function SignUpForm() {
           onChange={(e) => setTenant(e.target.value)}
           placeholder="Enter brand name..."
           required
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -44,7 +44,7 @@ export default function SignUpForm() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter email..."
           required
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -58,7 +58,7 @@ export default function SignUpForm() {
           placeholder="Enter password..."
           required
           minLength={8}
-          className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border text-base  p-3 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -71,7 +71,7 @@ export default function SignUpForm() {
       {/* Sign up Button */}
       <button
         type="submit"
-        className="bg-primary-400 rounded-lg py-1.5 px-6 font-bold leading-[120%] text-base text-neutral-100"
+        className="bg-primary-400 rounded-lg py-2.5 px-6 font-bold leading-[120%] text-base text-neutral-100"
       >
         Sign Up
       </button>

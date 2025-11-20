@@ -6,14 +6,15 @@ import { useRouter } from "next/navigation";
 
 const plans = [
   {
-    name: "Basic",
-    price: "₦Free",
+    name: "Free",
+    price: "Free",
     period: "Free Trial for 30 days",
     features: [
+      "Advanced personalized brand customization",
       "Full access to course management tools",
       "Seamless course builder",
-      "Default brand customization template",
-      "Limited access to marketing tools",
+      "Student and course analytics",
+      "Unlimited course hosting",
     ],
   },
   {
@@ -23,9 +24,8 @@ const plans = [
     features: [
       "Full access to course management tools",
       "Seamless course builder",
-      "Basic personlized brand customization",
-      "Limited access to marketing toolkit templates",
-      "Creator plus",
+      "Student and course analytics",
+      "Unlimited course hosting",
     ],
   },
   {
@@ -33,11 +33,11 @@ const plans = [
     price: "₦50,000",
     period: "Per Month",
     features: [
-      "Unlimited course hosting",
       "Advanced personalized brand customization",
-      "Full access to marketing tools",
-      "Access to all marketing toolkit templates",
-      "Student progress tracking and analytics",
+      "Full access to course management tools",
+      "Seamless course builder",
+      "Student and course analytics",
+      "Unlimited course hosting",
     ],
   },
 ];
@@ -51,19 +51,23 @@ const FlexiblePlan = () => {
     router.push("/payment");
   };
 
+  const handleFreePlan = () => {
+    router.push("/signUp");
+  };
+
   return (
-    <section className="w-full bg-[#F0F4FF] md:pt-16 pt-4 md:pb-30 pb-10">
+    <section className="w-full bg-[#FFFFFF] md:pt-16 pt-4 md:pb-30 pb-10">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto">
         <div className="text-center md:mb-24 mb-8 lg:w-[70%] w-[90%] mx-auto">
           <h2 className="text-[1.5rem] lg:text-[3.75rem] md:text-[3rem]  font-bold mb-4 md:leading-[72px]">
-            <span className="text-[#E8C56B] text-shadow-sm">
+            <span className="text-[#4977E6] text-shadow-sm">
               Flexible Plans
             </span>{" "}
             <span className="text-[#1A202C]">
               for Every Stage of Your Teaching Journey
             </span>
           </h2>
-          <p className="text-[1rem] md:text-[1.25rem] font-semibold text-[#4B4B4B] max-w-3xl mx-auto">
+          <p className="text-[1rem] md:text-[1.25rem] font-medium text-[#4B4B4B] max-w-3xl mx-auto">
             Whether you&apos;re launching your first course or managing a full
             academy, Tutera helps you own your brand, audience, and income on
             your terms.
@@ -81,7 +85,7 @@ const FlexiblePlan = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className="group flex-1 max-w-md rounded-[24px] shadow-lg p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer font-medium"
+              className="group flex-1 max-w-md rounded-[24px] shadow-sm border border-[#C3C3C3] p-6 flex flex-col bg-white hover:bg-[#4977E6] hover:text-white transition-all duration-300 transform hover:scale-105 cursor-pointer font-medium"
             >
               <div className="flex items-start justify-between pb-4 border-b border-[#D1D1D1] hover:border-[#F6F6F6]">
                 <div>
@@ -92,7 +96,13 @@ const FlexiblePlan = () => {
                     {plan.period}
                   </p>
                 </div>
-                <div className="px-4 py-2 rounded-lg bg-[#DBE4FA] text-[#0F182E] group-hover:text-[#0F182E] group-hover:bg-[#FFFFFF] transition-colors">
+                <div
+                  className={` py-2 rounded-lg   group-hover:text-[#0F182E] group-hover:bg-[#FFFFFF] transition-colors ${
+                    plan.name === "Free"
+                      ? "bg-[#C3EBCD] text-[#0EB137] px-6"
+                      : "bg-[#DBE4FA] text-[#0F182E] px-4"
+                  }`}
+                >
                   <span className="text-[1.25rem] font-semibold">
                     {plan.price}
                   </span>
@@ -125,10 +135,18 @@ const FlexiblePlan = () => {
 
               <Button
                 variant="primary"
-                onClick={() => handlePurchasePlan(plan)}
-                className="w-full py-3 mt-30 mb-6 text-center group-hover:bg-white group-hover:text-[#4977E6] transition-colors shadow-sm hover:bg-[#ffffffef] active:w-[95%] active:py-[10px] "
+                onClick={() =>
+                  plan.name === "Free"
+                    ? handleFreePlan()
+                    : handlePurchasePlan(plan)
+                }
+                className={`w-full py-3 mb-6 text-center group-hover:bg-white group-hover:text-[#4977E6] transition-colors shadow-sm hover:bg-[#ffffffef] active:w-[95%] active:py-[10px] ${
+                  plan.name === "Creator Pro" ? "mt-38 mb-12" : "mt-15"
+                }`}
               >
-                Purchase Plan
+                {plan.name === "Free"
+                  ? "Free Plan for 30 Days"
+                  : "Purchase Plan"}
               </Button>
             </div>
           ))}

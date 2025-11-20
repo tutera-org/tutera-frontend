@@ -114,14 +114,15 @@ export default function BasicInfo() {
   };
 
   return (
-    <div className="w-full  mx-auto">
-      <div className="bg-[#ffffff] rounded-[16px] px-4 py-2 mb-4">
-        <span className="text-[#101A33] font-semibold">Info</span>
+    <div>
+    <div className="w-full md:w-[80%] md:rounded-lg md:px-6 md:py-4 md:border border-dashed border-[#101a33c6] mx-auto">
+      <div className=" rounded-[16px]  py-2 md:mb-4">
+        <span className="text-[#101A33] md:text-[24px] text-[16px] font-semibold">Info</span>
       </div>
-      <div className="bg-white rounded-[16px] text-[20px]shadow-lg p-6 md:p-8">
+      <div className="bg-white rounded-[16px] text-[20px]shadow-lg py-4 md:py-4">
         <div className="space-y-5">
           <div>
-            <label className="block text-[#101A33] font-medium mb-2">
+            <label className="block text-[#101A33] font-semibold md:text-[1.25rem] text-[1rem] mb-2">
               Course Title
             </label>
             <input
@@ -129,12 +130,12 @@ export default function BasicInfo() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g Complete Web Development Bootcamp"
-              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
+              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none "
             />
           </div>
 
           <div>
-            <label className="block text-[#101A33] font-medium mb-2">
+            <label className="block text-[#101A33] font-semibold md:text-[1.25rem] text-[1rem] mb-2">
               Description
             </label>
             <textarea
@@ -142,19 +143,19 @@ export default function BasicInfo() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe what student will learn, who this course is for, and what makes it unique..."
               rows={6}
-              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] resize-none"
+              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none resize-none h-[100px] overflow-y-auto scrollbar-smooth"
             />
           </div>
 
           <div>
-            <label className="block text-[#101A33] font-medium mb-2">
+            <label className="block text-[#101A33] font-semibold md:text-[1.25rem] text-[1rem] mb-2">
               Course Cover
             </label>
             <div
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg p-8 text-center cursor-pointer hover:border-[#5D5D5D] transition-colors"
+              className="border-2 border-dashed border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg p-8 text-center cursor-pointer hover:border-[#5D5D5D] transition-colors  "
             >
               <input
                 ref={fileInputRef}
@@ -164,7 +165,7 @@ export default function BasicInfo() {
                 className="hidden"
               />
               {thumbnail ? (
-                <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                <div className="relative w-full h-45 rounded-lg overflow-hidden ">
                   <Image
                     src={thumbnail}
                     alt="Thumbnail preview"
@@ -217,19 +218,15 @@ export default function BasicInfo() {
           </div>
         </div>
 
-        <div className="flex justify-end gap-4 mt-8">
-          <Button
-            variant="secondary"
-            onClick={() => setCurrentStep(0)}
-            className="px-6 py-2"
-          >
-            Previous
-          </Button>
-          <Button variant="primary" onClick={handleNext} className="px-6 py-2">
+        
+      </div>
+    </div>
+    <div className=" flex md:justify-end justify-center gap-4 md:w-[80%] w-full mx-auto  mt-6">
+         
+          <Button variant="primary" onClick={handleNext} className="w-full  md:w-[20%] py-3">
             Next
           </Button>
         </div>
-      </div>
     </div>
   );
 }

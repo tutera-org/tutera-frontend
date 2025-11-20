@@ -28,13 +28,13 @@ function ForgotPasswordForm() {
           value={email}
           onChange={handleEmail}
           required
-          className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border  text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
       <button
         type="submit"
         disabled={!email}
-        className="bg-primary-400 rounded-lg py-2 px-6 font-bold leading-[120%] text-base text-neutral-100 cursor-pointer hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-primary-400 rounded-lg py-3 px-6 font-bold leading-[120%] text-base text-neutral-100 cursor-pointer hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         Send OTP
       </button>

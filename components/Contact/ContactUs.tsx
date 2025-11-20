@@ -70,7 +70,7 @@ const ContactUs = () => {
   };
 
   return (
-    <section className="w-full bg-[#F0F4FF] py-2  md:py-12 relative">
+    <section className="w-full bg-[#FFFFFF] py-2  md:py-12 relative">
       {/* Success Notification */}
       {showSuccess && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white rounded-lg shadow-lg px-6 py-4 border-l-4 border-[#4977E6] animate-slide-down">
@@ -180,7 +180,7 @@ const ContactUs = () => {
                 />
                 </Link>
                 <Link 
-                href="tuteralms@gmail.com"
+                 href="mailto:tuteralms@gmail.com"
                 target="_blank"
                 >
                     <Image
@@ -282,6 +282,7 @@ const ContactUs = () => {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
+                  placeholder="Enter your subject..."
                   className="w-full px-4 py-3 bg-white rounded-lg border border-gray-200 text-[#1A202C] focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
                   required
                 />

@@ -171,8 +171,8 @@ export default function SetUp() {
   };
 
   return (
-    <div className="w-full  mx-auto relative">
-      <h3 className="text-xl font-semibold text-[#4977E6] mb-6 mt-12">
+    <div className="w-full mx-auto md:w-[80%] md:rounded-lg md:px-6 md:py-4 md:border border-dashed relative">
+      <h3 className="text-xl font-semibold text-[#4977E6] mb-2 mt-6">
         Select the features you want to include in your course
       </h3>
 
@@ -182,11 +182,11 @@ export default function SetUp() {
         }`}
       >
         {/* Course Content Options */}
-        <div className="mb-8">
-          <h4 className="text-lg font-semibold text-[#101A33] mb-4 bg-white p-2 rounded-[16px]">
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold text-[#101A33] mb-1 bg-white p-2 rounded-[16px]">
             Course Content Options
           </h4>
-          <div className="space-y-4 bg-white p-6 rounded-[16px]">
+          <div className="space-y-4 bg-white py-3 rounded-[16px]">
             <div className="flex items-center gap-3 border-2 border-[#C3C3C3] p-3 rounded-[16px]">
               <input
                 type="checkbox"
@@ -209,10 +209,10 @@ export default function SetUp() {
 
         {/* Payment Options */}
         <div className="mb-8">
-          <h4 className="text-lg font-semibold text-[#101A33] mb-4 bg-white p-2 rounded-[16px]">
+          <h4 className="text-lg font-semibold text-[#101A33] mb-1 bg-white p-2 rounded-[16px]">
             Choose Payment Options
           </h4>
-          <div className="space-y-4 bg-white p-6 rounded-[16px]">
+          <div className="space-y-4 bg-white p-2 rounded-[16px]">
             <div
               onClick={() => {
                 setPaymentOption("free");
