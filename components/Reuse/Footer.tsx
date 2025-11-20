@@ -83,8 +83,12 @@ const Footer = () => {
             <div className="flex flex-col gap-2">
               <p className="text-[1.25rem]">Navigations</p>
               <p>Features</p>
-              <p>Pricing</p>
-              <p>Contact Us</p>
+              <p>
+                <Link href="/Pricing" className="scale-105  transition-all duration-300">Pricing</Link>
+              </p>
+              <p>
+                <Link href="/contact" className="scale-105 transition-all duration-300">Contact Us</Link>
+              </p>
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-[1.25rem]">Contact Us</p>
@@ -100,7 +104,7 @@ const Footer = () => {
           data-aos-duration="1000"
           data-aos-delay="200"
           data-aos-once="false"
-          className="absolute bg-white w-[90%] lg:w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14"
+          className="absolute bg-white w-[90%] border border-[#C3C3C3] lg:w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14"
         >
           <div className=" w-[90%] lg:w-[80%] mx-auto flex flex-col  lg:flex-row item-center gap-6">
             <Image
@@ -111,7 +115,7 @@ const Footer = () => {
             />
 
             <div className=" flex flex-col gap-6 justify-center items-center md:items-start ">
-              <p className="text-[1.2rem] md:text-[1.2rem] font-semibold text-[#101A33]">
+              <p className="text-[1rem] md:text-[1.25rem] font-medium text-[#101A33]">
                 Join the next generation of African knowledge entrepreneurs
                 scaling their income.
               </p>
@@ -139,10 +143,10 @@ const Footer = () => {
           </p>
           <div>
             <ul className="flex items-center gap-4 text-[0.75rem] font-semibold">
-              <li>privacy policy</li>
+              <li>Privacy Policy</li>
               <li>Terma Use</li>
-              <li>legal</li>
-              <li>site map</li>
+              <li>Legal</li>
+              <li>Site map</li>
             </ul>
           </div>
         </div>

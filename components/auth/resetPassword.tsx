@@ -16,7 +16,7 @@ export default function ResetPasswordForm() {
       <input
         type="password"
         placeholder="New Password"
-        className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
+        className="border text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
       />
 
       {/* Confirm Password */}
@@ -24,11 +24,11 @@ export default function ResetPasswordForm() {
       <input
         type="password"
         placeholder="Confirm Password"
-        className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
+        className="border  text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
       />
 
       {/* Reset Button */}
-      <button className="bg-primary-400 rounded-lg py-2 px-6 font-bold leading-[120%] text-base hover:bg-blue-600 text-neutral-100">
+      <button className="bg-primary-400 rounded-lg py-3 px-6 font-bold leading-[120%] text-base hover:bg-blue-600 text-neutral-100">
         Reset Password
       </button>
 

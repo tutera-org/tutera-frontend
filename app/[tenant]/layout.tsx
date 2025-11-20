@@ -1,16 +1,14 @@
-import CreatorHeader from "@/components/Reuse/CreatorHeader";
-import StudentsNavbar from "@/components/students/Navbar";
+import ConditionalNavbar from "@/components/Course Management/ConditionalNavbar";
 
 export default function TenantLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const role = "student" as "creator" | "student";
   return (
-    <div className="bg-neutral-200 pb-10 min-h-screen">
-      <main className="w-[90%] mx-auto pt-5">
-        {role === "student" ? <StudentsNavbar /> : <CreatorHeader />}
+    <div className="bg-neutral-100 pb-10 min-h-screen">
+      <main className="w-[90%] max-w-[1240px] mx-auto pt-5">
+        <ConditionalNavbar />
 
         {children}
       </main>

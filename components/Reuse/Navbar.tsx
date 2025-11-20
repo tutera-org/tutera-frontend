@@ -22,9 +22,9 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-[#F0F4FF] py-8">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto">
-        <div className="bg-[#ffffff] rounded-2xl shadow-md px-5 py-6 relative">
+    <nav className="sticky top-0 z-50 w-full bg-[#FFFFFF] md:py-6 py-3">
+      <div className="w-[90%] max-w-[1240px] mx-auto">
+        <div className=" pt-6 pb-2 relative">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <Image
@@ -84,7 +84,7 @@ const NavBar = () => {
                 onClick={handleStartNow}
                 className=" hidden md:block whitespace-nowrap "
               >
-                Start Now
+                Start Free Trial
               </Button>
 
               <button
@@ -112,9 +112,12 @@ const NavBar = () => {
             </div>
           </div>
 
-          {isMenuOpen && (
-            <div className="md:hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-lg px-5 py-4 border border-[#D1D1D1] z-50">
-              <div className="flex flex-col space-y-4">
+          
+        </div>
+      </div>
+      {isMenuOpen && (
+            <div className="md:hidden w-full absolute top-full left-0 right-0  bg-white  z-50">
+              <div className="flex flex-col space-y-2 p-4">
                 <Link
                   href="/"
                   onClick={() => setIsMenuOpen(false)}
@@ -154,7 +157,7 @@ const NavBar = () => {
                     onClick={handleStartNow}
                     className="w-full"
                   >
-                    Start Now
+                    Start Free Trial
                   </Button>
                   <Button
                     variant="secondary"
@@ -167,8 +170,6 @@ const NavBar = () => {
               </div>
             </div>
           )}
-        </div>
-      </div>
     </nav>
   );
 };

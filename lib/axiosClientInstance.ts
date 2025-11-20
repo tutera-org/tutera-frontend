@@ -2,20 +2,29 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 
 // Create client-side axios instance
+// This instance is used in the browser to call Next.js API routes (not the backend directly)
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
-  withCredentials: true,
+  baseURL: "/api", // Changed: Now points to Next.js API routes instead of backend
+  withCredentials: true, // Important: Allows cookies to be sent with requests
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// Request interceptor - runs before every request is sent
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // Enhanced logging with timestamp and full URL
     if (process.env.NODE_ENV === "development") {
-      console.log(
-        `[API Request] ${config.method?.toUpperCase()} ${config.url}`
-      );
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.log(`🚀 [CLIENT REQUEST] ${new Date().toISOString()}`);
+      console.log(`   Method: ${config.method?.toUpperCase()}`);
+      console.log(`   URL: ${config.baseURL}${config.url}`);
+      console.log(`   Headers:`, config.headers);
+      if (config.data) {
+        console.log(`   Body:`, config.data);
+      }
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     //TODO: Discuss with Backend team and Add any custom headers here
@@ -24,16 +33,23 @@ api.interceptors.request.use(
   (error: AxiosError) => {
     // Handle request errors (e.g., network issues before request is sent)
     if (process.env.NODE_ENV === "development") {
-      console.error("[API Request Error]", error);
+      console.error("❌ [CLIENT REQUEST ERROR]", error);
     }
     return Promise.reject(error);
   }
 );
 
+// Response interceptor - runs after every response is received
 api.interceptors.response.use(
   (response) => {
+    // Enhanced logging for successful responses
     if (process.env.NODE_ENV === "development") {
-      console.log(`[API Response] ${response.status} ${response.config.url}`);
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.log(`✅ [CLIENT RESPONSE] ${new Date().toISOString()}`);
+      console.log(`   Status: ${response.status} ${response.statusText}`);
+      console.log(`   URL: ${response.config.url}`);
+      console.log(`   Data:`, response.data);
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     return response;
@@ -44,12 +60,16 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Log errors in development mode only
+    // Enhanced error logging in development mode
     if (process.env.NODE_ENV === "development") {
-      console.error(
-        `[API Error] ${error.response?.status} ${originalRequest?.url}`,
-        error.response?.data
-      );
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+      console.error(`❌ [CLIENT ERROR] ${new Date().toISOString()}`);
+      console.error(`   Status: ${error.response?.status}`);
+      console.error(`   URL: ${originalRequest?.url}`);
+      console.error(`   Error Message:`, error.message);
+      console.error(`   Response Data:`, error.response?.data);
+      console.error(`   Full Error:`, error);
+      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
     // Handle 401 Unauthorized - Token expired or invalid
@@ -58,17 +78,20 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        console.log("🔄 [TOKEN REFRESH] Attempting to refresh token...");
+
         // Attempt to refresh the authentication token
-        // The backend should set a new auth cookie in the response
+        // This calls your Next.js API route at /api/auth/refresh
+        // which then calls the backend to refresh the token
         await api.post("/auth/refresh", {}, { withCredentials: true });
+
+        console.log("✅ [TOKEN REFRESH] Token refreshed successfully");
 
         // Retry the original request with the new token
         return api(originalRequest);
       } catch (refreshError) {
         // Token refresh failed - user needs to login again
-        if (process.env.NODE_ENV === "development") {
-          console.error("[Token Refresh Failed]", refreshError);
-        }
+        console.error("❌ [TOKEN REFRESH FAILED]", refreshError);
 
         // Redirect to signIn page
         if (typeof window !== "undefined") {
@@ -86,11 +109,9 @@ api.interceptors.response.use(
 
     // Handle 403 Forbidden - User doesn't have permission to access this resource
     if (error.response?.status === 403) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("[Forbidden] User does not have permission");
-      }
+      console.error("🚫 [FORBIDDEN] User does not have permission");
 
-      // Show error notification
+      // Show error notification to user
       if (typeof window !== "undefined") {
         toast.error("You don't have permission to access this resource");
       }
@@ -98,36 +119,28 @@ api.interceptors.response.use(
 
     // Handle 404 Not Found - Resource doesn't exist
     if (error.response?.status === 404) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("[Not Found] Resource not found");
-      }
+      console.error("🔍 [NOT FOUND] Resource not found");
 
       toast.error("The requested resource was not found");
     }
 
     // Handle 500 Internal Server Error - Something went wrong on the server
     if (error.response?.status === 500) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("[Server Error] Internal server error occurred");
-      }
+      console.error("💥 [SERVER ERROR] Internal server error occurred");
 
       toast.error("Something went wrong. Please try again later.");
     }
 
     // Handle 429 Too Many Requests - Rate limiting
     if (error.response?.status === 429) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("[Rate Limited] Too many requests");
-      }
+      console.error("⏱️ [RATE LIMITED] Too many requests");
 
       toast.error("Too many requests. Please wait a moment and try again.");
     }
 
-    // Handle network errors
+    // Handle network errors (no response received)
     if (!error.response) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("[Network Error] No response received from server");
-      }
+      console.error("🌐 [NETWORK ERROR] No response received from server");
 
       toast.error("Network error. Please check your internet connection.");
     }
@@ -137,6 +150,7 @@ api.interceptors.response.use(
   }
 );
 
+// Helper function to extract and format error messages from API errors
 export function handleClientApiError(error: unknown): string {
   if (axios.isAxiosError(error)) {
     // Server responded with an error status (4xx, 5xx)
@@ -154,21 +168,24 @@ export function handleClientApiError(error: unknown): string {
   return "An unexpected error occurred. Please try again.";
 }
 
-// Manually logout the user
+// Manually logout the user - clears session and redirects to login
 export async function logout(): Promise<void> {
   try {
-    // Call backend logout endpoint to clear the auth cookie
+    console.log("🚪 [LOGOUT] Logging out user...");
+
+    // Call Next.js API route which will call backend logout endpoint to clear the auth cookie
     await api.post("/auth/logout");
+
+    console.log("✅ [LOGOUT] Logged out successfully");
   } catch (error) {
     // Log error but continue with logout process
-    if (process.env.NODE_ENV === "development") {
-      console.error("[Logout Error]", error);
-    }
+    console.error("❌ [LOGOUT ERROR]", error);
   } finally {
     // TODO: Remember to clear anything stored in localStorage or sessionStorage
 
     // Redirect to login page
     if (typeof window !== "undefined") {
+      console.log("↪️ [LOGOUT] Redirecting to sign in page...");
       window.location.href = "/signIn";
     }
   }

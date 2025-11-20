@@ -1,4 +1,4 @@
-import { FaArrowLeft } from "react-icons/fa";
+
 import Notification from "../Reuse/Notification";
 import WeeklyActivity from "./BarChart";
 import { MdArrowRight } from "react-icons/md";
@@ -8,7 +8,7 @@ export default function ChartDashboard() {
     <div className="mt-10 ">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Charts*/}
-        <div className="bg-white rounded-2xl shadow-lg p-6 lg:col-span-2">
+        <div className="bg-white rounded-2xl border-2 border-[#F0F0F0] p-6 lg:col-span-2">
           {/* <WeeklyActivity apiUrl="/api/courses-sold" / with api endpoint> */}
 
           <WeeklyActivity />
@@ -25,10 +25,10 @@ export default function ChartDashboard() {
         </div>
 
         {/* Notifications*/}
-        <div className="bg-white rounded-2xl shadow-lg p-6  lg:col-span-1">
+        <div className="bg-white rounded-2xl border-2 border-[#F0F0F0] p-6  lg:col-span-1">
           <div className="flex justify-between items-center mb-7">
             {/* Title */}
-            <p className="text-neutral-900 text-2xl font-semibold">
+            <p className="text-[#101A33] text-2xl font-semibold">
               Recent Activity
             </p>
             <MdArrowRight className="text-2xl text-darkblue hover:text-primary-400 transition-colors cursor-pointer" />

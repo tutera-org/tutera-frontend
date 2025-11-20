@@ -109,19 +109,22 @@ const PaymentPage = ({ selectedPlan }: PaymentPageProps) => {
   return (
     <>
       <div
-        className={`min-h-screen bg-[#F0F4FF] ${
+        className={`min-h-screen bg-[#FFFFFF] ${
           showSuccessModal ? "blur-md pointer-events-none" : ""
         }`}
       >
         
         <div className="w-[90%] max-w-[1240px] mx-auto  py-8">
+          <p className="text-[1rem] md:text-[1.25rem] font-medium text-[#4B4B4B] ">
+          <Link href="/Pricing" className="text-[#4977E6] underline">&lt; Back</Link>
+          </p>
           <h1 className="text-[2rem] md:text-[3rem] font-bold text-[#101A33] mb-8">
             Payment method
           </h1>
 
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-10">
             {/* Left Side - Payment Form */}
-            <div className="flex-1  rounded-lg p-6 md:p-8">
+            <div className="flex-1  rounded-lg py-6 md:py-8">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Card Number */}
                 <div>
