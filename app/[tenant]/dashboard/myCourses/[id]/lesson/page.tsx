@@ -31,8 +31,8 @@ export default function LessonPage({
         sectionTitle: "Foundation of Web",
         items: [
           { id: 1, title: "Introduction to HTML", completed: true },
-          { id: 2, title: "Forms and Input", completed: false },
-          { id: 3, title: "HTML Element and Structure", completed: false },
+          { id: 2, title: "Forms and Input", completed: true },
+          { id: 3, title: "HTML Element and Structure", completed: true },
         ],
       },
       {
@@ -138,13 +138,24 @@ export default function LessonPage({
                         </span>
                       </div>
                     ))}
+                    {/* Take Quiz Button */}
+                    {
+                      <StudentButton
+                        className={"w-full mt-4 disabled:bg-gray-500"}
+                        onClick={() =>
+                          router.push(`/dashboard/myCourses/${course.id}/quiz`)
+                        }
+                        disabled={
+                          !section.items.every((item) => item.completed)
+                        }
+                      >
+                        Take Quiz
+                      </StudentButton>
+                    }
                   </div>
                 </div>
               ))}
             </div>
-
-            {/* Take Quiz Button */}
-            <StudentButton className="w-full mb-6">Take Quiz</StudentButton>
 
             {/* Course Progress */}
             <div className="pb-18 bg-[#E6EAF5] p-6 rounded-lg">
