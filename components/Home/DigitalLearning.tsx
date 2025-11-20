@@ -12,8 +12,8 @@ const DigitalLearning = () => {
   };
   const router = useRouter();
   return (
-    <section className="w-full bg-[#F0F4FF] py-4 lg:py-24 ">
-      <div className="w-[90%] lg:max-w-[1240px] mx-auto relative">
+    <section className="w-full bg-[#FFFFFF] py-4 lg:py-24 ">
+      <div className="w-[90%] md:w-[70%] lg:max-w-[1440px] mx-auto relative">
        
         <div className="absolute md:top-[-23%] top-[-12%] md:right-[25%] right-[10%]  rounded-lg flex items-center justify-center z-10">
           <Image
@@ -58,7 +58,7 @@ const DigitalLearning = () => {
 
         {/* Main Content */}
         <div className="max-w-[813.16px] mx-auto text-center z-0">
-          <p className="text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] font-semibold text-[#101A33] mb-14 md:leading-[40px]">
+          <p className=" text-[1.2rem] md:text-[1.5rem] lg:text-[2rem] font-medium text-[#101A33] mb-14 md:leading-[40px]">
             In today&apos;s digital learning space, speed and ownership defines
             success. Tutera simplifies online teaching, reduces setup friction,
             and empowers instructors with branding and monetization tools that
@@ -67,7 +67,7 @@ const DigitalLearning = () => {
 
           <Button 
           variant="primary" 
-          className=" w-[48%] md:w-[24%] py-[10px] text-[1rem] rounded-[8px] shadow-md"
+          className=" w-[50%] md:w-[24%] py-[10px] text-[1rem] rounded-[8px] shadow-md"
           onClick={handleExplorePlans}
           data-aos="fade-up"
           data-aos-duration="1000"

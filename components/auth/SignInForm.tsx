@@ -9,7 +9,7 @@ export default function SignInForm() {
         <input
           type="email"
           placeholder="Email"
-          className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border  text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -19,7 +19,7 @@ export default function SignInForm() {
         <input
           type="password"
           placeholder="Password"
-          className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
+          className="border  text-base  p-2.5 focus:outline-none focus:ring-1 focus:ring-[#4977E6] border-black-400 w-full rounded-lg"
         />
       </label>
 
@@ -32,7 +32,7 @@ export default function SignInForm() {
       </Link>
 
       {/* Sign In Button */}
-      <button className="bg-primary-400 rounded-lg py-1.5 px-6 font-bold leading-[120%] text-base text-neutral-100">
+      <button className="bg-primary-400 rounded-lg py-3 px-6 font-bold leading-[120%] text-base text-neutral-100">
         Sign In
       </button>
 

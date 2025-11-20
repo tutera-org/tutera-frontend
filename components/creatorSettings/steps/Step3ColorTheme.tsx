@@ -33,7 +33,7 @@ export default function Step3ColorTheme({
 }: Step3ColorThemeProps) {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-xl font-bold text-[#101A33] mb-6">
+      <h2 className="text-sm md:text-xl font-bold text-[#101A33] mb-6">
         Choose best colour for your brand
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -42,7 +42,7 @@ export default function Step3ColorTheme({
             key={theme.name}
             className="bg-white rounded-lg shadow-md p-6 border-2 border-transparent hover:border-[#4977E6] transition-colors"
           >
-            <h3 className="text-lg font-semibold text-[#101A33] mb-4">
+            <h3 className=" text-lg font-semibold text-[#101A33] mb-4">
               {theme.name}
             </h3>
             <div className="flex gap-3 mb-4">

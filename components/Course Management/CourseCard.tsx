@@ -24,7 +24,7 @@ export default function CourseCard({
 
   return (
     <>
-      <div className="bg-white rounded-[16px] shadow-md overflow-hidden hover:shadow-lg transition-shadow relative pb-6">
+      <div className="bg-white rounded-[16px] shadow-xs border border-[#C3C3C3] overflow-hidden hover:shadow-lg transition-shadow relative pb-6">
         {/* Course Image */}
         <div className="relative h-50 w-full">
           {course.thumbnail ? (
@@ -80,13 +80,13 @@ export default function CourseCard({
                 </svg>
               </button>
               {showMenu && (
-                <div className="absolute right-0 mt-1 w-24 bg-white shadow-sm rounded-lg  border border-gray-200 py-2 z-20">
+                <div className="absolute right-0 mt-1 w-24 bg-[#DF4623] shadow-sm rounded-lg  py-2 z-20">
                   <button
                     onClick={() => {
                       setShowDeleteModal(true);
                       setShowMenu(false);
                     }}
-                    className="w-full text-center px-3 text-red-600 transition-colors"
+                    className="w-full text-center px-3 text-white  transition-colors"
                   >
                     Delete
                   </button>
@@ -117,7 +117,7 @@ export default function CourseCard({
             <Button
               variant={course.status === "published" ? "secondary" : "primary"}
               onClick={() => onTogglePublish(course)}
-              className="flex-1 text-base py-3"
+              className="flex-1 text-base py-3 "
             >
               {course.status === "published" ? "Unpublish" : "Publish"}
             </Button>

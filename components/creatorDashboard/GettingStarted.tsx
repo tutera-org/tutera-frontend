@@ -18,7 +18,7 @@ export default function GettingStarted() {
     },
   ];
   return (
-    <section className="my-6 sm:my-10 md:my-15 bg-neutral-100 shadow-md rounded-2xl p-5 sm:p-6 md:p-8">
+    <section className="my-6 sm:my-10 md:my-15 bg-neutral-100  rounded-2xl py-5 sm:py-6 md:py-8">
       <h3 className="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight text-neutral-900">
         Getting Started
       </h3>
@@ -30,7 +30,7 @@ export default function GettingStarted() {
         {steps.map((step, index) => (
           <li
             key={index}
-            className="bg-neutral-200 rounded-xl p-4 sm:p-5 md:p-6 transition-all hover:bg-neutral-300"
+            className="bg-[#F0F0F0] rounded-xl p-4 sm:p-5 md:p-6 transition-all hover:bg-neutral-300"
           >
             {/* Step items */}
             <h4 className="text-neutral-900 font-semibold text-base sm:text-lg md:text-xl leading-tight">

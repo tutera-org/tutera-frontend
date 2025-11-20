@@ -14,22 +14,22 @@ const HeroSection = () => {
   };
   const router = useRouter();
   return (
-    <section className="w-full bg-[#F0F4FF]">
+    <section className="w-full bg-[#ffffff]">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto md:pt-10 pb-24">
         <div className=" xl:w-[70%] mx-auto flex flex-col items-center justify-center space-y-6 text-center">
-          <h3 className="text-[1.5rem] md:text-[3rem] lg:text-[3.75rem] text-center text-[#101A33] lg:leading-[72px] font-semibold">
+          <h3 className="text-[1.25rem] md:text-[3rem] lg:text-[3.75rem] text-center text-[#101A33] lg:leading-[72px] font-semibold">
             Own Your Earning. Own your Audience.{" "}
             <span
               data-aos="fade-left"
               data-aos-duration="1000"
               data-aos-delay="100"
               data-aos-once="false"
-              className="text-[#E8C56B] text-shadow-sm"
+              className="text-[#4977E6] text-shadow-sm"
             >
               Own Your Brand.
             </span>
           </h3>
-          <p className="text-[#4B4B4B] text-[1rem] md:text-[1.5rem] font-semibold">
+          <p className="text-[#4B4B4B] text-[1rem] md:text-[1.5rem] font-medium">
             Tutera is the LMS built to empowering educators across africa to
             teach, own, and earn on their own terms all in one simple platform.
           </p>
@@ -43,7 +43,7 @@ const HeroSection = () => {
               data-aos-delay="200"
               data-aos-once="false"
             >
-              Launch Now
+              Start Free Trial
             </Button>
             <Button
               variant="secondary"
@@ -58,7 +58,7 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-        <div className="relative flex flex-col gap-4 xl:flex-row items-center xl:justify-between">
+        <div className="relative flex flex-col gap-4 xl:flex-row items-center xl:justify-center">
           <div className="relative">
             <Image
               src="/heroImage1.svg"

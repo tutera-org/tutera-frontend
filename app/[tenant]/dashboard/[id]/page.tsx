@@ -1,5 +1,6 @@
 import StudentButton from "@/components/students/Button";
 import CourseCurriculum from "@/components/students/CourseCurriculum";
+import Image from "next/image";
 
 export default async function BuyCourseId({
   params,
@@ -54,7 +55,9 @@ export default async function BuyCourseId({
           </p>
         </aside>
         <aside className="w-full lg:basis-[45%]">
-          <img
+          <Image
+            width={100}
+            height={100}
             className="w-full h-auto rounded-lg"
             src={course.img}
             alt={`${course.title} image`}

@@ -19,7 +19,7 @@ const EmpoweringPrompt: React.FC<FeatureCardProps> = ({
   imageHeight,
 }) => {
   return (
-    <div className="bg-white rounded-[16px] shadow-lg overflow-hidden p-0 lg:py-4 h-full ">
+    <div className="bg-white rounded-[16px] shadow-sm overflow-hidden p-0 lg:py-4 h-full ">
       <div className="w-full mx-auto h-full flex flex-col px-4 py-4">
         <div className="lg:hidden w-full h-[150px] rounded-[16px] bg-white flex items-center justify-center overflow-hidden">
           <Image
@@ -32,7 +32,7 @@ const EmpoweringPrompt: React.FC<FeatureCardProps> = ({
           />
         </div>
 
-        {/* </div> */}
+   
 
         {/* ✅ DESKTOP — UNTOUCHED */}
         <div
@@ -51,10 +51,10 @@ const EmpoweringPrompt: React.FC<FeatureCardProps> = ({
 
         {/* ✅ TEXT SECTION */}
         <div className=" py-2 lg:py-0 flex flex-col justify-start overflow-hidden mt-1">
-          <h3 className="text-[1.5rem] lg:text-[24px] md:text-[2rem] font-semibold text-[#101A33] mb-1 lg:mb-3 line-clamp-2">
+          <h3 className="text-[1.5rem]  md:text-[2rem] font-semibold text-[#101A33] mb-1 lg:mb-3 line-clamp-2">
             {title}
           </h3>
-          <p className=" text-[1rem] font-semibold text-[#5D5D5D] leading-tight lg:leading-relaxed line-clamp-3 lg:line-clamp-none">
+          <p className=" text-[1rem] font-medium text-[#5D5D5D] leading-tight lg:leading-relaxed line-clamp-3 lg:line-clamp-none">
             {description}
           </p>
         </div>

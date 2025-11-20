@@ -28,7 +28,7 @@ const AcademySteps = () => {
   };
   const router = useRouter();
   return (
-    <section className="w-full bg-[#F0F4FF] text-center">
+    <section className="w-full bg-[#FFFFFF] text-center">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto md:pb-16 pb-6 flex flex-col items-center justify-center">
         <h2 className=" md:text-[2.5rem] text-[1.5rem] font-semibold md:py-14 py-6 lg:w-[40%] w-[90%] mx-auto text-center">
           Build Your Academy in 3 Steps.

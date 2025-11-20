@@ -2,6 +2,7 @@
 
 import Button from "@/components/Reuse/Button";
 import { CustomizationFormData } from "../types";
+import Image from "next/image";
 
 interface Step2BrandAssetsProps {
   formData: CustomizationFormData;
@@ -28,7 +29,7 @@ export default function Step2BrandAssets({
   return (
     <div className="space-y-8">
       {/* Brand Upload Section */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+      <div className="bg-white rounded-2xl  p-6 md:p-8">
         <h2 className="text-xl font-bold text-[#101A33] mb-6">Brand upload</h2>
         <div className="space-y-6">
           {/* Logo Upload */}
@@ -40,7 +41,9 @@ export default function Step2BrandAssets({
               <label className="cursor-pointer">
                 <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
                   {formData.logo ? (
-                    <img
+                    <Image
+                      width={100}
+                      height={100}
                       src={formData.logo}
                       alt="Logo"
                       className="w-full h-full rounded-full object-cover"
@@ -81,8 +84,10 @@ export default function Step2BrandAssets({
               <label className="cursor-pointer block">
                 <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
                   {formData.coverPhoto ? (
-                    <img
+                    <Image
                       src={formData.coverPhoto}
+                      width={100}
+                      height={100}
                       alt="Cover"
                       className="w-full h-full object-cover rounded-lg"
                     />
@@ -133,7 +138,7 @@ export default function Step2BrandAssets({
       </div>
 
       {/* Brand Image Section */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+      <div className="bg-white rounded-2xl p-6 md:p-8">
         <h2 className="text-xl font-bold text-[#101A33] mb-6">Brand image</h2>
         <div>
           <label className="block text-sm font-medium text-[#101A33] mb-3">
@@ -146,7 +151,9 @@ export default function Step2BrandAssets({
                 <label key={num} className="cursor-pointer block">
                   <div className="w-full h-40 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
                     {formData[field] ? (
-                      <img
+                      <Image
+                        width={100}
+                        height={100}
                         src={formData[field] as string}
                         alt={`Brand ${num}`}
                         className="w-full h-full object-cover rounded-lg"

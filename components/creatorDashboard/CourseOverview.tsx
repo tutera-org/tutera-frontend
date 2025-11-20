@@ -41,7 +41,7 @@ export default function CourseOverview() {
   ];
 
   return (
-    <section className="mt-10 py-2.5 rounded-xl p-5 bg-neutral-100 flex flex-col gap-10">
+    <section className="mt-10 py-2.5 rounded-xl p-5 bg-neutral-100 border-2 border-[#F0F0F0] flex flex-col gap-10">
       {/* Header */}
       <aside className="flex justify-between">
         <h3 className="font-semibold text-lg sm:text-2xl leading-8 text-neutral-900">
