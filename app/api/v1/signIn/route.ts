@@ -7,15 +7,51 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const api = await getApiWithCookies();
     const body = await request.json();
-    const response = await api.post("/signIn", body);
-    return NextResponse.json(response.data, { status: response.status });
+
+    const api = await getApiWithCookies();
+
+    const response = await api.post("/v1/auth/login", body);
+
+    const { accessToken, refreshToken } = response.data.data.tokens;
+    const { user, tenant } = response.data.data;
+
+    const responseData = {
+      ...response.data,
+      data: {
+        ...response.data.data,
+        tokens: undefined, // Remove tokens from response body
+      },
+    };
+
+    const nextResponse = NextResponse.json(responseData, {
+      status: response.status,
+    });
+
+    // Simple cookie configuration
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+    };
+
+    // Set accessToken cookie
+    nextResponse.cookies.set("accessToken", accessToken, cookieOptions);
+    console.log("   ✅ accessToken cookie set");
+
+    // Set refreshToken cookie
+    nextResponse.cookies.set("refreshToken", refreshToken, cookieOptions);
+    console.log("   ✅ refreshToken cookie set");
+
+    return nextResponse;
   } catch (error) {
     const errorMessage = handleServerApiError(error);
     const status = axios.isAxiosError(error)
       ? error.response?.status || 500
       : 500;
+
     return NextResponse.json({ error: errorMessage }, { status });
   }
 }

@@ -41,7 +41,7 @@ const formSchema = z.object({
       { message: "This subdomain is reserved and cannot be used" }
     ),
 
-  // Email validation - must be valid email format
+  // Email validation
   email: z
     .string()
     .min(1, "Email is required")
@@ -49,7 +49,7 @@ const formSchema = z.object({
     .toLowerCase()
     .trim(),
 
-  // Password validation - enforces strong password requirements
+  // Password validation
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
@@ -59,7 +59,7 @@ const formSchema = z.object({
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
 
-  // Terms and conditions acceptance - must be checked to proceed
+  // Terms and conditions acceptance
   termsAccepted: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",
   }),
@@ -90,63 +90,40 @@ export default function SignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  /**
-   * Handle form submission and call the signup API
-   * Flow:
-   * 1. Validate form data (handled by react-hook-form + Zod)
-   * 2. Call POST /api/v1/signUp (Next.js API route)
-   * 3. Next.js route forwards to backend: POST /v1/auth/registration/institution
-   * 4. On success: redirect to sign in page with pre-filled email
-   * 5. On error: display error message
-   */
   const signUpCreator = async (formData: FormData) => {
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("📝 [SIGNUP FORM] Form submitted");
-    console.log("   Tenant:", formData.tenant);
-    console.log("   Email:", formData.email);
-    console.log("   Password: [REDACTED]");
-    console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-    // Clear any previous errors
     setErrorMessage(null);
     setIsLoading(true);
 
     try {
-      console.log("🚀 [SIGNUP] Calling API endpoint: POST /v1/signUp");
-
-      // Call Next.js API route (not the backend directly)
-      // This calls: /api/v1/signUp which forwards to the backend
       const response = await api.post("/v1/signUp", {
         tenantName: formData.tenant,
         email: formData.email,
         password: formData.password,
-        role: "INSTITUTION", // User role for institution signup
+        role: "INSTITUTION",
       });
 
-      console.log("✅ [SIGNUP SUCCESS] Registration successful!");
-      console.log("   Response:", response.data);
-      console.log("   Redirecting to sign in page...");
+      // Extract tenant data from response
+      const { tenant } = response.data.data;
 
-      // On successful registration, redirect to sign in page
-      // Pass email as query param to pre-fill the login form
-      // Pass registered=true flag to show success message
-      router.push(
-        `/signIn?email=${encodeURIComponent(formData.email)}&registered=true`
-      );
+      console.log("🏢 [TENANT DATA]", tenant);
+      console.log(`   Website: ${tenant.website}`);
+      console.log(`   Name: ${tenant.name}`);
+
+      // Construct tenant subdomain sign-in URL
+      const protocol = window.location.protocol; // http: or https:
+      const rootDomain =
+        process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
+      const tenantSignInUrl = `${protocol}//${
+        tenant.website
+      }.${rootDomain}/signIn?email=${encodeURIComponent(
+        formData.email
+      )}&registered=true`;
+
+      // Hard redirect to tenant subdomain sign-in page
+      window.location.href = tenantSignInUrl;
     } catch (error: any) {
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.error("❌ [SIGNUP ERROR] Registration failed");
-      console.error("   Error:", error);
-      console.error("   Response:", error.response?.data);
-      console.error("   Status:", error.response?.status);
-      console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-      // Handle errors from the API
-      // Extract error message from response or use default message
       const message =
         error.response?.data?.error || "Sign up failed. Please try again.";
-
-      console.log("📝 [ERROR MESSAGE] Displaying to user:", message);
 
       setErrorMessage(message);
       setIsLoading(false);
@@ -155,7 +132,6 @@ export default function SignUpForm() {
 
   // Show loading spinner during form submission
   if (isLoading) {
-    console.log("⏳ [LOADING] Showing loading spinner...");
     return <TuteraLoading />;
   }
 

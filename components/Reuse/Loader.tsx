@@ -27,10 +27,8 @@ export default function TuteraLoading({
           />
         </div>
 
-        {/* Loading bar */}
-        <div className="w-64 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-          <div className="h-full bg-linear-gradient-to-r from-blue-500 via-blue-600 to-yellow-400 rounded-full animate-loading-bar" />
-        </div>
+        {/* Loading spinner */}
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin" />
       </div>
     </div>
   );

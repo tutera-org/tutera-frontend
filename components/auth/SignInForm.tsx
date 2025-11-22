@@ -19,7 +19,7 @@ const formSchema = z.object({
     .toLowerCase()
     .trim(),
 
-  // Password validation - just require it exists during signin
+  // Ensure password is not empty
   password: z.string().min(1, "Password is required"),
 });
 
@@ -64,23 +64,29 @@ export default function SignInForm({
     setIsLoading(true);
 
     try {
-      // Call Next.js API route which forwards to backend
-      const response = await api.post("/api/signIn", {
+      // Call the Next.js API route at /api/v1/signIn
+      const response = await api.post("/v1/signIn", {
         email: formData.email,
         password: formData.password,
       });
 
-      // Get tenant subdomain in the backend response
-      const { tenant } = response.data;
+      // Extract tenant and user from response.data.data
+      const { tenant, user } = response.data.data;
 
-      // Redirect to tenant subdomain dashboard
+      // Construct subdomain URL for redirect
+
       const protocol = window.location.protocol;
-      const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "localhost:3000";
-      window.location.href = `${protocol}//${tenant}.${baseDomain}/dashboard`;
+      const rootDomain =
+        process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
+      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/dashboard`;
+
+      // Hard redirect to subdomain (full page reload to change domain)
+      window.location.href = subdomainUrl;
     } catch (error: any) {
       // Handle errors from the API
       const message =
         error.response?.data?.error || "Sign in failed. Please try again.";
+
       setErrorMessage(message);
       setIsLoading(false);
     }

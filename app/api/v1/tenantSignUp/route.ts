@@ -11,10 +11,10 @@ export async function POST(request: NextRequest) {
 
     const api = await getApiWithCookies();
 
-    const response = await api.post("/v1/auth/register/institution", body);
+    // Call backend learner registration endpoint
+    const response = await api.post("/v1/auth/register/learner", body);
 
-    // Return the full response (including tenant data for redirect)
-
+    // Return the full response
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const errorMessage = handleServerApiError(error);
