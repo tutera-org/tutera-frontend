@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const hostname = req.headers.get("host") || "";
-  const baseDomain = process.env.NEXT_PUBLIC_APP_DOMAIN || "localhost:3000";
+  const baseDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
 
   // --- Ignore assets & API ---
   if (
@@ -65,33 +65,39 @@ export function proxy(req: NextRequest) {
     }
 
     // Check authentication
-    const token = req.cookies.get("auth_token")?.value;
+    const token = req.cookies.get("accessToken")?.value;
     const isAuthenticated = !!token;
 
-    // TODO: Remove anything asides from signIn and SignUp from publicroutes
+    // Public routes that don't require authentication on tenant subdomains
     const tenantPublicRoutes = [
+      "/signIn",
+      "/signUp",
       "/forgotPassword",
       "/resetPassword",
       "/resetSuccess",
-      "/signIn",
-      "/signUp",
       "/verifyOtp",
-      "/dashboard",
-      "/courseManagement",
-      "/earnings",
-      "/settings",
-      "/customization",
     ];
+
     const isTenantPublic = tenantPublicRoutes.some((route) =>
       url.pathname.startsWith(route)
     );
 
     // Redirect to signIn if not authenticated and not on public route
     if (!isAuthenticated && !isTenantPublic) {
+      console.log(`🔒 [MIDDLEWARE] Unauthenticated access to ${url.pathname}`);
+      console.log(`   Redirecting to /signIn on tenant: ${tenant}`);
+
       const redirectUrl = url.clone();
       redirectUrl.pathname = "/signIn";
       redirectUrl.searchParams.set("redirect", url.pathname);
       return NextResponse.redirect(redirectUrl);
+    }
+
+    // If authenticated, log it for debugging
+    if (isAuthenticated) {
+      console.log(
+        `✅ [MIDDLEWARE] Authenticated access to ${url.pathname} for tenant: ${tenant}`
+      );
     }
 
     // Rewrite to tenant dynamic route
