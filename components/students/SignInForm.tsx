@@ -11,23 +11,18 @@ import { z } from "zod";
 import TuteraLoading from "../Reuse/Loader";
 import StudentButton from "./Button";
 
-// Define validation rules for the signin form
 const formSchema = z.object({
-  // Email validation
   email: z
     .string()
     .min(1, "Email is required")
     .email("Invalid email address")
     .toLowerCase()
     .trim(),
-
-  // Password validation
   password: z.string().min(1, "Password is required"),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-// SearchParams prop interface
 interface SignInFormProps {
   prefilledEmail?: string;
   showSuccessMessage?: boolean;
@@ -51,11 +46,9 @@ export default function SignInForm({
     },
   });
 
-  // Track loading and error states
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Show success message when user comes from signup page
   useEffect(() => {
     if (showSuccessMessage) {
       toast.success("Account created successfully! Please sign in.");
@@ -63,38 +56,27 @@ export default function SignInForm({
   }, [showSuccessMessage]);
 
   const creatorSignIn = async (formData: FormData) => {
-    // Clear any previous errors
     setErrorMessage(null);
     setIsLoading(true);
 
     try {
-      console.log("🚀 [SIGNIN] Calling API endpoint: POST /v1/signIn");
-
-      // Call the Next.js API route at /api/v1/signIn
       const response = await api.post("/v1/signIn", {
         email: formData.email,
         password: formData.password,
       });
 
-      console.log("✅ [SIGNIN SUCCESS] Authentication successful!");
-      console.log("   Response:", response.data);
-
-      // Extract tenant and user from response.data.data
-      const { tenant, user } = response.data.data;
-
-      // redirect to dashboard
-      router.push("/dashboard");
+      // Successful login - redirect to dashboard
+      window.location.href = "/dashboard";
     } catch (error: any) {
-      // Handle errors from the API
       const message =
         error.response?.data?.error || "Sign in failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);
+      toast.error(message);
     }
   };
 
-  // Show loading spinner during form submission
   if (isLoading) {
     return <TuteraLoading />;
   }
@@ -104,14 +86,12 @@ export default function SignInForm({
       onSubmit={handleSubmit(creatorSignIn)}
       className="flex py-8 flex-col gap-6"
     >
-      {/* Display error message if signin fails */}
       {errorMessage && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           {errorMessage}
         </div>
       )}
 
-      {/* ==================== EMAIL INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Email
         <input
@@ -122,7 +102,6 @@ export default function SignInForm({
             errors.email ? "border-red-500" : "border-black-400"
           }`}
         />
-        {/* Show validation error if exists */}
         {errors.email && (
           <span className="text-red-500 text-xs font-normal">
             {errors.email.message}
@@ -130,7 +109,6 @@ export default function SignInForm({
         )}
       </label>
 
-      {/* ==================== PASSWORD INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
         <input
@@ -141,7 +119,6 @@ export default function SignInForm({
             errors.password ? "border-red-500" : "border-black-400"
           }`}
         />
-        {/* Show validation error if exists */}
         {errors.password && (
           <span className="text-red-500 text-xs font-normal">
             {errors.password.message}
@@ -149,7 +126,6 @@ export default function SignInForm({
         )}
       </label>
 
-      {/* ==================== FORGOT PASSWORD LINK ==================== */}
       <Link
         href="/forgotPassword"
         className="leading-5 text-neutral-900 text-center hover:text-blue-900 text-xs sm:text-sm hover:underline"
@@ -157,7 +133,6 @@ export default function SignInForm({
         Forgot Password?
       </Link>
 
-      {/* ==================== SUBMIT BUTTON ==================== */}
       <StudentButton
         type="submit"
         disabled={isSubmitting || isLoading}
@@ -168,7 +143,6 @@ export default function SignInForm({
         {isSubmitting || isLoading ? "Signing in..." : "Sign In"}
       </StudentButton>
 
-      {/* ==================== SIGN UP LINK ==================== */}
       <p className="text-xs sm:text-sm font-normal text-main-primary text-center">
         Don't have an account?{" "}
         <Link href="/signUp" className="text-red-500 hover:underline">
