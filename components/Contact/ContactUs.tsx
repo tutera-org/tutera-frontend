@@ -172,8 +172,8 @@ const ContactUs = () => {
                 target="_blank"
                 >
                     <Image
-                  src="/Telegram-icon-black.svg"
-                  alt="Telegram"
+                  src="/titok-black.svg"
+                  alt="TikTok"
                   width={16}
                   height={16}
                   className="cursor-pointer"

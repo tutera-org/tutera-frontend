@@ -1,6 +1,6 @@
 import { CiSearch } from "react-icons/ci";
-import StudentButton from "./Button";
-import Link from "next/link";
+// import StudentButton from "./Button";
+// import Link from "next/link";
 import EmptyStudentPage from "./EmptyStudent";
 import PopulatedStudentPage from "./PopulatedStudentPage";
 

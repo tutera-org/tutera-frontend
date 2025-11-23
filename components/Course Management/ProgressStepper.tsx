@@ -14,7 +14,7 @@ export default function ProgressStepper({ currentStep }: ProgressStepperProps) {
   ];
 
   return (
-    <div className="flex items-center justify-center mb-2 md:mb-6">
+    <div className="flex items-center justify-center mb-6">
       {steps.map((step, index) => {
         const isCompleted = step.number < currentStep;
         const isCurrent = step.number === currentStep;

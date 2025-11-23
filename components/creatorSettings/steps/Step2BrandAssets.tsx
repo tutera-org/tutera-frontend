@@ -27,11 +27,11 @@ export default function Step2BrandAssets({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Brand Upload Section */}
-      <div className="bg-white rounded-2xl  p-6 md:p-8">
-        <h2 className="text-xl font-bold text-[#101A33] mb-6">Brand upload</h2>
-        <div className="space-y-6">
+      <div className="">
+        <h2 className="text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent rounded-xl  px-4 py-2 mb-4">Brand upload</h2>
+        <div className="space-y-6 bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent rounded-2xl px-4 md:px-4 py-6">
           {/* Logo Upload */}
           <div>
             <label className="block text-sm font-medium text-[#101A33] mb-3">
@@ -138,9 +138,9 @@ export default function Step2BrandAssets({
       </div>
 
       {/* Brand Image Section */}
-      <div className="bg-white rounded-2xl p-6 md:p-8">
-        <h2 className="text-xl font-bold text-[#101A33] mb-6">Brand image</h2>
-        <div>
+      <div >
+        <h2 className="text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 md:px-4 py-2 rounded-xl mb-4">Brand image</h2>
+        <div className="bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent  px-4 md:px-4 py-6 rounded-2xl">
           <label className="block text-sm font-medium text-[#101A33] mb-3">
             Add brand image
           </label>

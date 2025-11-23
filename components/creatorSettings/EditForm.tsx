@@ -21,7 +21,7 @@ export default function EditForm() {
     <>
       <form
         onSubmit={handleSubscription}
-        className="lg:col-span-3 flex flex-col gap-6 sm:gap-8 md:gap-10"
+        className="lg:col-span-3 flex flex-col gap-6 sm:gap-8 md:gap-10 border-rounded-2xl  sm:py-8 md:py-10"
       >
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between">
           <aside className="flex flex-col w-full md:basis-[50%] gap-1">

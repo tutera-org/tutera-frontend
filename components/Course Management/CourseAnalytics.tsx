@@ -200,7 +200,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
       </div>
 
       {/* Analytics Table */}
-      <div className="bg-white rounded-lg shadow-sm h-160  overflow-y-scroll">
+      <div className="bg-white rounded-lg  border border-[#E1E1E1] h-160  overflow-y-scroll">
         <div className="">
           <table className="w-full">
             <thead className=" border-b border-[#EAECF0]">
@@ -279,7 +279,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
       {/* Summary Stats */}
       {filteredStudents.length > 0 && (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow-md p-4">
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-4">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Total Students
             </h3>
@@ -287,7 +287,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
               {filteredStudents.length}
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Average Quiz Score
             </h3>
@@ -301,7 +301,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
               %
             </p>
           </div>
-          <div className="bg-white rounded-lg shadow-md p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Completion Rate
             </h3>

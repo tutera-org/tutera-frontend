@@ -61,7 +61,7 @@ export default function CourseManagementPage() {
   // Show empty state if no courses and not in creation flow
   if (courses.length === 0 && currentStep === 0) {
     return (
-      <div className="min-h-screen bg-[#F0F4FF] py-8">
+      <div className="min-h-screen py-8">
         <div className=" mx-auto">
           <div className="mb-6"></div>
           <h1 className="text-3xl font-bold text-[#101A33] mb-8">

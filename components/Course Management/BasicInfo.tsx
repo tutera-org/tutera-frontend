@@ -115,11 +115,11 @@ export default function BasicInfo() {
 
   return (
     <div>
-    <div className="w-full md:w-[80%] md:rounded-lg md:px-6 md:py-4 md:border border-dashed border-[#101a33c6] mx-auto">
+    <div className="w-full md:w-[80%] md:rounded-lg md:px-6 md:py-4 md:border border-dashed bg-gray-50 px-4 py-3 md:bg-transparent rounded-2xl border-[#101a33c6] mx-auto">
       <div className=" rounded-[16px]  py-2 md:mb-4">
         <span className="text-[#101A33] md:text-[24px] text-[16px] font-semibold">Info</span>
       </div>
-      <div className="bg-white rounded-[16px] text-[20px]shadow-lg py-4 md:py-4">
+      <div className="b rounded-[16px] text-[20px] py-4 md:py-4">
         <div className="space-y-5">
           <div>
             <label className="block text-[#101A33] font-semibold md:text-[1.25rem] text-[1rem] mb-2">
@@ -130,7 +130,7 @@ export default function BasicInfo() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g Complete Web Development Bootcamp"
-              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none "
+              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none placeholder:text-sm"
             />
           </div>
 
@@ -143,7 +143,7 @@ export default function BasicInfo() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe what student will learn, who this course is for, and what makes it unique..."
               rows={6}
-              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none resize-none h-[100px] overflow-y-auto scrollbar-smooth"
+              className="w-full px-4 py-3 border-2 border-gray-300  placeholder:text-[#5D5D5D] rounded-lg focus:outline-none resize-none h-[100px] overflow-y-auto scrollbar-smooth placeholder:text-sm"
             />
           </div>
 

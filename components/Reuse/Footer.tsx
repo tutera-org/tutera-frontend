@@ -58,7 +58,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <Image
-                  src="/SocialIcons3.svg"
+                  src="/titok-white.svg"
                   alt="TikTok icon"
                   width={16}
                   height={16}
