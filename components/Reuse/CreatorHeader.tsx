@@ -1,13 +1,20 @@
 "use client";
 import Image from "next/image";
 import NavLink from "../creatorDashboard/NavBar";
-import { FaBell, FaBars, FaTimes } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { FaBell, FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
+import { useEffect, useState, useRef } from "react";
 import { SingleAvatar } from "./Avatar";
+import { useRouter } from "next/navigation";
+import { api, handleClientApiError } from "@/lib/axiosClientInstance";
+import { toast } from "sonner";
 
 export default function CreatorHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [tenantName, setTenantName] = useState("Institution");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // ✅ Get tenant name from sessionStorage on mount
   useEffect(() => {
@@ -19,6 +26,60 @@ export default function CreatorHeader() {
       console.log("🏢 Creator Header - Institution:", storedTenantName);
     }
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      console.log("🚪 Starting logout...");
+
+      const response = await api.post("/v1/tenantLogout");
+
+      if (response.data.success) {
+        console.log("✅ Logout successful");
+        toast.success(response.data.message || "Logged out successfully");
+
+        // Clear sessionStorage
+        if (typeof window !== "undefined") {
+          sessionStorage.clear();
+        }
+
+        // Redirect to login page
+        router.push("/login");
+      }
+    } catch (error) {
+      console.error("❌ Logout error:", error);
+      const errorMessage = handleClientApiError(error);
+      toast.error(errorMessage);
+
+      // Clear session and redirect anyway for security
+      if (typeof window !== "undefined") {
+        sessionStorage.clear();
+      }
+      router.push("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   const user = {
     name: tenantName,
@@ -48,15 +109,36 @@ export default function CreatorHeader() {
           {/* icons */}
           <FaBell className="text-lg hover:text-primary-400 cursor-pointer transition-colors" />
 
-          {/* Avatar - Hidden on small screens, shown on md and up */}
-          <aside className="md:bg-neutral-100 bg-transparent hidden sm:flex items-center rounded-2xl px-3 py-2.5 text-xs text-neutral-900 gap-3 min-h-11">
-            <SingleAvatar name={tenantName} />
+          {/* Avatar with Dropdown - Hidden on small screens, shown on md and up */}
+          <div className="relative hidden sm:block" ref={dropdownRef}>
+            <aside
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="md:bg-neutral-100 bg-transparent flex items-center rounded-2xl px-3 py-2.5 text-xs text-neutral-900 gap-3 min-h-11 cursor-pointer hover:bg-neutral-200 transition-colors"
+            >
+              <SingleAvatar name={tenantName} />
 
-            <div className="md:flex hidden flex-col">
-              <p className="font-medium">{user.name}</p>
-              <p className="text-neutral-700">{user.role}</p>
-            </div>
-          </aside>
+              <div className="md:flex hidden flex-col">
+                <p className="font-medium">{user.name}</p>
+                <p className="text-neutral-700">{user.role}</p>
+              </div>
+            </aside>
+
+            {/* Dropdown Menu */}
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-neutral-200 py-2 z-50">
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-neutral-900 hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <FaSignOutAlt className="text-base" />
+                  <span className="font-medium">
+                    {isLoggingOut ? "Logging out..." : "Logout"}
+                  </span>
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Button - Only below large screens */}
           <button
@@ -110,7 +192,7 @@ export default function CreatorHeader() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="bg-neutral-100 font-semibold text-base rounded-2xl p-4 flex flex-col items-start gap-7">
+          <nav className="bg-neutral-100 font-semibold text-base rounded-2xl p-4 flex flex-col items-start gap-7 mb-6">
             <div onClick={() => setIsMenuOpen(false)}>
               <NavLink href="/dashboard" linkText="Dashboard" />
             </div>
@@ -124,6 +206,16 @@ export default function CreatorHeader() {
               <NavLink href="/settings" linkText="Settings" />
             </div>
           </nav>
+
+          {/* Mobile Logout Button */}
+          <button
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+            className="w-full flex items-center justify-center gap-3 bg-red-50 hover:bg-red-100 text-red-600 font-semibold py-3 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <FaSignOutAlt className="text-base" />
+            <span>{isLoggingOut ? "Logging out..." : "Logout"}</span>
+          </button>
         </div>
       </div>
     </>
