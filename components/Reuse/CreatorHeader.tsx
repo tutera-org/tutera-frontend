@@ -2,14 +2,26 @@
 import Image from "next/image";
 import NavLink from "../creatorDashboard/NavBar";
 import { FaBell, FaBars, FaTimes } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SingleAvatar } from "./Avatar";
 
 export default function CreatorHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [tenantName, setTenantName] = useState("Institution");
+
+  // ✅ Get tenant name from sessionStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedTenantName =
+        sessionStorage.getItem("tenant_name") || "Institution";
+      setTenantName(storedTenantName);
+
+      console.log("🏢 Creator Header - Institution:", storedTenantName);
+    }
+  }, []);
 
   const user = {
-    name: "Ansah Chikeh",
+    name: tenantName,
     role: "Creator",
   };
 
@@ -38,7 +50,7 @@ export default function CreatorHeader() {
 
           {/* Avatar - Hidden on small screens, shown on md and up */}
           <aside className="md:bg-neutral-100 bg-transparent hidden sm:flex items-center rounded-2xl px-3 py-2.5 text-xs text-neutral-900 gap-3 min-h-11">
-            <SingleAvatar name="Ansah Chikeh" />
+            <SingleAvatar name={tenantName} />
 
             <div className="md:flex hidden flex-col">
               <p className="font-medium">{user.name}</p>

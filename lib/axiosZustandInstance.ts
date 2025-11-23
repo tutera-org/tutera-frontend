@@ -1,19 +1,76 @@
-// For client-side API calls that DON'T need to go through Next.js API routes
-
+// For client-side API calls with request deduplication
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 import { toast } from "sonner";
 
+// Cache for ongoing requests
+const pendingRequests = new Map<string, Promise<any>>();
+
+// Cache for completed requests
+interface CachedResponse {
+  data: any;
+  headers: any;
+  timestamp: number;
+}
+const responseCache = new Map<string, CachedResponse>();
+const CACHE_DURATION = 5000; // 5 seconds - adjust as needed
+
+// Generate unique key for each request
+function getRequestKey(config: InternalAxiosRequestConfig): string {
+  return `${config.method}:${config.url}:${JSON.stringify(
+    config.params
+  )}:${JSON.stringify(config.data)}`;
+}
+
+// AXIOS INSTANCE
+
 export const backendApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL, // https://tutera-backend.onrender.com/api
-  withCredentials: true, // Important: Send cookies with requests
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Request interceptor - logs outgoing requests
+// REQUEST INTERCEPTOR - Deduplication
+
 backendApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    const requestKey = getRequestKey(config);
+
+    // Check if there's a cached response
+    const cached = responseCache.get(requestKey);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      if (process.env.NODE_ENV === "development") {
+        console.log(
+          `💾 [CACHE HIT] ${config.method?.toUpperCase()} ${config.url}`
+        );
+      }
+
+      // Return cached response
+      config.adapter = () => {
+        return Promise.resolve({
+          data: cached.data,
+          status: 200,
+          statusText: "OK (cached)",
+          headers: cached.headers,
+          config,
+        });
+      };
+      return config;
+    }
+
+    // Check if there's already a pending request
+    if (pendingRequests.has(requestKey)) {
+      if (process.env.NODE_ENV === "development") {
+        console.log(`🔄 [DEDUP] ${config.method?.toUpperCase()} ${config.url}`);
+      }
+
+      // Return the existing promise
+      config.adapter = () => pendingRequests.get(requestKey)!;
+      return config;
+    }
+
+    // Log outgoing request
     if (process.env.NODE_ENV === "development") {
       console.log(
         `🚀 [BACKEND API] ${config.method?.toUpperCase()} ${config.baseURL}${
@@ -21,6 +78,10 @@ backendApi.interceptors.request.use(
         }`
       );
     }
+
+    // Store request metadata for later use
+    (config as any).requestKey = requestKey;
+
     return config;
   },
   (error: AxiosError) => {
@@ -31,18 +92,41 @@ backendApi.interceptors.request.use(
   }
 );
 
-// Response interceptor - handles errors and token refresh
+// ============================================
+// RESPONSE INTERCEPTOR - Caching & Error Handling
+
 backendApi.interceptors.response.use(
   (response) => {
+    const requestKey = (response.config as any).requestKey;
+
+    if (requestKey) {
+      // Cache the response
+      responseCache.set(requestKey, {
+        data: response.data,
+        headers: response.headers,
+        timestamp: Date.now(),
+      });
+
+      // Clean up pending request
+      pendingRequests.delete(requestKey);
+    }
+
     if (process.env.NODE_ENV === "development") {
       console.log(`✅ [BACKEND API] ${response.status} ${response.config.url}`);
     }
+
     return response;
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
+      requestKey?: string;
     };
+
+    // Clean up pending request on error
+    if (originalRequest?.requestKey) {
+      pendingRequests.delete(originalRequest.requestKey);
+    }
 
     if (process.env.NODE_ENV === "development") {
       console.error(
@@ -58,7 +142,6 @@ backendApi.interceptors.response.use(
       try {
         console.log("🔄 [TOKEN REFRESH] Attempting to refresh token...");
 
-        // Call backend refresh endpoint directly
         await backendApi.post(
           "/v1/auth/refresh",
           {},
@@ -72,7 +155,6 @@ backendApi.interceptors.response.use(
       } catch (refreshError) {
         console.error("❌ [TOKEN REFRESH FAILED]", refreshError);
 
-        // Redirect to sign in
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
           if (currentPath !== "/signIn") {
@@ -115,7 +197,9 @@ backendApi.interceptors.response.use(
   }
 );
 
-// Helper function to extract error messages
+// HELPER FUNCTIONS
+
+// Extract error messages
 export function handleBackendApiError(error: unknown): string {
   if (axios.isAxiosError(error)) {
     if (error.response) {
@@ -127,4 +211,13 @@ export function handleBackendApiError(error: unknown): string {
     }
   }
   return "An unexpected error occurred. Please try again.";
+}
+
+// Clear all caches (useful for logout or manual refresh)
+export function clearApiCache() {
+  responseCache.clear();
+  pendingRequests.clear();
+  if (process.env.NODE_ENV === "development") {
+    console.log("🧹 [CACHE CLEARED] All API caches cleared");
+  }
 }

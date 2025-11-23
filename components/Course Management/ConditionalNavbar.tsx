@@ -3,29 +3,47 @@
 import { useEffect, useState } from "react";
 import CreatorHeader from "@/components/Reuse/CreatorHeader";
 import StudentsNavbar from "@/components/students/Navbar";
+import TuteraLoading from "../Reuse/Loader";
+
+type UserRole = "institution" | "student" | null;
 
 export default function ConditionalNavbar() {
-  const role = "creator" as "creator" | "student";
+  const [role, setRole] = useState<UserRole>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [showNavbar, setShowNavbar] = useState(true);
 
+  // ✅ Get role from sessionStorage on mount
   useEffect(() => {
-    // Check if we're in course creation flow (currentStep > 0)
+    if (typeof window !== "undefined") {
+      const storedRole = sessionStorage.getItem("user_role") as UserRole;
+      setRole(storedRole);
+      setIsLoading(false);
+      console.log("📋 Retrieved role from sessionStorage:", storedRole);
+    }
+  }, []);
+
+  // Monitor course creation flow
+  useEffect(() => {
     const checkStep = () => {
       if (typeof window !== "undefined") {
         const savedStep = localStorage.getItem("tutera_current_step");
         const step = savedStep ? parseInt(savedStep) : 0;
-        // Hide navbar when in course creation steps (1-3)
         setShowNavbar(step === 0);
       }
     };
 
     checkStep();
-    // Check periodically in case step changes
     const interval = setInterval(checkStep, 100);
     return () => clearInterval(interval);
   }, []);
 
+  if (isLoading) return <TuteraLoading />;
   if (!showNavbar) return null;
 
-  return role === "student" ? <StudentsNavbar /> : <CreatorHeader />;
+  return (
+    <div>
+      {role === "institution" && <CreatorHeader />}
+      {role === "student" && <StudentsNavbar />}
+    </div>
+  );
 }
