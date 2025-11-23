@@ -10,7 +10,33 @@ import { toast } from "sonner";
 import { z } from "zod";
 import TuteraLoading from "../Reuse/Loader";
 import StudentButton from "./Button";
-import { useUserStore } from "@/store/useUserStore"; // ADDED: Import store
+
+// ✅ TypeScript interface for backend response
+interface SignInResponse {
+  success: boolean;
+  message: string;
+  data: {
+    user: {
+      id: string;
+      email: string;
+      firstName: string;
+      lastName: string;
+      role: "INSTITUTION" | "STUDENT";
+      tenantId: string;
+      avatar: string;
+    };
+    tenant: {
+      id: string;
+      website: string;
+      name: string;
+      type: string;
+    };
+    tokens: {
+      accessToken: string;
+      refreshToken: string;
+    };
+  };
+}
 
 const formSchema = z.object({
   email: z
@@ -34,7 +60,6 @@ export default function SignInForm({
   showSuccessMessage,
 }: SignInFormProps) {
   const router = useRouter();
-  const setRole = useUserStore((state) => state.setRole); // ADDED: Get setRole from store
 
   const {
     register,
@@ -62,14 +87,35 @@ export default function SignInForm({
     setIsLoading(true);
 
     try {
-      const response = await api.post("/v1/signIn", {
+      const response = await api.post<SignInResponse>("/v1/signIn", {
         email: formData.email,
         password: formData.password,
       });
 
-      // ADDED: Extract role from response and set it in store
+      // Extract role from response
       const role = response.data.data.user.role;
-      setRole(role); // This prevents AuthProvider from fetching again
+      console.log("🔐 User role from backend:", role);
+
+      // Store in sessionStorage
+      if (typeof window !== "undefined") {
+        const normalizedRole = role.toLowerCase();
+        sessionStorage.setItem("user_role", normalizedRole);
+        sessionStorage.setItem("user_id", response.data.data.user.id);
+        sessionStorage.setItem("user_email", response.data.data.user.email);
+        sessionStorage.setItem(
+          "user_firstName",
+          response.data.data.user.firstName
+        );
+        sessionStorage.setItem(
+          "user_lastName",
+          response.data.data.user.lastName
+        );
+        sessionStorage.setItem("tenant_name", response.data.data.tenant.name);
+
+        console.log("✅ Stored all user data in sessionStorage");
+      }
+
+      toast.success("Login successful!");
 
       // Redirect to dashboard
       window.location.href = "/dashboard";
