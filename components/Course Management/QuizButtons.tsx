@@ -4,7 +4,7 @@ import Image from "next/image";
 import { DragHandleIcon } from "./utils";
 
 interface QuizButtonsProps {
-  quizzes: any[];
+  quizzes: unknown[];
   currentQuizIndex: number;
   onQuizClick: (index: number) => void;
   onDelete: (index: number) => void;

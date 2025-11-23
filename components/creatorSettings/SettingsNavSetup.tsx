@@ -9,7 +9,7 @@ export default function Settings() {
   const tabs = ["Edit Profile", "Customization", "Account"];
 
   return (
-    <section className="rounded-2xl py-5 sm:py-7 md:py-9 px-4 sm:px-6 md:px-10 bg-neutral-100">
+    <section className="rounded-2xl py-5 sm:py-5 px-4 border border-[#C3C3C3] border-dashed sm:px-6 md:px-10 bg-neutral-100">
       {/* NavBar */}
       <div className="w-full">
         <div className="flex items-center border-b border-secondary-400 gap-1 sm:gap-1.5">

@@ -10,7 +10,7 @@ interface LessonPreviewProps {
 
 export default function LessonPreview({ lesson, onBack }: LessonPreviewProps) {
   return (
-    <div className="w-full mx-auto">
+    <div className="w-[80%] mx-auto">
       <div className="bg-white p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <Button variant="secondary" onClick={onBack} className="px-4 py-2">

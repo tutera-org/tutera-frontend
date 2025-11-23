@@ -32,11 +32,11 @@ export default function Step3ColorTheme({
   onChange,
 }: Step3ColorThemeProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-sm md:text-xl font-bold text-[#101A33] mb-6">
+    <div>
+      <h2 className="text-sm md:text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] rounded-xl md:bg-transparent px-4 py-2 mb-6">
         Choose best colour for your brand
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-6 rounded-[16px] ">
         {colorThemes.map((theme) => (
           <div
             key={theme.name}

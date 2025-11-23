@@ -12,9 +12,9 @@ export default function Step4SocialMedia({
   onChange,
 }: Step4SocialMediaProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-      <h2 className="text-xl font-bold text-[#101A33] mb-6">Social media links</h2>
-      <div className="flex flex-col gap-6">
+    <div >
+      <h2 className="text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-2 rounded-xl mb-6">Social media links</h2>
+      <div className="flex flex-col gap-6 bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-6 rounded-2xl ">
         <div>
           <label className="block text-sm font-medium text-[#101A33] mb-2">
             Twitter

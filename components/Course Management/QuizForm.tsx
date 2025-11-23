@@ -38,13 +38,13 @@ export default function QuizForm({
   onTouchEnd,
 }: QuizFormProps) {
   return (
-    <div className="w-full md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-4 md:border border-dashed">
-      <div className="flex justify-between items-center mb-2 mt-2">
+    <div className="w-full md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-4 md:border border-dashed  border-[#101A33] bg-gray-50 px-4 py-6 rounded-2xl  md:bg-transparent">
+      <div className="flex justify-between items-center mb-2 mt-2 ">
         <h3 className="text-[24px] font-semibold text-[#101A33]">Quiz</h3>
         <Button
           variant="secondary"
           onClick={onBack}
-          className="px-4 py-2 border-none bg-transparent text-[16px]"
+          className="px-4 py-2 border-none bg-transparent text-[16px] font-semibold"
         >
           Back to Module
         </Button>

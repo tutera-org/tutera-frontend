@@ -171,22 +171,19 @@ export default function SetUp() {
   };
 
   return (
-    <div className="w-full mx-auto md:w-[80%] md:rounded-lg md:px-6 md:py-4 md:border border-dashed relative">
-      <h3 className="text-xl font-semibold text-[#4977E6] mb-2 mt-6">
-        Select the features you want to include in your course
-      </h3>
-
+    <div className="w-full  relative">
+     
       <div
-        className={` rounded-2xl  ${
+        className={` rounded-2xl md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-2 md:border border-dashed  border-[#101A33] bg-gray-50 px-4 py-6  md:bg-transparent ${
           showPublishModal ? "blur-sm pointer-events-none" : ""
         }`}
       >
         {/* Course Content Options */}
-        <div className="mb-4">
+        <div className="mb-4 ">
           <h4 className="text-lg font-semibold text-[#101A33] mb-1 bg-white p-2 rounded-[16px]">
             Course Content Options
           </h4>
-          <div className="space-y-4 bg-white py-3 rounded-[16px]">
+          <div className="space-y-4  py-3 rounded-[16px]">
             <div className="flex items-center gap-3 border-2 border-[#C3C3C3] p-3 rounded-[16px]">
               <input
                 type="checkbox"
@@ -208,16 +205,16 @@ export default function SetUp() {
         </div>
 
         {/* Payment Options */}
-        <div className="mb-8">
-          <h4 className="text-lg font-semibold text-[#101A33] mb-1 bg-white p-2 rounded-[16px]">
+        <div className="mb-2">
+          <h4 className="text-lg font-semibold text-[#101A33] mb-3 bg-white p-2 rounded-[16px]">
             Choose Payment Options
           </h4>
-          <div className="space-y-4 bg-white p-2 rounded-[16px]">
+          <div className="space-y-4 rounded-[16px]">
             <div
               onClick={() => {
                 setPaymentOption("free");
               }}
-              className={`flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+              className={`flex items-start gap-4 p-4 border-2 rounded-[16px] cursor-pointer transition-colors ${
                 paymentOption === "free"
                   ? "border-[#4977E6] bg-blue-50"
                   : "border-[#C3C3C3] hover:border-gray-400"
@@ -228,7 +225,7 @@ export default function SetUp() {
                 name="payment"
                 checked={paymentOption === "free"}
                 onChange={() => {}}
-                className="mt-1 w-5 h-5 text-[#4977E6] border-gray-300 focus:ring-[#4977E6]"
+                className=" w-5 h-5 text-[#4977E6] border-gray-300 focus:ring-[#4977E6]"
               />
               <div>
                 <h4 className="font-semibold text-[#101A33] mb-1">
@@ -244,7 +241,7 @@ export default function SetUp() {
               onClick={() => {
                 setPaymentOption("paid");
               }}
-              className={`flex items-start gap-4 p-4 border-2 rounded-lg cursor-pointer transition-colors ${
+              className={`flex items-start gap-4 p-4 border-2 rounded-[16px] cursor-pointer transition-colors ${
                 paymentOption === "paid"
                   ? "border-[#4977E6] bg-blue-50"
                   : "border-[#C3C3C3] hover:border-gray-400"
@@ -255,7 +252,7 @@ export default function SetUp() {
                 name="payment"
                 checked={paymentOption === "paid"}
                 onChange={() => {}}
-                className="mt-1 w-5 h-5 text-[#4977E6] border-gray-300 focus:ring-[#4977E6]"
+                className=" w-5 h-5 text-[#4977E6] border-gray-300 focus:ring-[#4977E6]"
               />
               <div>
                 <h4 className="font-semibold text-[#101A33] mb-1">
@@ -268,7 +265,7 @@ export default function SetUp() {
             </div>
 
             {paymentOption === "paid" && (
-              <div className="mb-8">
+              <div >
                 <label className="block text-[#101A33] font-semibold mb-2">
                   Price
                 </label>
@@ -288,19 +285,21 @@ export default function SetUp() {
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+       
+      </div>
+
+      <div className="flex md:justify-end justify-between md:gap-4 md:w-[80%] mx-auto mt-4">
           <Button
             variant="secondary"
             onClick={() => setCurrentStep(2)}
-            className="px-6 py-2"
+            className="px-8 py-2"
           >
             Previous
           </Button>
-          <Button variant="primary" onClick={handleNext} className="px-6 py-2">
+          <Button variant="primary" onClick={handleNext} className="px-10 py-2">
             Done
           </Button>
         </div>
-      </div>
 
       <PublishModal
         isOpen={showPublishModal}

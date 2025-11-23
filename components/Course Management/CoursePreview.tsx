@@ -24,7 +24,7 @@ export default function CoursePreview({
   onLessonClick,
 }: CoursePreviewProps) {
   return (
-    <div className="w-full mx-auto">
+    <div className="[80%] mx-auto">
       <div className="p-2 md:p-8">
         <h3 className="text-[1.25rem] md:text-[1.75rem] font-semibold text-[#101A33]">
           Preview
@@ -33,7 +33,7 @@ export default function CoursePreview({
           <Button
             variant="secondary"
             onClick={onBack}
-            className="border-none md:text-[1.25rem] text-[0.8rem] text-black font-semibold"
+            className="border-none md:text-[1.25rem] text-[0.8rem] text-black font-semibold bg-transparent "
           >
             &lt; Back
           </Button>
@@ -107,7 +107,7 @@ export default function CoursePreview({
         </div>
 
         <div className="flex justify-end gap-4 mt-8">
-          <Button variant="primary" onClick={onNext} className="px-6 py-2">
+          <Button variant="primary" onClick={onNext} className="px-12 py-2.5">
             Next
           </Button>
         </div>

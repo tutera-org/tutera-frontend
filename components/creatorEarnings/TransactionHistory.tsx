@@ -43,7 +43,7 @@ export default function TransactionHistory() {
   ];
 
   return (
-    <section className="my-6 sm:my-10 md:my-15 bg-neutral-100 shadow-md rounded-2xl p-5 sm:p-6 md:p-8">
+    <section className="my-6 sm:my-10 md:my-15 bg-neutral-100 border border-[#C3C3C3] rounded-2xl p-5 sm:p-6 md:p-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-neutral-900">
@@ -107,7 +107,7 @@ export default function TransactionHistory() {
             {transactions.map((transaction, index) => (
               <tr
                 key={index}
-                className="hover:bg-neutral-200 transition-colors"
+                className="hover:bg-neutral-200 border-b border-[#EAECF0] transition-colors"
               >
                 <td
                   className="py-4 px-2 sm:px-4 text-xs sm:text-sm lg:text-base whitespace-nowrap"

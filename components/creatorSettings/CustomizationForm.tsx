@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Reuse/Button";
 import CustomizationProgressStepper from "./CustomizationProgressStepper";
@@ -14,6 +14,22 @@ export default function CustomizationForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<CustomizationFormData>({});
+
+  // Store step in localStorage to hide navbar
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("tutera_customization_step", currentStep.toString());
+    }
+  }, [currentStep]);
+
+  // Clear customization step when component unmounts (user leaves customization)
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("tutera_customization_step");
+      }
+    };
+  }, []);
 
   const stepTitles = [
     "Lets start with your profile",
@@ -30,6 +46,10 @@ export default function CustomizationForm() {
       console.log("Form submitted:", formData);
       // You can add API call here to save the data
       alert("Customization saved successfully!");
+      // Clear customization step to show navbar again
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("tutera_customization_step");
+      }
     }
   };
 
@@ -48,10 +68,10 @@ export default function CustomizationForm() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F0F4FF] py-8">
-      <div className="w-full  mx-auto">
+    <div className="min-h-screen py-4">
+      <div className="md:w-[80%]  mx-auto">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-6">
           <h1 className="md:text-[32px] text-[20px] font-bold text-[#101A33]  mb-2">
             {stepTitles[currentStep - 1]}
           </h1>
@@ -95,13 +115,21 @@ export default function CustomizationForm() {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-center md:justify-end gap-4">
           {currentStep > 1 && (
-            <Button variant="secondary" onClick={handlePrevious}>
+            <Button
+              variant="secondary"
+              onClick={handlePrevious}
+              className="px-8"
+            >
               Previous
             </Button>
           )}
-          <Button variant="primary" onClick={handleNext} className="px-8">
+          <Button
+            variant="primary"
+            onClick={handleNext}
+            className="px-12 py-2.5"
+          >
             {currentStep === 4 ? "Done" : "Next"}
           </Button>
         </div>

@@ -7,7 +7,7 @@ export default function CourseAnalyticsPage() {
   const { courses } = useCourse();
 
   return (
-    <div className="min-h-screen bg-[#F0F4FF] py-8">
+    <div className="min-h-screen py-8">
       <div className="w-[99%]  mx-auto">
         <CourseAnalytics courses={courses} />
       </div>

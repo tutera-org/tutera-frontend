@@ -23,18 +23,18 @@ export default function Customization() {
   return (
     <section className="mt-4 sm:mt-6 md:mt-8 lg:mt-10">
       <div className="flex flex-col gap-8 sm:gap-10 lg:gap-12">
-        <div className="bg-red-100 rounded-2xl py-4 sm:py-5 md:py-6 px-6 sm:px-8 md:px-10 flex flex-col gap-2">
-          <h1 className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[2rem] text-neutral-900">
+        <div className="bg-[#F9F0DA] rounded-2xl py-4 sm:py-5 md:py-6 px-6 sm:px-8 md:px-10 flex flex-col gap-2">
+          <h1 className="font-semibold text-lg sm:text-xl md:text-2xl lg:text-[1.5rem] text-neutral-900">
             Unlock Full Customization
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg lg:text-2xl text-primary-400 font-semibold">
+          <p className="text-sm sm:text-base md:text-lg lg:text-[1.2rem] text-primary-400 font-semibold">
             Upgrade to Pro to access custom domains, customize brand, and more
           </p>
 
           <div>
             <button
-              className="bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-2.5 px-10 font-bold text-sm sm:text-base cursor-pointer transition-colors"
+              className="bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-3 px-10 font-bold text-sm sm:text-[14px] cursor-pointer transition-colors"
               style={{ backgroundColor: "rgba(73, 119, 230, 1)" }}
             >
               Upgrade now
@@ -43,17 +43,17 @@ export default function Customization() {
         </div>
 
         <div>
-          <h3 className="font-semibold text-base sm:text-lg md:text-xl lg:text-[2rem] text-[rgba(0, 0, 0, 1)]">
+          <h3 className="font-semibold text-lg md:text-xl lg:text-[2rem] text-[rgba(0, 0, 0, 1)]">
             What you will set up
           </h3>
-          <p className="lg:text-xl text-xs sm:text-sm md:text-base font-semibold text-[rgba(0, 0, 0, 1)]">
+          <p className="lg:text-xl text-xs sm:text-sm md:text-[0.8rem] font-semibold text-[rgba(0, 0, 0, 1)]">
             Each step is quick and easy to complete{" "}
           </p>
         </div>
 
         {todo.map((todo, index) => (
           <div
-            className="px-3 sm:px-4 py-6 sm:py-8 md:py-10 flex flex-col gap-2 text-[rgba(0, 0, 0, 1)]"
+            className="px-3 sm:px-4 flex flex-col gap-2 text-[rgba(0, 0, 0, 1)]"
             key={index}
           >
             <h3 className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl">
@@ -68,7 +68,7 @@ export default function Customization() {
         <div className="flex justify-start lg:justify-end">
           <Link
             href={"/customization"}
-            className="w-full lg:w-auto bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-2.5 px-10 font-bold cursor-pointer text-sm sm:text-base transition-colors"
+            className="w-full lg:w-auto text-center bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-3 px-10 font-bold cursor-pointer text-sm sm:text-base transition-colors"
           >
             Customize
           </Link>

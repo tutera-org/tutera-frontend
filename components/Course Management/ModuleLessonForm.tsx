@@ -72,7 +72,7 @@ export default function ModuleLessonForm({
   onLessonTouchEnd,
 }: ModuleLessonFormProps) {
   return (
-    <div className="w-full md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-4 md:border border-dashed">
+    <div className="w-full md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-4 md:border border-dashed border-[#101A33] bg-gray-50 px-4 py-6 rounded-2xl  md:bg-transparent">
       <div className="space-y-6">
         <div>
           <div className="flex items-center justify-between mb-5">
@@ -97,7 +97,7 @@ export default function ModuleLessonForm({
             value={currentModule?.name || ""}
             onChange={(e) => onModuleNameChange(e.target.value)}
             placeholder="Enter module name"
-            className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6]"
+            className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus-ring-1 focus:ring-[#4977E6]"
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function ModuleLessonForm({
               value={currentLesson?.name || ""}
               onChange={(e) => onLessonNameChange(e.target.value)}
               placeholder="Enter lesson name"
-              className="w-full px-4 py-2 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] mb-3"
+              className="w-full px-4 py-2 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus-ring-1 focus:ring-[#4977E6] mb-3"
             />
           </div>
           <div>
@@ -136,7 +136,7 @@ export default function ModuleLessonForm({
               onChange={(e) => onLessonDescriptionChange(e.target.value)}
               placeholder="Enter lesson description"
               rows={4}
-              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] resize-none"
+              className="w-full px-4 py-3 border border-gray-300 bg-[#F0F0F0] placeholder:text-[#5D5D5D] rounded-lg focus:outline-none focus-ring-1 focus:ring-[#4977E6] resize-none"
             />
           </div>
           <div>
