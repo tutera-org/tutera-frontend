@@ -12,6 +12,37 @@ import StudentButton from "./Button";
 
 // Define validation rules for the tenant signup form
 const formSchema = z.object({
+  // Domain name validation - will be used as subdomain
+  domainName: z
+    .string()
+    .min(1, "Domain name is required")
+    .max(20, "Domain name must be 20 characters or less")
+    .trim()
+    .toLowerCase()
+    .regex(
+      /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
+      "Domain name must contain only lowercase letters, numbers, and hyphens. Cannot start or end with a hyphen."
+    )
+    .refine(
+      (val) =>
+        ![
+          "www",
+          "api",
+          "admin",
+          "app",
+          "mail",
+          "ftp",
+          "smtp",
+          "support",
+          "help",
+          "blog",
+          "dev",
+          "staging",
+          "test",
+        ].includes(val),
+      { message: "This subdomain is reserved and cannot be used" }
+    ),
+
   // Name validation - must include both first and last name
   name: z
     .string()
@@ -61,6 +92,7 @@ export default function TenantSignUpForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      domainName: "",
       name: "",
       email: "",
       password: "",
@@ -72,31 +104,24 @@ export default function TenantSignUpForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  //  Helper function to split full name into firstName and lastName
+  // Helper function to split full name into firstName and lastName
   const splitFullName = (
     fullName: string
   ): { firstName: string; lastName: string } => {
     const trimmedName = fullName.trim();
-    const nameParts = trimmedName.split(/\s+/); // Split by one or more spaces
+    const nameParts = trimmedName.split(/\s+/);
 
     if (nameParts.length === 1) {
-      // Should not happen due to regex validation, but handle it
       return { firstName: nameParts[0], lastName: "" };
     }
 
-    // First part is firstName, rest is lastName
     const firstName = nameParts[0];
     const lastName = nameParts.slice(1).join(" ");
-
-    console.log(
-      `📝 [NAME SPLIT] "${fullName}" → firstName: "${firstName}", lastName: "${lastName}"`
-    );
 
     return { firstName, lastName };
   };
 
   const handleTenantSignUp = async (formData: FormData) => {
-    // Clear any previous errors
     setErrorMessage(null);
     setIsLoading(true);
 
@@ -104,25 +129,20 @@ export default function TenantSignUpForm() {
       // Split full name into firstName and lastName
       const { firstName, lastName } = splitFullName(formData.name);
 
-      // Call the Next.js API route at /api/v1/signUp
+      // Call the Next.js API route at /api/v1/tenantSignUp
       const response = await api.post("/v1/tenantSignUp", {
         firstName: firstName,
         lastName: lastName,
         email: formData.email,
         password: formData.password,
-        tenantId: "6921d5ff67719f3a30229bd0", //TODO: Pressure John to correct this
-        // role: "STUDENT", // Role for tenant subdomain signups
+        subdomain: formData.domainName, // Send domainName as subdomain to backend
       });
 
-      // Extract user and tenant data
-      const { user, tenant } = response.data.data;
-
-      // Redirect to sign in page if signUp is successful
-      router.push(
-        `/signIn?email=${encodeURIComponent(formData.email)}&registered=true`
-      );
+      // Redirect to sign in page on same subdomain
+      window.location.href = `/signIn?email=${encodeURIComponent(
+        formData.email
+      )}&registered=true`;
     } catch (error: any) {
-      // Handle errors from the API
       const message =
         error.response?.data?.error || "Sign up failed. Please try again.";
 
@@ -131,7 +151,6 @@ export default function TenantSignUpForm() {
     }
   };
 
-  // Show loading spinner during form submission
   if (isLoading) {
     return <TuteraLoading />;
   }
@@ -141,15 +160,32 @@ export default function TenantSignUpForm() {
       onSubmit={handleSubmit(handleTenantSignUp)}
       className="flex py-8 flex-col gap-6"
     >
-      {/* Display error message if signup fails */}
       {errorMessage && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
           {errorMessage}
         </div>
       )}
 
-      {/* ==================== NAME INPUT ==================== */}
+      {/* ==================== DOMAIN NAME INPUT ==================== */}
       <label className="flex flex-col mt-3 gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
+        Domain Name
+        <input
+          type="text"
+          {...register("domainName")}
+          placeholder="Enter subdomain (e.g., okpara for okpara.tutera.com)"
+          className={`border text-base p-2.5 w-full rounded-lg ${
+            errors.domainName ? "border-red-500" : "border-black-400"
+          }`}
+        />
+        {errors.domainName && (
+          <span className="text-red-500 text-xs font-normal">
+            {errors.domainName.message}
+          </span>
+        )}
+      </label>
+
+      {/* ==================== NAME INPUT ==================== */}
+      <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Full Name
         <input
           type="text"
@@ -159,7 +195,6 @@ export default function TenantSignUpForm() {
             errors.name ? "border-red-500" : "border-black-400"
           }`}
         />
-        {/* Show validation error if exists */}
         {errors.name && (
           <span className="text-red-500 text-xs font-normal">
             {errors.name.message}
@@ -178,7 +213,6 @@ export default function TenantSignUpForm() {
             errors.email ? "border-red-500" : "border-black-400"
           }`}
         />
-        {/* Show validation error if exists */}
         {errors.email && (
           <span className="text-red-500 text-xs font-normal">
             {errors.email.message}
@@ -197,7 +231,6 @@ export default function TenantSignUpForm() {
             errors.password ? "border-red-500" : "border-black-400"
           }`}
         />
-        {/* Show validation error if exists */}
         {errors.password && (
           <span className="text-red-500 text-xs font-normal">
             {errors.password.message}
@@ -214,7 +247,6 @@ export default function TenantSignUpForm() {
         />
         By signing up, I agree to the terms of use and privacy policy
       </label>
-      {/* Show validation error if checkbox not checked */}
       {errors.termsAccepted && (
         <span className="text-red-500 text-xs font-normal text-center -mt-4">
           {errors.termsAccepted.message}

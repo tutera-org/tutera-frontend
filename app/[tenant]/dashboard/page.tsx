@@ -1,4 +1,3 @@
-
 import CreatorPage from "@/components/creatorDashboard/CreatorPage";
 import StudentPage from "@/components/creatorDashboard/StudentPage";
 
