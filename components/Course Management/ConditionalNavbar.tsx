@@ -29,4 +29,3 @@ export default function ConditionalNavbar() {
 
   return role === "student" ? <StudentsNavbar /> : <CreatorHeader />;
 }
-

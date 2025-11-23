@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import TuteraLoading from "../Reuse/Loader";
 import StudentButton from "./Button";
+import { useUserStore } from "@/store/useUserStore"; // ADDED: Import store
 
 const formSchema = z.object({
   email: z
@@ -33,6 +34,7 @@ export default function SignInForm({
   showSuccessMessage,
 }: SignInFormProps) {
   const router = useRouter();
+  const setRole = useUserStore((state) => state.setRole); // ADDED: Get setRole from store
 
   const {
     register,
@@ -65,7 +67,11 @@ export default function SignInForm({
         password: formData.password,
       });
 
-      // Successful login - redirect to dashboard
+      // ADDED: Extract role from response and set it in store
+      const role = response.data.data.user.role;
+      setRole(role); // This prevents AuthProvider from fetching again
+
+      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (error: any) {
       const message =
