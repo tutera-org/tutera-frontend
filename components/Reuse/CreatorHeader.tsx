@@ -54,18 +54,16 @@ export default function CreatorHeader() {
 
       const response = await api.post("/v1/tenantLogout");
 
-      if (response.data.success) {
-        console.log("✅ Logout successful");
-        toast.success(response.data.message || "Logged out successfully");
+      console.log("✅ Logout successful");
+      toast.success(response.data.message || "Logged out successfully");
 
-        // Clear localStorage
-        if (typeof window !== "undefined") {
-          localStorage.clear();
-        }
-
-        // Redirect to login page
-        router.push("/login");
+      // Clear localStorage
+      if (typeof window !== "undefined") {
+        localStorage.clear();
       }
+
+      // Redirect to login page
+      router.push("/login");
     } catch (error) {
       console.error("❌ Logout error:", error);
       const errorMessage = handleClientApiError(error);
