@@ -19,6 +19,7 @@ export default function Content() {
     setShowPreview,
     showQuiz,
     setShowQuiz,
+    uploadMedia,
   } = useCourse();
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -47,6 +48,10 @@ export default function Content() {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [uploadingVideoIndex, setUploadingVideoIndex] = useState<{
+    moduleIndex: number;
+    lessonIndex: number;
+  } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasInitializedRef = useRef(false);
@@ -140,25 +145,28 @@ export default function Content() {
     updateCurrentCourse({ modules: updatedModules });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
         alert("File size must be less than 10MB");
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      
+      setUploadingVideoIndex({ moduleIndex: currentModuleIndex, lessonIndex: currentLessonIndex });
+      try {
+        const { mediaId, signedUrl } = await uploadMedia(file);
         const updatedModules = [...modules];
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video =
-          reader.result as string;
-        updatedModules[currentModuleIndex].lessons[
-          currentLessonIndex
-        ].videoFile = file;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = signedUrl;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].contentId = mediaId;
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error uploading video:", error);
+        alert(error instanceof Error ? error.message : "Failed to upload video");
+      } finally {
+        setUploadingVideoIndex(null);
+      }
     }
   };
 
@@ -166,7 +174,7 @@ export default function Content() {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = async (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file) {
@@ -174,18 +182,21 @@ export default function Content() {
         alert("File size must be less than 10MB");
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      
+      setUploadingVideoIndex({ moduleIndex: currentModuleIndex, lessonIndex: currentLessonIndex });
+      try {
+        const { mediaId, signedUrl } = await uploadMedia(file);
         const updatedModules = [...modules];
-        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video =
-          reader.result as string;
-        updatedModules[currentModuleIndex].lessons[
-          currentLessonIndex
-        ].videoFile = file;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = signedUrl;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].contentId = mediaId;
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
-      };
-      reader.readAsDataURL(file);
+      } catch (error) {
+        console.error("Error uploading video:", error);
+        alert(error instanceof Error ? error.message : "Failed to upload video");
+      } finally {
+        setUploadingVideoIndex(null);
+      }
     }
   };
 

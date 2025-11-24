@@ -96,23 +96,23 @@ export default function SignInForm({
       const role = response.data.data.user.role;
       console.log("🔐 User role from backend:", role);
 
-      // Store in sessionStorage
+      // Store in localStorage
       if (typeof window !== "undefined") {
         const normalizedRole = role.toLowerCase();
-        sessionStorage.setItem("user_role", normalizedRole);
-        sessionStorage.setItem("user_id", response.data.data.user.id);
-        sessionStorage.setItem("user_email", response.data.data.user.email);
-        sessionStorage.setItem(
+        localStorage.setItem("user_role", normalizedRole);
+        localStorage.setItem("user_id", response.data.data.user.id);
+        localStorage.setItem("user_email", response.data.data.user.email);
+        localStorage.setItem(
           "user_firstName",
           response.data.data.user.firstName
         );
-        sessionStorage.setItem(
+        localStorage.setItem(
           "user_lastName",
           response.data.data.user.lastName
         );
-        sessionStorage.setItem("tenant_name", response.data.data.tenant.name);
+        localStorage.setItem("tenant_name", response.data.data.tenant.name);
 
-        console.log("✅ Stored all user data in sessionStorage");
+        console.log("✅ Stored all user data in localStorage");
       }
 
       toast.success("Login successful!");

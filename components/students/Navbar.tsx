@@ -17,13 +17,13 @@ export default function StudentsNavbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // ✅ Get user data from sessionStorage on mount
+  // ✅ Get user data from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedFirstName = sessionStorage.getItem("user_firstName") || "";
-      const storedLastName = sessionStorage.getItem("user_lastName") || "";
+      const storedFirstName = localStorage.getItem("user_firstName") || "";
+      const storedLastName = localStorage.getItem("user_lastName") || "";
       const storedTenantName =
-        sessionStorage.getItem("tenant_name") || "School";
+        localStorage.getItem("tenant_name") || "School";
 
       setFirstName(storedFirstName);
       setLastName(storedLastName);
@@ -73,9 +73,9 @@ export default function StudentsNavbar() {
         console.log("✅ Logout successful");
         toast.success(response.data.message || "Logged out successfully");
 
-        // Clear sessionStorage
+        // Clear localStorage
         if (typeof window !== "undefined") {
-          sessionStorage.clear();
+          localStorage.clear();
         }
 
         // Redirect to login page
@@ -86,9 +86,9 @@ export default function StudentsNavbar() {
       const errorMessage = handleClientApiError(error);
       toast.error(errorMessage);
 
-      // Clear session and redirect anyway for security
+      // Clear localStorage and redirect anyway for security
       if (typeof window !== "undefined") {
-        sessionStorage.clear();
+        localStorage.clear();
       }
       router.push("/login");
     } finally {

@@ -11,10 +11,10 @@ export default function DashboardPage() {
   const [role, setRole] = useState<UserRole>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ Get role from sessionStorage on mount
+  // ✅ Get role from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedRole = sessionStorage.getItem("user_role") as UserRole;
+      const storedRole = localStorage.getItem("user_role") as UserRole;
       setRole(storedRole);
       setIsLoading(false);
       console.log("📋 Dashboard - Retrieved role:", storedRole);

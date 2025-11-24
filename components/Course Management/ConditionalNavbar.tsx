@@ -12,13 +12,13 @@ export default function ConditionalNavbar() {
   const [isLoading, setIsLoading] = useState(true);
   const [showNavbar, setShowNavbar] = useState(true);
 
-  // ✅ Get role from sessionStorage on mount
+  // ✅ Get role from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const storedRole = sessionStorage.getItem("user_role") as UserRole;
+      const storedRole = localStorage.getItem("user_role") as UserRole;
       setRole(storedRole);
       setIsLoading(false);
-      console.log("📋 Retrieved role from sessionStorage:", storedRole);
+      console.log("📋 Retrieved role from localStorage:", storedRole);
     }
   }, []);
 

@@ -12,11 +12,11 @@ interface Plan {
   features: string[];
 }
 
-// Helper function to get plan from sessionStorage
+// Helper function to get plan from localStorage
 const getPlanFromStorage = (): Plan | null => {
   if (typeof window === "undefined") return null;
 
-  const planData = sessionStorage.getItem("selectedPlan");
+  const planData = localStorage.getItem("selectedPlan");
   if (!planData) return null;
 
   try {
@@ -32,7 +32,7 @@ const PaymentRoute = () => {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Load plan from sessionStorage after mount to avoid hydration mismatch
+  // Load plan from localStorage after mount to avoid hydration mismatch
   useEffect(() => {
     const plan = getPlanFromStorage();
     setSelectedPlan(plan);

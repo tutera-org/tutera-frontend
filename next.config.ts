@@ -8,6 +8,20 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s3.us-west-1.wasabisys.com",
+        port: "",
+        pathname: "/tutera/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.wasabisys.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

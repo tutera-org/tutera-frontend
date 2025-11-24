@@ -12,6 +12,7 @@
     "@hookform/resolvers": "^5.2.2",
     "aos": "^2.3.4",
     "axios": "^1.13.1",
+    "form-data": "^4.0.5",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-chartjs-2": "^5.3.1",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
+    "@types/form-data": "^2.2.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

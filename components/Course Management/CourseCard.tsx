@@ -27,7 +27,10 @@ export default function CourseCard({
       <div className="bg-white rounded-[16px] shadow-xs border border-[#C3C3C3] overflow-hidden hover:shadow-lg transition-shadow relative pb-6">
         {/* Course Image */}
         <div className="relative h-50 w-full">
-          {course.thumbnail ? (
+          {course.thumbnail && 
+           (course.thumbnail.startsWith("http://") || 
+            course.thumbnail.startsWith("https://") || 
+            course.thumbnail.startsWith("data:")) ? (
             <Image
               src={course.thumbnail}
               alt={course.title}
