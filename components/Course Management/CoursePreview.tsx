@@ -52,7 +52,10 @@ export default function CoursePreview({
               </div>
   
                <div className="flex-1">
-                     {courseThumbnail ? (
+                     {courseThumbnail && 
+                      (courseThumbnail.startsWith("http://") || 
+                       courseThumbnail.startsWith("https://") || 
+                       courseThumbnail.startsWith("data:")) ? (
                   <div className="w-full h-40 md:h-86 relative rounded-lg overflow-hidden">
                 <Image
                   src={courseThumbnail}

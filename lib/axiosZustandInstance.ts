@@ -158,7 +158,7 @@ backendApi.interceptors.response.use(
         if (typeof window !== "undefined") {
           const currentPath = window.location.pathname;
           if (currentPath !== "/signIn") {
-            sessionStorage.setItem("redirectAfterLogin", currentPath);
+            localStorage.setItem("redirectAfterLogin", currentPath);
           }
           window.location.href = "/signIn";
         }

@@ -46,8 +46,8 @@ const FlexiblePlan = () => {
   const router = useRouter();
 
   const handlePurchasePlan = (plan: (typeof plans)[0]) => {
-    // Store plan data in sessionStorage to pass to payment page
-    sessionStorage.setItem("selectedPlan", JSON.stringify(plan));
+    // Store plan data in localStorage to pass to payment page
+    localStorage.setItem("selectedPlan", JSON.stringify(plan));
     router.push("/payment");
   };
 

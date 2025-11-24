@@ -12,6 +12,7 @@ export default function SetUp() {
     currentCourse,
     setCurrentStep,
     courses,
+    createCourse,
   } = useCourse();
   const [paymentOption, setPaymentOption] = useState<"free" | "paid">("free");
   const [price, setPrice] = useState("");
@@ -113,40 +114,36 @@ export default function SetUp() {
     setShowPublishModal(true);
   };
 
-  const handleConfirmPublish = () => {
-    if (pendingCourseId) {
-      // Find the original course to preserve any unchanged fields
-      const originalCourse = courses.find((c) => c.id === pendingCourseId);
+  const handleConfirmPublish = async () => {
+    if (!pendingCourseId) return;
 
-      // Use the CURRENT state values (paymentOption, price, certificate)
-      // not from currentCourse, because currentCourse might not have the latest changes
+    try {
       const finalPrice = paymentOption === "paid" ? parseFloat(price) || 0 : 0;
       const finalIsPaid = paymentOption === "paid";
 
-      // Merge currentCourse data with original course data
-      // This ensures unchanged fields are preserved
-      const courseData: Course = {
-        id: pendingCourseId,
-        title: currentCourse?.title ?? originalCourse?.title ?? "",
-        description:
-          currentCourse?.description ?? originalCourse?.description ?? "",
-        thumbnail: currentCourse?.thumbnail ?? originalCourse?.thumbnail ?? "",
+      const courseData: Partial<Course> = {
+        title: currentCourse?.title ?? "",
+        description: currentCourse?.description ?? "",
+        thumbnail: currentCourse?.thumbnail ?? "",
+        thumbnailMediaId: currentCourse?.thumbnailMediaId ?? "",
         price: finalPrice,
         isPaid: finalIsPaid,
-        modules: currentCourse?.modules ?? originalCourse?.modules ?? [],
+        modules: currentCourse?.modules ?? [],
         certificate: certificate,
-        ratings: currentCourse?.ratings ?? originalCourse?.ratings ?? false,
-        quizzes: currentCourse?.quizzes ?? originalCourse?.quizzes ?? [],
-        createdAt:
-          originalCourse?.createdAt ??
-          currentCourse?.createdAt ??
-          new Date().toISOString(),
+        ratings: currentCourse?.ratings ?? false,
+        quizzes: currentCourse?.quizzes ?? [],
         status: "published" as const,
       };
-      // Update the course with published status
-      addCourse(courseData, false); // Don't keep step, go back to course list
+
+      await createCourse(courseData);
+      
       setPendingCourseId(null);
       setShowPublishModal(false);
+      setCurrentStep(0);
+      updateCurrentCourse({});
+    } catch (error) {
+      console.error("Error publishing course:", error);
+      alert(error instanceof Error ? error.message : "Failed to publish course");
     }
   };
 

@@ -60,7 +60,7 @@ api.interceptors.response.use(
           // Store the current URL to redirect back after login
           const currentPath = window.location.pathname;
           if (currentPath !== "/signIn") {
-            sessionStorage.setItem("redirectAfterLogin", currentPath);
+            localStorage.setItem("redirectAfterLogin", currentPath);
           }
           window.location.href = "/signIn";
         }

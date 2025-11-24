@@ -158,7 +158,7 @@ export default function ModuleLessonForm({
               />
               {currentLesson?.video ? (
                 <div className="text-green-600 font-medium">
-                  File uploaded: {currentLesson.videoFile?.name || "Video"}
+                  ✓ Video uploaded successfully
                 </div>
               ) : (
                 <>

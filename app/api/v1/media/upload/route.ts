@@ -1,0 +1,75 @@
+import {
+  getApiWithCookies,
+  handleServerApiError,
+} from "@/lib/axiosServerInstance";
+import axios from "axios";
+import { NextRequest, NextResponse } from "next/server";
+import FormData from "form-data";
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData();
+    const file = formData.get("file") as File;
+
+    if (!file) {
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    }
+
+    console.log("📤 [MEDIA UPLOAD] File received:", {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
+    // Convert File to Buffer
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Use form-data package for Node.js (works properly with axios)
+    const uploadFormData = new FormData();
+    uploadFormData.append("file", buffer, {
+      filename: file.name || "file",
+      contentType: file.type || "application/octet-stream",
+    });
+
+    const api = await getApiWithCookies();
+
+    // Get cookies to forward
+    const cookieHeader = request.headers.get("cookie") || "";
+
+    // Configure request with form-data headers
+    const config = {
+      headers: {
+        ...uploadFormData.getHeaders(), // This sets Content-Type with boundary
+        Cookie: cookieHeader,
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+    };
+
+    console.log("📤 [MEDIA UPLOAD] Forwarding to backend...");
+    console.log("📤 [MEDIA UPLOAD] File details:", {
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    });
+
+    const response = await api.post("/v1/media/upload", uploadFormData, config);
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error) {
+    console.error("❌ [MEDIA UPLOAD] Error:", error);
+
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("📝 [MEDIA UPLOAD] Backend error:", error.response.data);
+      console.error("📝 [MEDIA UPLOAD] Backend status:", error.response.status);
+    }
+
+    const errorMessage = handleServerApiError(error);
+
+    const status = axios.isAxiosError(error)
+      ? error.response?.status || 500
+      : 500;
+
+    return NextResponse.json({ error: errorMessage }, { status });
+  }
+}

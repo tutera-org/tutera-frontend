@@ -16,11 +16,11 @@ export default function CreatorHeader() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // ✅ Get tenant name from sessionStorage on mount
+  // ✅ Get tenant name from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedTenantName =
-        sessionStorage.getItem("tenant_name") || "Institution";
+        localStorage.getItem("tenant_name") || "Institution";
       setTenantName(storedTenantName);
 
       console.log("🏢 Creator Header - Institution:", storedTenantName);
@@ -54,26 +54,24 @@ export default function CreatorHeader() {
 
       const response = await api.post("/v1/tenantLogout");
 
-      if (response.data.success) {
-        console.log("✅ Logout successful");
-        toast.success(response.data.message || "Logged out successfully");
+      console.log("✅ Logout successful");
+      toast.success(response.data.message || "Logged out successfully");
 
-        // Clear sessionStorage
-        if (typeof window !== "undefined") {
-          sessionStorage.clear();
-        }
-
-        // Redirect to login page
-        router.push("/login");
+      // Clear localStorage
+      if (typeof window !== "undefined") {
+        localStorage.clear();
       }
+
+      // Redirect to login page
+      router.push("/login");
     } catch (error) {
       console.error("❌ Logout error:", error);
       const errorMessage = handleClientApiError(error);
       toast.error(errorMessage);
 
-      // Clear session and redirect anyway for security
+      // Clear localStorage and redirect anyway for security
       if (typeof window !== "undefined") {
-        sessionStorage.clear();
+        localStorage.clear();
       }
       router.push("/login");
     } finally {
