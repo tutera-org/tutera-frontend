@@ -15,48 +15,54 @@ interface CustomBarProps {
   height?: number;
 }
 
+interface AnalysisData {
+  [key: string]: any;
+}
+
+interface OverallAnalysis {
+  daily: AnalysisData[];
+  weekly: AnalysisData[];
+  monthly: AnalysisData[];
+}
+
+interface WeeklyActivityProps {
+  overallAnalysis?: OverallAnalysis;
+}
+
 type Timeframe = "monthly" | "weekly" | "daily";
 
-const WeeklyActivity: React.FC = () => {
+const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
   const [metric, setMetric] = useState<string>("Courses Sold");
   const [timeframe, setTimeframe] = useState<Timeframe>("weekly");
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
 
-  const weeklyData: ChartData[] = [
-    { day: "Sat", value: 2 },
-    { day: "Sun", value: 1 },
-    { day: "Mon", value: 6 },
-    { day: "Tue", value: 3 },
-    { day: "Wed", value: 1 },
-    { day: "Thu", value: 2 },
-    { day: "Fri", value: 3 },
-  ];
-
-  const monthlyData: ChartData[] = [
-    { day: "Week 1", value: 15 },
-    { day: "Week 2", value: 22 },
-    { day: "Week 3", value: 18 },
-    { day: "Week 4", value: 25 },
-  ];
-
-  const dailyData: ChartData[] = [
-    { day: "00:00", value: 1 },
-    { day: "04:00", value: 0 },
-    { day: "08:00", value: 3 },
-    { day: "12:00", value: 5 },
-    { day: "16:00", value: 2 },
-    { day: "20:00", value: 1 },
-  ];
-
   const getCurrentData = (): ChartData[] => {
-    switch (timeframe) {
-      case "monthly":
-        return monthlyData;
-      case "daily":
-        return dailyData;
-      default:
-        return weeklyData;
+    if (!overallAnalysis) {
+      return [];
     }
+
+    const data = overallAnalysis[timeframe] || [];
+
+    // Transform API data to chart format
+    return data.map((item: any, index: number) => {
+      let dayLabel = "";
+
+      if (timeframe === "daily") {
+        // For daily, you might get timestamps or hours
+        dayLabel = item.day || item.hour || `Hour ${index}`;
+      } else if (timeframe === "weekly") {
+        // For weekly, you might get day names
+        dayLabel = item.day || `Day ${index + 1}`;
+      } else if (timeframe === "monthly") {
+        // For monthly, you might get week numbers or dates
+        dayLabel = item.week || item.month || `Week ${index + 1}`;
+      }
+
+      return {
+        day: dayLabel,
+        value: item.value || item.count || 0,
+      };
+    });
   };
 
   const metrics: string[] = [
@@ -84,6 +90,9 @@ const WeeklyActivity: React.FC = () => {
       </g>
     );
   };
+
+  const chartData = getCurrentData();
+  const maxValue = Math.max(...chartData.map((d) => d.value), 25);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 bg-white font-semibold">
@@ -160,29 +169,34 @@ const WeeklyActivity: React.FC = () => {
         </div>
       </div>
 
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart
-          data={getCurrentData()}
-          margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-          barSize={60}
-        >
-          <XAxis
-            dataKey="day"
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#9CA3AF", fontSize: 14 }}
-            dy={10}
-          />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#9CA3AF", fontSize: 14 }}
-            ticks={[0, 5, 10, 15, 20, 25]}
-            domain={[0, 25]}
-          />
-          <Bar dataKey="value" shape={<CustomBar />} radius={[8, 8, 8, 8]} />
-        </BarChart>
-      </ResponsiveContainer>
+      {chartData.length > 0 ? (
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
+            barSize={60}
+          >
+            <XAxis
+              dataKey="day"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#9CA3AF", fontSize: 14 }}
+              dy={10}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#9CA3AF", fontSize: 14 }}
+              domain={[0, maxValue]}
+            />
+            <Bar dataKey="value" shape={<CustomBar />} radius={[8, 8, 8, 8]} />
+          </BarChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="flex items-center justify-center h-[300px] text-gray-500">
+          No data available
+        </div>
+      )}
     </div>
   );
 };

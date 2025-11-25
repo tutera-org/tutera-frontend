@@ -1,25 +1,72 @@
 import { IoAnalyticsSharp } from "react-icons/io5";
 
-export default function CardAnalytics() {
+interface Course {
+  _id: string;
+  title: string;
+  price: number;
+  studentCount: number;
+  status: string;
+}
+
+interface AnalysisData {
+  [key: string]: any;
+}
+
+interface OverallAnalysis {
+  daily: AnalysisData[];
+  weekly: AnalysisData[];
+  monthly: AnalysisData[];
+}
+
+interface RecentActivity {
+  type: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
+interface DashboardData {
+  courseOverview: Course[];
+  courses: Course[];
+  overallAnalysis: OverallAnalysis;
+  recentActivity: RecentActivity[];
+  totalEarnings: number;
+  totalEnrolledLearners: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: DashboardData;
+}
+
+interface CardAnalyticsProps {
+  data: ApiResponse | null;
+}
+
+export default function CardAnalytics({ data }: CardAnalyticsProps) {
   const cards = [
     {
       title: "Total Users",
-      number: "60",
+      number: data?.data?.totalEnrolledLearners?.toString() ?? "0",
     },
     {
       title: "Courses",
-      number: "6",
+      number: data?.data?.courses?.length?.toString() ?? "0",
     },
     {
       title: "Earnings",
-      number: "70,000",
+      number: data?.data?.totalEarnings?.toLocaleString() ?? "0",
     },
   ];
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 mt-5 gap-4">
       {cards.map((card, index) => (
-        <div className="bg-neutral-100 rounded-xl md:p-8 p-5 border border-[#C3C3C3]" key={index}>
+        <div
+          className="bg-neutral-100 rounded-xl md:p-8 p-5 border border-[#C3C3C3]"
+          key={index}
+        >
           <aside className="flex justify-between items-start">
             <h3 className="font-semibold text-sm sm:text-base lg:text-lg leading-5 text-neutral-900">
               {card.title}

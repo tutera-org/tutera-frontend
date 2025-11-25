@@ -63,7 +63,7 @@ export default function CreatorHeader() {
       }
 
       // Redirect to login page
-      router.push("/login");
+      router.push("/signIn");
     } catch (error) {
       console.error("❌ Logout error:", error);
       const errorMessage = handleClientApiError(error);
