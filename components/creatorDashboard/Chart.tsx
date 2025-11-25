@@ -1,31 +1,62 @@
-
 import Notification from "../Reuse/Notification";
 import WeeklyActivity from "./BarChart";
 import { MdArrowRight } from "react-icons/md";
 
-export default function ChartDashboard() {
+interface AnalysisData {
+  [key: string]: any;
+}
+
+interface OverallAnalysis {
+  daily: AnalysisData[];
+  weekly: AnalysisData[];
+  monthly: AnalysisData[];
+}
+
+interface RecentActivity {
+  type: string;
+  message: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+  price: number;
+  studentCount: number;
+  status: string;
+}
+
+interface DashboardData {
+  courseOverview: Course[];
+  courses: Course[];
+  overallAnalysis: OverallAnalysis;
+  recentActivity: RecentActivity[];
+  totalEarnings: number;
+  totalEnrolledLearners: number;
+}
+
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: DashboardData;
+}
+
+interface ChartDashboardProps {
+  data: ApiResponse | null;
+}
+
+export default function ChartDashboard({ data }: ChartDashboardProps) {
   return (
-    <div className="mt-10 ">
+    <div className="mt-10">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Charts*/}
         <div className="bg-white rounded-2xl border-2 border-[#F0F0F0] p-6 lg:col-span-2">
-          {/* <WeeklyActivity apiUrl="/api/courses-sold" / with api endpoint> */}
-
-          <WeeklyActivity />
-          {/* Backend should send something like this
-[
-  { "day": "Sat", "courses": 5 },
-  { "day": "Sun", "courses": 8 },
-  { "day": "Mon", "courses": 12 },
-  { "day": "Tue", "courses": 18 },
-  { "day": "Wed", "courses": 22 },
-  { "day": "Thu", "courses": 15 },
-  { "day": "Fri", "courses": 10 }
-] */}
+          <WeeklyActivity overallAnalysis={data?.data?.overallAnalysis} />
         </div>
 
         {/* Notifications*/}
-        <div className="bg-white rounded-2xl border-2 border-[#F0F0F0] p-6  lg:col-span-1">
+        <div className="bg-white rounded-2xl border-2 border-[#F0F0F0] p-6 lg:col-span-1">
           <div className="flex justify-between items-center mb-7">
             {/* Title */}
             <p className="text-[#101A33] text-2xl font-semibold">
@@ -35,7 +66,7 @@ export default function ChartDashboard() {
           </div>
 
           {/* Notifications go here */}
-          <Notification />
+          <Notification recentActivity={data?.data?.recentActivity} />
         </div>
       </div>
     </div>

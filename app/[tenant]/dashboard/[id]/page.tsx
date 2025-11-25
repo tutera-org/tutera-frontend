@@ -144,7 +144,23 @@ export default function BuyCourseId({
         <p className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl text-neutral-900">
           Learn at your own pace with structured modules and lessons
         </p>
-        <StudentButton className="w-full sm:w-auto">
+        <StudentButton
+          onClick={async () => {
+            try {
+              if (!course?._id) return;
+              const response = await api.post("/v1/enrollment", {
+                courseId: course._id,
+              });
+              toast.success("Enrolled successfully!");
+              console.log("Enrollment response:", response.data);
+            } catch (error: any) {
+              const message =
+                error.response?.data?.error || "Enrollment failed";
+              toast.error(message);
+            }
+          }}
+          className="w-full sm:w-auto"
+        >
           Enroll Now (${course?.price})
         </StudentButton>
       </div>

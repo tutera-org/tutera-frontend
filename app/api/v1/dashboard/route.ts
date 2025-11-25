@@ -5,15 +5,16 @@ import {
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const api = await getApiWithCookies();
 
-    const body = await request.json();
+    const response = await api.get("/v1/creator/dashboard");
 
-    const response = await api.post("/v1/enrollments/enroll", body);
-
-    return NextResponse.json(response.data, { status: response.status });
+    return NextResponse.json(
+      { success: true, data: response.data },
+      { status: response.status }
+    );
   } catch (error) {
     const errorMessage = handleServerApiError(error);
     const status = axios.isAxiosError(error)

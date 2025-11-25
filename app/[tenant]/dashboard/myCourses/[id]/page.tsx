@@ -79,9 +79,9 @@ export default function BuyCourseId() {
       </div>
 
       {/* Course Curriculum Section */}
-      <div className="mt-10 sm:mt-12 lg:mt-16">
+      {/* <div className="mt-10 sm:mt-12 lg:mt-16">
         <CourseCurriculum sections={course.curriculum} />
-      </div>
+      </div> */}
     </section>
   );
 }

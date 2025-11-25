@@ -188,7 +188,23 @@ export default function Marketplace() {
               </p>
 
               <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-2">
-                <StudentButton className="w-full sm:w-auto">
+                <StudentButton
+                  onClick={async () => {
+                    try {
+                      if (!course?._id) return;
+                      const response = await api.post("/v1/enrollment", {
+                        courseId: course._id,
+                      });
+                      toast.success("Enrolled successfully!");
+                      console.log("Enrollment response:", response.data);
+                    } catch (error: any) {
+                      const message =
+                        error.response?.data?.error || "Enrollment failed";
+                      toast.error(message);
+                    }
+                  }}
+                  className="w-full sm:w-auto"
+                >
                   Enroll
                 </StudentButton>
                 <StudentButton
