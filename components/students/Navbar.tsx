@@ -22,8 +22,7 @@ export default function StudentsNavbar() {
     if (typeof window !== "undefined") {
       const storedFirstName = localStorage.getItem("user_firstName") || "";
       const storedLastName = localStorage.getItem("user_lastName") || "";
-      const storedTenantName =
-        localStorage.getItem("tenant_name") || "School";
+      const storedTenantName = localStorage.getItem("tenant_name") || "School";
 
       setFirstName(storedFirstName);
       setLastName(storedLastName);
@@ -78,7 +77,7 @@ export default function StudentsNavbar() {
       }
 
       // Redirect to login page
-      router.push("/login");
+      router.push("/signIn");
     } catch (error) {
       console.error("❌ Logout error:", error);
       const errorMessage = handleClientApiError(error);
