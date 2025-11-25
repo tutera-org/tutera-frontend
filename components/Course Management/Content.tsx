@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
 import Button from "../Reuse/Button";
 import { useCourse, Module } from "./CourseContext";
 import DeleteConfirmModal from "./DeleteConfirmModal";
@@ -148,8 +149,8 @@ export default function Content() {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
+      if (file.size > 2 * 1024 * 1024 * 1024) {
+        toast.error("File size must be less than 2GB");
         return;
       }
       
@@ -159,11 +160,12 @@ export default function Content() {
         const updatedModules = [...modules];
         updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = signedUrl;
         updatedModules[currentModuleIndex].lessons[currentLessonIndex].contentId = mediaId;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].videoFile = file; // Store file for type detection
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
       } catch (error) {
-        console.error("Error uploading video:", error);
-        alert(error instanceof Error ? error.message : "Failed to upload video");
+        console.error("Error uploading file:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to upload file");
       } finally {
         setUploadingVideoIndex(null);
       }
@@ -178,8 +180,8 @@ export default function Content() {
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
+      if (file.size > 2 * 1024 * 1024 * 1024) {
+        toast.error("File size must be less than 2GB");
         return;
       }
       
@@ -189,11 +191,24 @@ export default function Content() {
         const updatedModules = [...modules];
         updatedModules[currentModuleIndex].lessons[currentLessonIndex].video = signedUrl;
         updatedModules[currentModuleIndex].lessons[currentLessonIndex].contentId = mediaId;
+        updatedModules[currentModuleIndex].lessons[currentLessonIndex].videoFile = file; // Store file for type detection
         setModules(updatedModules);
         updateCurrentCourse({ modules: updatedModules });
+        
+        // Show success message based on file type
+        const fileType = file.type;
+        if (fileType.includes("pdf")) {
+          toast.success("PDF uploaded successfully");
+        } else if (fileType.includes("video")) {
+          toast.success("Video uploaded successfully");
+        } else if (fileType.includes("audio")) {
+          toast.success("Audio uploaded successfully");
+        } else {
+          toast.success("File uploaded successfully");
+        }
       } catch (error) {
-        console.error("Error uploading video:", error);
-        alert(error instanceof Error ? error.message : "Failed to upload video");
+        console.error("Error uploading file:", error);
+        toast.error(error instanceof Error ? error.message : "Failed to upload file");
       } finally {
         setUploadingVideoIndex(null);
       }
@@ -271,6 +286,13 @@ export default function Content() {
     updateCurrentCourse({ modules: updatedModules });
   };
 
+  const handleQuizCorrectAnswerChange = (optionIndex: number) => {
+    const updatedModules = [...modules];
+    updatedModules[currentModuleIndex].quizzes[currentQuizIndex].correctAnswer = optionIndex;
+    setModules(updatedModules);
+    updateCurrentCourse({ modules: updatedModules });
+  };
+
   const handleAddNewQuiz = () => {
     const updatedModules = [...modules];
     const newQuiz = {
@@ -286,7 +308,7 @@ export default function Content() {
 
   const handleDeleteModule = (moduleIndex: number) => {
     if (modules.length === 1) {
-      alert("You must have at least one module");
+      toast.error("You must have at least one module");
       return;
     }
     setDeleteModal({
@@ -303,7 +325,7 @@ export default function Content() {
       currentModule.lessons &&
       currentModule.lessons.length === 1
     ) {
-      alert("You must have at least one lesson");
+      toast.error("You must have at least one lesson");
       return;
     }
     setDeleteModal({
@@ -659,6 +681,7 @@ export default function Content() {
         courseTitle={currentCourse?.title}
         courseDescription={currentCourse?.description}
         courseThumbnail={currentCourse?.thumbnail}
+        courseThumbnailMediaId={currentCourse?.thumbnailMediaId}
         modules={modules}
         onBack={() => {
           setShowPreview(false);
@@ -710,6 +733,10 @@ export default function Content() {
           currentLessonIndex={currentLessonIndex}
           currentLesson={currentLesson}
           fileInputRef={fileInputRef}
+          isUploading={
+            uploadingVideoIndex?.moduleIndex === currentModuleIndex &&
+            uploadingVideoIndex?.lessonIndex === currentLessonIndex
+          }
           onModuleNameChange={handleModuleNameChange}
           onLessonNameChange={handleLessonNameChange}
           onLessonDescriptionChange={handleLessonDescriptionChange}
@@ -752,6 +779,7 @@ export default function Content() {
           onDelete={handleDeleteQuiz}
           onQuestionChange={handleQuizQuestionChange}
           onOptionChange={handleQuizOptionChange}
+          onCorrectAnswerChange={handleQuizCorrectAnswerChange}
           onAddNewQuiz={handleAddNewQuiz}
           onDragStart={handleQuizDragStart}
           onDragOver={handleQuizDragOver}
@@ -772,7 +800,12 @@ export default function Content() {
             Previous
           </Button>
         )}
-        <Button variant="primary" onClick={handleNext} className="px-13 py-2">
+        <Button 
+          variant="primary" 
+          onClick={handleNext} 
+          className="px-13 py-2"
+          disabled={uploadingVideoIndex !== null}
+        >
           Next
         </Button>
       </div>

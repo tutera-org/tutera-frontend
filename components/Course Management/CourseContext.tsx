@@ -8,6 +8,10 @@ import React, {
   useCallback,
 } from "react";
 
+// Use relative URLs for API calls - Next.js API routes work on all subdomains
+// The proxy middleware ignores /api/ routes (see proxy.ts), so they're accessible on tenant subdomains
+// This avoids CORS issues when trying to cross-origin fetch
+
 export interface Lesson {
   id: string;
   name: string;
@@ -86,6 +90,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       const formData = new FormData();
       formData.append("file", file);
 
+      // Use relative URL - Next.js API routes work on all subdomains
       const response = await fetch("/api/v1/media/upload", {
         method: "POST",
         body: formData,
@@ -108,6 +113,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
   // Fetch courses from API
   const fetchCourses = useCallback(async () => {
     try {
+      // Use relative URL - works on all subdomains (proxy ignores /api/ routes)
       const response = await fetch("/api/v1/courses");
       if (!response.ok) {
         throw new Error("Failed to fetch courses");
@@ -118,11 +124,26 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       const coursesArray = data.data || [];
 
       // Transform backend courses to match our Course interface
-      const transformedCourses = coursesArray.map((course: any) => ({
+      interface BackendCourse {
+        _id?: string;
+        id?: string;
+        title?: string;
+        description?: string;
+        coverImage?: string;
+        price?: number;
+        modules?: unknown[];
+        certificate?: boolean;
+        ratings?: boolean;
+        quizzes?: unknown[];
+        createdAt?: string;
+        status?: string;
+      }
+      const transformedCourses = coursesArray.map((course: BackendCourse) => ({
         id: course._id || course.id || "",
         title: course.title || "",
         description: course.description || "",
-        thumbnail: course.coverImage || "",
+        thumbnail: "", // Don't store URL here - it expires. Use thumbnailMediaId instead
+        thumbnailMediaId: course.coverImage || null, // Backend returns mediaId in coverImage
         price: course.price || 0,
         isPaid: (course.price || 0) > 0,
         modules: course.modules || [],
@@ -157,7 +178,35 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Build course payload matching backend structure
-      const coursePayload: any = {
+      interface CoursePayload {
+        title: string;
+        description: string;
+        price: number;
+        coverImage: string;
+        status: "PUBLISHED" | "DRAFT";
+        modules: Array<{
+          title: string;
+          order: number;
+          lessons: Array<{
+            title: string;
+            description: string;
+            type: string;
+            order: number;
+            duration: number;
+            isPreview: boolean;
+            contentId: string;
+          }>;
+          quiz?: {
+            isPublished: boolean;
+            questions: Array<{
+              questionText: string;
+              options: string[];
+              correctAnswerIndex: number;
+            }>;
+          };
+        }>;
+      }
+      const coursePayload: CoursePayload = {
         title: courseData.title || "",
         description: courseData.description || "",
         price: courseData.price || 0,
@@ -165,7 +214,8 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         status: courseData.status === "published" ? "PUBLISHED" : "DRAFT",
         modules: modules.map((module, index) => {
           const lessons = (module.lessons || []).filter(
-            (lesson) => lesson.name && lesson.contentId
+            (lesson): lesson is Lesson & { contentId: string } =>
+              Boolean(lesson.name && lesson.contentId)
           );
 
           if (lessons.length === 0) {
@@ -176,7 +226,27 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
             );
           }
 
-          const modulePayload: any = {
+          const modulePayload: {
+            title: string;
+            order: number;
+            lessons: Array<{
+              title: string;
+              description: string;
+              type: string;
+              order: number;
+              duration: number;
+              isPreview: boolean;
+              contentId: string;
+            }>;
+            quiz?: {
+              isPublished: boolean;
+              questions: Array<{
+                questionText: string;
+                options: string[];
+                correctAnswerIndex: number;
+              }>;
+            };
+          } = {
             title: module.name || "",
             order: module.order || index + 1,
             lessons: lessons.map((lesson, lessonIndex) => ({
@@ -211,6 +281,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         JSON.stringify(coursePayload, null, 2)
       );
 
+      // Use relative URL - works on all subdomains (proxy ignores /api/ routes)
       const response = await fetch("/api/v1/courses", {
         method: "POST",
         headers: {
@@ -301,6 +372,8 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window === "undefined" || !isHydrated) return;
     localStorage.setItem("tutera_current_step", currentStep.toString());
+    // Dispatch custom event for ConditionalNavbar to react immediately
+    window.dispatchEvent(new CustomEvent("tutera-step-changed"));
   }, [currentStep, isHydrated]);
 
   const addCourse = (course: Course, keepStep: boolean = false) => {

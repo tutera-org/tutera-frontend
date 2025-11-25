@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Button from "../Reuse/Button";
 import ModuleButtons from "./ModuleButtons";
 import LessonButtons from "./LessonButtons";
@@ -13,6 +12,7 @@ interface ModuleLessonFormProps {
   currentLessonIndex: number;
   currentLesson: Module["lessons"][0];
   fileInputRef: React.RefObject<HTMLInputElement | null>;
+  isUploading?: boolean;
   onModuleNameChange: (value: string) => void;
   onLessonNameChange: (value: string) => void;
   onLessonDescriptionChange: (value: string) => void;
@@ -46,6 +46,7 @@ export default function ModuleLessonForm({
   currentLessonIndex,
   currentLesson,
   fileInputRef,
+  isUploading = false,
   onModuleNameChange,
   onLessonNameChange,
   onLessonDescriptionChange,
@@ -71,6 +72,16 @@ export default function ModuleLessonForm({
   onLessonTouchStart,
   onLessonTouchEnd,
 }: ModuleLessonFormProps) {
+  // Get file type for display message
+  const getFileTypeMessage = () => {
+    if (!currentLesson?.videoFile) return "Video uploaded successfully";
+    const fileType = currentLesson.videoFile?.type;
+    if (!fileType) return "File uploaded successfully";
+    if (fileType.includes("pdf")) return "PDF uploaded successfully";
+    if (fileType.includes("video")) return "Video uploaded successfully";
+    if (fileType.includes("audio")) return "Audio uploaded successfully";
+    return "File uploaded successfully";
+  };
   return (
     <div className="w-full md:w-[80%] mx-auto md:rounded-lg md:px-6 md:py-4 md:border border-dashed border-[#101A33] bg-gray-50 px-4 py-6 rounded-2xl  md:bg-transparent">
       <div className="space-y-6">
@@ -156,9 +167,14 @@ export default function ModuleLessonForm({
                 onChange={onFileChange}
                 className="hidden"
               />
-              {currentLesson?.video ? (
+              {isUploading ? (
+                <div className="flex flex-col items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4977E6] mb-2"></div>
+                  <p className="text-gray-600">Uploading...</p>
+                </div>
+              ) : currentLesson?.video ? (
                 <div className="text-green-600 font-medium">
-                  ✓ Video uploaded successfully
+                  ✓ {getFileTypeMessage()}
                 </div>
               ) : (
                 <>
@@ -180,35 +196,37 @@ export default function ModuleLessonForm({
                   <p className="text-gray-600 mb-2">
                     Drag and drop a video, pdf, audio here, or click to select
                   </p>
-                  <p className="text-sm text-gray-400">PNG, JPG up to 10MB</p>
+                  <p className="text-sm text-gray-400">Up to 2GB</p>
                 </>
               )}
             </div>
           </div>
         </div>
         <div className="flex justify-between">
-        <Button
-          variant="secondary"
-          onClick={onAddLesson}
-          className="px-4 py-2 border-none text-black md:text-[1rem] text-[14px] font-semibold bg-transparent"
-        >
-          <span className="text-[#0EB137]">(+)</span> Add Lesson
-        </Button>
+          <Button
+            variant="secondary"
+            onClick={onAddLesson}
+            className="px-4 py-2 border-none text-black md:text-[1rem] text-[14px] font-semibold bg-transparent"
+          >
+            <span className="text-[#0EB137]">(+)</span> Add Lesson
+          </Button>
 
-        <Button
-              variant="secondary"
-              onClick={onAddQuiz}
-              className="px-5 py-2 border-none bg-transparent text-black md:text-[1rem] text-[14px] font-semibold"
-            >
-             <span className="text-[#DF4623]"> (+)</span> Add Quiz
-            </Button>
+          <Button
+            variant="secondary"
+            onClick={onAddQuiz}
+            className="px-5 py-2 border-none bg-transparent text-black md:text-[1rem] text-[14px] font-semibold"
+          >
+            <span className="text-[#DF4623]"> (+)</span> Add Quiz
+          </Button>
         </div>
-       
 
         <div className="flex justify-end items-center pt-4">
           <div className="flex gap-5">
-           
-            <Button variant="primary" onClick={onAddModule} className="px-5 py-2">
+            <Button
+              variant="primary"
+              onClick={onAddModule}
+              className="px-5 py-2"
+            >
               Add Module
             </Button>
           </div>
@@ -217,4 +235,3 @@ export default function ModuleLessonForm({
     </div>
   );
 }
-

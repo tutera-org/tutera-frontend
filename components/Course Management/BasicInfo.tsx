@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect, startTransition } from "react";
+import { toast } from "sonner";
 import Button from "../Reuse/Button";
+import MediaImage from "../Reuse/MediaImage";
 import { useCourse } from "./CourseContext";
-import Image from "next/image";
 
 export default function BasicInfo() {
-  const { updateCurrentCourse, setCurrentStep, currentCourse, uploadMedia } = useCourse();
+  const { updateCurrentCourse, setCurrentStep, currentCourse, uploadMedia } =
+    useCourse();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [thumbnail, setThumbnail] = useState<string | null>(null);
@@ -54,25 +56,27 @@ export default function BasicInfo() {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
+        toast.error("File size must be less than 10MB");
         return;
       }
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file (PNG, JPG)");
+        toast.error("Please select an image file (PNG, JPG)");
         return;
       }
-      
+
       setIsUploading(true);
       try {
         const { mediaId, signedUrl } = await uploadMedia(file);
         setThumbnail(signedUrl);
-        updateCurrentCourse({ 
+        updateCurrentCourse({
           thumbnail: signedUrl,
-          thumbnailMediaId: mediaId 
+          thumbnailMediaId: mediaId,
         });
       } catch (error) {
         console.error("Error uploading thumbnail:", error);
-        alert(error instanceof Error ? error.message : "Failed to upload image");
+        toast.error(
+          error instanceof Error ? error.message : "Failed to upload image"
+        );
       } finally {
         setIsUploading(false);
       }
@@ -88,25 +92,28 @@ export default function BasicInfo() {
     const file = e.dataTransfer.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        alert("File size must be less than 10MB");
+        toast.error("File size must be less than 10MB");
         return;
       }
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file (PNG, JPG)");
+        toast.error("Please select an image file (PNG, JPG)");
         return;
       }
-      
+
       setIsUploading(true);
       try {
         const { mediaId, signedUrl } = await uploadMedia(file);
         setThumbnail(signedUrl);
-        updateCurrentCourse({ 
+        updateCurrentCourse({
           thumbnail: signedUrl,
-          thumbnailMediaId: mediaId 
+          thumbnailMediaId: mediaId,
         });
+        toast.success("Image uploaded successfully");
       } catch (error) {
         console.error("Error uploading thumbnail:", error);
-        alert(error instanceof Error ? error.message : "Failed to upload image");
+        toast.error(
+          error instanceof Error ? error.message : "Failed to upload image"
+        );
       } finally {
         setIsUploading(false);
       }
@@ -114,12 +121,15 @@ export default function BasicInfo() {
   };
 
   const handleNext = () => {
+    if (isUploading) {
+      return; // Prevent navigation while uploading
+    }
     if (!title.trim()) {
-      alert("Please enter a course title");
+      toast.error("Please enter a course title");
       return;
     }
     if (!description.trim()) {
-      alert("Please enter a course description");
+      toast.error("Please enter a course description");
       return;
     }
     updateCurrentCourse({
@@ -188,10 +198,11 @@ export default function BasicInfo() {
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4977E6] mb-2"></div>
                     <p className="text-gray-600">Uploading...</p>
                   </div>
-                ) : thumbnail ? (
-                  <div className="relative w-full h-45 rounded-lg overflow-hidden ">
-                    <Image
-                      src={thumbnail}
+                ) : thumbnail || currentCourse?.thumbnailMediaId ? (
+                  <div className="relative w-full h-45 rounded-lg overflow-hidden">
+                    <MediaImage
+                      mediaId={currentCourse?.thumbnailMediaId}
+                      fallbackUrl={thumbnail}
                       alt="Thumbnail preview"
                       fill
                       className="object-cover"
@@ -248,6 +259,7 @@ export default function BasicInfo() {
           variant="primary"
           onClick={handleNext}
           className="w-full  md:w-[20%] py-3"
+          disabled={isUploading}
         >
           Next
         </Button>

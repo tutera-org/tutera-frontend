@@ -1,13 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import Button from "../Reuse/Button";
+import MediaImage from "../Reuse/MediaImage";
 import { Module } from "./CourseContext";
 
 interface CoursePreviewProps {
   courseTitle?: string;
   courseDescription?: string;
   courseThumbnail?: string;
+  courseThumbnailMediaId?: string | null;
   modules: Module[];
   onBack: () => void;
   onNext: () => void;
@@ -18,6 +19,7 @@ export default function CoursePreview({
   courseTitle,
   courseDescription,
   courseThumbnail,
+  courseThumbnailMediaId,
   modules,
   onBack,
   onNext,
@@ -52,23 +54,15 @@ export default function CoursePreview({
               </div>
   
                <div className="flex-1">
-                     {courseThumbnail && 
-                      (courseThumbnail.startsWith("http://") || 
-                       courseThumbnail.startsWith("https://") || 
-                       courseThumbnail.startsWith("data:")) ? (
                   <div className="w-full h-40 md:h-86 relative rounded-lg overflow-hidden">
-                <Image
-                  src={courseThumbnail}
-                  alt="Course Cover"
-                  fill
-                  className="object-contain "
-                />
-                </div>
-               ) : (
-               <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500">Course Illustration</span>
-                </div>
-               )}
+                    <MediaImage
+                      mediaId={courseThumbnailMediaId}
+                      fallbackUrl={courseThumbnail}
+                      alt="Course Cover"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
               </div>
 
             

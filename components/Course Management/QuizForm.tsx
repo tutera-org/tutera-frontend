@@ -13,6 +13,7 @@ interface QuizFormProps {
   onDelete: (index: number) => void;
   onQuestionChange: (value: string) => void;
   onOptionChange: (optionIndex: number, value: string) => void;
+  onCorrectAnswerChange: (index: number) => void;
   onAddNewQuiz: () => void;
   onDragStart: (e: React.DragEvent, index: number) => void;
   onDragOver: (e: React.DragEvent) => void;
@@ -30,6 +31,7 @@ export default function QuizForm({
   onDelete,
   onQuestionChange,
   onOptionChange,
+  onCorrectAnswerChange,
   onAddNewQuiz,
   onDragStart,
   onDragOver,
@@ -77,8 +79,11 @@ export default function QuizForm({
           {[0, 1, 2, 3].map((index) => (
             <div key={index} className="flex items-center gap-3">
               <input
-                type="checkbox"
-                className="w-5 h-5 text-[#4977E6] border-gray-300 rounded focus:ring-[#4977E6]"
+                type="radio"
+                name={`correctAnswer-${currentQuizIndex}`}
+                checked={currentQuiz?.correctAnswer === index}
+                onChange={() => onCorrectAnswerChange(index)}
+                className="w-5 h-5 text-[#4977E6] border-gray-300 focus:ring-[#4977E6]"
               />
               <input
                 type="text"

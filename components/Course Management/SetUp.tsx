@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, startTransition } from "react";
+import { toast } from "sonner";
 import Button from "../Reuse/Button";
 import { useCourse, Course } from "./CourseContext";
 import PublishModal from "./PublishModal";
@@ -137,13 +138,14 @@ export default function SetUp() {
 
       await createCourse(courseData);
       
+      toast.success("Course published successfully!");
       setPendingCourseId(null);
       setShowPublishModal(false);
       setCurrentStep(0);
       updateCurrentCourse({});
     } catch (error) {
       console.error("Error publishing course:", error);
-      alert(error instanceof Error ? error.message : "Failed to publish course");
+      toast.error(error instanceof Error ? error.message : "Failed to publish course");
     }
   };
 

@@ -1,8 +1,8 @@
-import Image from "next/image";
+import CustomVideoPlayer from "./CustomVideoPlayer";
 
 const CreatorsTestimony = () => {
-    return (
-      <section className="w-full bg-[#FFFFFF] md:h-screen">
+  return (
+    <section className="w-full bg-[#FFFFFF] md:h-screen">
       <div className="w-[90%] lg:max-w-[1240px] mx-auto  flex flex-col pt-6 pb-5 space-y-5 md:space-y-8 items-center  text-center">
         <h2 className="text-[1.5rem] md:text-[3rem] w-[90%] lg:w-[50%] mx-auto  lg:leading-[52px] text-[#1A1A1A] font-semibold">
           Creators Who Chose Tutera and Never Looked Back.
@@ -11,12 +11,8 @@ const CreatorsTestimony = () => {
           Educators across africa shares how tutera helped them teach, grow, and
           own their success.
         </p>
-        <Image
-          src="/Creators.png"
-          alt="Creators testimony"
-          width={754}
-          height={490}
-        />
+
+        <CustomVideoPlayer src="/Creators.mp4" width={850} height={550} />
       </div>
     </section>
   );
