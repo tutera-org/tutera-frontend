@@ -96,7 +96,7 @@ export default function BuyCourseId({
       const response = await api.get<CourseResponse>(
         `/v1/coursesDetails/${id}`
       );
-      console.log("Course Data:", response.data.data);
+      console.log("Course Data for details:", response.data.data);
       setCourse(response.data.data);
     } catch (error: unknown) {
       console.error("Full Error:", error);

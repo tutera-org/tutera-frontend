@@ -78,15 +78,15 @@ export default function SignInForm({
       const protocol = window.location.protocol;
       const rootDomain =
         process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
-      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/dashboard`;
+      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/signIn`;
 
       // Hard redirect to subdomain (full page reload to change domain)
       window.location.href = subdomainUrl;
     } catch (error: unknown) {
       // Handle errors from the API
       const message =
-        (error as { response?: { data?: { error?: string } } })?.response
-          ?.data?.error || "Sign in failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Sign in failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);

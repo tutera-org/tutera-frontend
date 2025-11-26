@@ -87,7 +87,7 @@ export default function StudentsNavbar() {
       if (typeof window !== "undefined") {
         localStorage.clear();
       }
-      router.push("/login");
+      router.push("/signIn");
     } finally {
       setIsLoggingOut(false);
     }

@@ -1,90 +1,71 @@
-// Client-side component for displaying populated student dashboard with courses and calendar reminders
 "use client";
+// Client-side component for displaying populated student dashboard with courses and calendar reminders
 import { useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { EnrolledCourse } from "./StudentCourses";
 
-// Interface for lesson progress tracking (completed vs total lessons)
-interface Lesson {
-  completed: number;
-  total: number;
-}
-
-// Base course interface with essential course information
-interface Course {
-  id: number;
-  title: string;
-  img: string;
-  desc: string;
-  percentage: number;
-  lessons: Lesson | number;
-  bgColor: string;
-}
-
-// Interface for courses still in progress (has lesson progress details)
-interface ContinueLearningCourse extends Omit<Course, "lessons"> {
-  lessons: Lesson;
-}
-
-// Interface for completed courses (lessons is just a count)
-interface CompletedCourse extends Omit<Course, "lessons"> {
-  lessons: number;
+// Interface for component props
+interface PopulatedStudentPageProps {
+  data: EnrolledCourse[];
 }
 
 // Main component for student dashboard displaying courses and reminder calendar
-export default function PopulatedStudentPage() {
+export default function PopulatedStudentPage({
+  data,
+}: PopulatedStudentPageProps) {
   const router = useRouter();
   // State for tracking selected dates on calendar
-  const [selectedDates, setSelectedDates] = useState<number[]>([6, 15]);
+  const [selectedDates, setSelectedDates] = useState<number[]>([]);
   // State for current month view in calendar
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date(2025, 5)); // June 2025
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
   // State for course name input in reminder form
   const [courseName, setCourseName] = useState<string>("");
 
-  // Sample data for courses still in progress
-  const continueLearningCourses: ContinueLearningCourse[] = [
-    {
-      id: 1,
-      title: "Machine Learning Master Class",
-      img: "/marketPlace.svg",
-      desc: "intelligence demonstrated by machines.",
-      percentage: 40,
-      lessons: { completed: 3, total: 5 },
-      bgColor: "bg-blue-900",
-    },
-    {
-      id: 2,
-      title: "Read about how Marketing Works",
-      img: "/marketPlace.svg",
-      desc: "Best Solution and grow your business easier than ever",
-      percentage: 80,
-      lessons: { completed: 5, total: 5 },
-      bgColor: "bg-gradient-to-br from-purple-400 to-purple-600",
-    },
-  ];
+  // Separate courses into "Continue Learning" (not completed) and "Completed" based on progress
+  const continueLearningCourses = data.filter(
+    (course) => course.progress.percent < 100
+  );
+  const completedCourses = data.filter(
+    (course) => course.progress.percent === 100
+  );
 
-  // Sample data for fully completed courses
-  const completedCourses: CompletedCourse[] = [
-    {
-      id: 3,
-      title: "Front-End Fundamentals",
-      img: "/marketPlace.svg",
-      desc: "Explore the fundamental concepts that power every great website and web app",
-      percentage: 100,
-      lessons: 5,
-      bgColor: "bg-gradient-to-br from-purple-900 to-blue-900",
-    },
-    {
-      id: 4,
-      title: "Product Design",
-      img: "/marketPlace.svg",
-      desc: "Read and Learn how to design digital products that solve real user problems",
-      percentage: 100,
-      lessons: 5,
-      bgColor: "bg-gradient-to-br from-blue-400 to-cyan-300",
-    },
-  ];
+  // Helper function to check if a date is in the past
+  const isDateInPast = (day: number): boolean => {
+    const today = new Date();
+    const selectedDate = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      day
+    );
+
+    // Set both dates to midnight for accurate comparison
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate < today;
+  };
+
+  // Helper function to check if month/year is in the past
+  const isMonthInPast = (): boolean => {
+    const today = new Date();
+    const currentYear = currentMonth.getFullYear();
+    const currentMonthNum = currentMonth.getMonth();
+
+    return (
+      currentYear < today.getFullYear() ||
+      (currentYear === today.getFullYear() &&
+        currentMonthNum < today.getMonth())
+    );
+  };
+
+  // Helper function to validate if course title exists in enrolled courses
+  const isValidCourseTitle = (title: string): boolean => {
+    return data.some(
+      (course) => course.title.toLowerCase() === title.toLowerCase()
+    );
+  };
 
   // Helper function to calculate the first day of month and total days in month
   const getDaysInMonth = (
@@ -116,11 +97,25 @@ export default function PopulatedStudentPage() {
     "December",
   ];
 
-  // Navigate to previous month in calendar
+  // Navigate to previous month in calendar (prevent going to past months)
   const prevMonth = (): void => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() - 1
     );
+    const today = new Date();
+
+    // Don't allow navigation to months before current month
+    if (
+      newMonth.getFullYear() < today.getFullYear() ||
+      (newMonth.getFullYear() === today.getFullYear() &&
+        newMonth.getMonth() < today.getMonth())
+    ) {
+      toast.warning("Cannot select dates in the past");
+      return;
+    }
+
+    setCurrentMonth(newMonth);
   };
 
   // Navigate to next month in calendar
@@ -132,6 +127,11 @@ export default function PopulatedStudentPage() {
 
   // Toggle date selection - add or remove date from selectedDates array
   const toggleDate = (day: number): void => {
+    if (isDateInPast(day)) {
+      toast.warning("Cannot select dates in the past");
+      return;
+    }
+
     setSelectedDates((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
@@ -139,16 +139,31 @@ export default function PopulatedStudentPage() {
 
   // Handle setting reminder for selected course and dates
   const handleSetDate = (): void => {
+    if (!courseName.trim()) {
+      toast.error("Please enter a course name");
+      return;
+    }
+
+    if (!isValidCourseTitle(courseName.trim())) {
+      toast.error(
+        "Please enter a valid course title from your enrolled courses"
+      );
+      return;
+    }
+
+    if (selectedDates.length === 0) {
+      toast.error("Please select at least one date");
+      return;
+    }
+
     console.log(
       "Setting reminder for:",
       courseName,
       "on dates:",
       selectedDates
     );
-    //TODO: Add  date setting logic
-    toast.warning(
-      "If you never buy like 100 courses, no press this button again"
-    );
+    toast.success("Reminder set successfully!");
+    handleCancel();
   };
 
   // Reset form fields to initial state
@@ -157,6 +172,12 @@ export default function PopulatedStudentPage() {
     setSelectedDates([]);
   };
 
+  // Helper function to construct image URL (adjust based on your API setup)
+  // const getImageUrl = (imageId: string): string => {
+  //   // Replace with your actual image URL pattern
+  //   return `/api/images/${imageId}`;
+  // };
+
   return (
     <div className="min-h-screen">
       {/* Main layout: Main content and sidebar - reverse on mobile, flex on desktop */}
@@ -164,153 +185,173 @@ export default function PopulatedStudentPage() {
         {/* Main Content - courses section */}
         <div className="flex-1">
           {/* Continue Learning Section - courses in progress */}
-          <section className="mb-12">
-            <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Continue Learning
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {continueLearningCourses.map((course) => (
-                <div
-                  key={course.id}
-                  className="rounded-2xl bg-white shadow-sm overflow-hidden"
-                >
-                  {/* Course thumbnail/background image */}
+          {continueLearningCourses.length > 0 && (
+            <section className="mb-12">
+              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Continue Learning
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {continueLearningCourses.map((course) => (
                   <div
-                    className={`relative h-48 ${course.bgColor} flex items-center justify-center`}
+                    key={course.courseId}
+                    className="rounded-2xl bg-white shadow-sm overflow-hidden"
                   >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={course.img}
-                        alt={course.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Course content section with title, description, and actions */}
-                  <div className="p-4 sm:p-5">
-                    <h3 className="font-bold text-base xs:text-lg sm:text-xl md:text-2xl text-gray-900 mb-2">
-                      {course.title}
-                    </h3>
-                    <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4">
-                      {course.desc}
-                    </p>
-
-                    {/* Lesson progress indicator with icon */}
-                    <div className="flex items-center gap-2 mb-4 text-gray-700">
-                      <svg
-                        className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                        />
-                      </svg>
-                      <span className="text-xs xs:text-sm md:text-base">
-                        {course.lessons.completed}/{course.lessons.total}{" "}
-                        lessons
-                      </span>
+                    {/* Course thumbnail/background image  */}
+                    <div className="relative h-48 bg-linear-to-br from-blue-900 to-purple-900 flex items-center justify-center">
+                      <div className="relative w-full h-full">
+                        {/* TODO: Onyinye fix this stuff */}
+                        {/* <Image
+                          src={getImageUrl(course.coverImage)}
+                          alt={course.title}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            // Fallback to placeholder if image fails to load
+                            e.currentTarget.src = "/marketPlace.svg";
+                          }}
+                        /> */}
+                      </div>
                     </div>
 
-                    {/* Action section: Continue button and progress percentage circle */}
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() =>
-                          router.push(`/dashboard/myCourses/${course.id}`)
-                        }
-                        className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs xs:text-sm sm:text-base"
-                      >
-                        Continue Learning
-                      </button>
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-gray-200 flex items-center justify-center font-bold text-gray-700 text-xs xs:text-sm sm:text-base">
-                        {course.percentage}%
+                    {/* Course content section with title, description, and actions */}
+                    <div className="p-4 sm:p-5">
+                      <h3 className="font-bold text-base xs:text-lg sm:text-xl md:text-2xl text-gray-900 mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4 line-clamp-2">
+                        {course.description}
+                      </p>
+
+                      {/* Lesson progress indicator with icon */}
+                      <div className="flex items-center gap-2 mb-4 text-gray-700">
+                        <svg
+                          className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          />
+                        </svg>
+                        <span className="text-xs xs:text-sm md:text-base">
+                          {course.progress.completedLessons}/
+                          {course.progress.totalLessons} lessons
+                        </span>
+                      </div>
+
+                      {/* Action section: Continue button and progress percentage circle */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() =>
+                            router.push(
+                              `/dashboard/myCourses/${course.courseId}`
+                            )
+                          }
+                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs xs:text-sm sm:text-base"
+                        >
+                          Continue Learning
+                        </button>
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-gray-200 flex items-center justify-center font-bold text-gray-700 text-xs xs:text-sm sm:text-base">
+                          {course.progress.percent}%
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Completed Courses Section - courses fully finished by student */}
-          <section>
-            <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Completed Courses
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {completedCourses.map((course) => (
-                <div
-                  key={course.id}
-                  className="rounded-2xl bg-white shadow-sm overflow-hidden"
-                >
-                  {/* Course thumbnail/background image */}
+          {completedCourses.length > 0 && (
+            <section>
+              <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Completed Courses
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {completedCourses.map((course) => (
                   <div
-                    className={`relative h-48 ${course.bgColor} flex items-center justify-center`}
+                    key={course.courseId}
+                    className="rounded-2xl bg-white shadow-sm overflow-hidden"
                   >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={course.img}
-                        alt={course.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Course content section with title, description, and actions */}
-                  <div className="p-4 sm:p-5">
-                    <h3 className="font-bold text-base xs:text-lg sm:text-xl md:text-2xl text-gray-900 mb-2">
-                      {course.title}
-                    </h3>
-                    <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4">
-                      {course.desc}
-                    </p>
-
-                    {/* Lesson count indicator with icon */}
-                    <div className="flex items-center gap-2 mb-4 text-gray-700">
-                      <svg
-                        className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                        />
-                      </svg>
-                      <span className="text-xs xs:text-sm md:text-base">
-                        {course.lessons} lessons
-                      </span>
+                    {/* Course thumbnail/background image */}
+                    <div className="relative h-48 bg-linear-to-br from-purple-900 to-blue-900 flex items-center justify-center">
+                      <div className="relative w-full h-full">
+                        {/* <Image
+                          src={getImageUrl(course.coverImage)}
+                          alt={course.title}
+                          fill
+                          className="object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "/marketPlace.svg";
+                          }}
+                        /> */}
+                      </div>
                     </div>
 
-                    {/* Action section: Certificate request button and completion percentage */}
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() =>
-                          toast.warning("Creator Notified on your request")
-                        }
-                        className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs xs:text-sm sm:text-base"
-                      >
-                        Request Certificate
-                      </button>
-                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-gray-900 flex items-center justify-center font-bold text-gray-900 text-xs xs:text-sm sm:text-base">
-                        {course.percentage}%
+                    {/* Course content section with title, description, and actions */}
+                    <div className="p-4 sm:p-5">
+                      <h3 className="font-bold text-base xs:text-lg sm:text-xl md:text-2xl text-gray-900 mb-2">
+                        {course.title}
+                      </h3>
+                      <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4 line-clamp-2">
+                        {course.description}
+                      </p>
+
+                      {/* Lesson count indicator with icon */}
+                      <div className="flex items-center gap-2 mb-4 text-gray-700">
+                        <svg
+                          className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          />
+                        </svg>
+                        <span className="text-xs xs:text-sm md:text-base">
+                          {course.progress.totalLessons} lessons
+                        </span>
+                      </div>
+
+                      {/* Action section: Certificate request button and completion percentage */}
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() =>
+                            toast.success("Creator notified of your request")
+                          }
+                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs xs:text-sm sm:text-base"
+                        >
+                          Request Certificate
+                        </button>
+                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-gray-900 flex items-center justify-center font-bold text-gray-900 text-xs xs:text-sm sm:text-base">
+                          {course.progress.percent}%
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Show message if no courses at all */}
+          {continueLearningCourses.length === 0 &&
+            completedCourses.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-600 text-lg">
+                  No courses found. Start learning today!
+                </p>
+              </div>
+            )}
         </div>
 
         {/* Calendar Sidebar - reminder/date setting panel */}
@@ -321,14 +362,19 @@ export default function PopulatedStudentPage() {
               Set Reminder
             </h2>
 
-            {/* Course name input field */}
-            <input
-              type="text"
-              placeholder="Enter Course Name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
-              className="w-full px-4 py-2 sm:py-3 bg-gray-100 rounded-lg mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs xs:text-sm md:text-base"
-            />
+            {/* Course name input field with helper text */}
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Enter Course Name"
+                value={courseName}
+                onChange={(e) => setCourseName(e.target.value)}
+                className="w-full px-4 py-2 sm:py-3 bg-gray-100 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs xs:text-sm md:text-base"
+              />
+              <p className="text-xs text-gray-500 mt-1 px-1">
+                Enter exact course title from your enrolled courses
+              </p>
+            </div>
 
             {/* Calendar widget for selecting reminder dates */}
             <div className="mb-6">
@@ -336,7 +382,12 @@ export default function PopulatedStudentPage() {
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={prevMonth}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  disabled={isMonthInPast()}
+                  className={`p-2 rounded-lg transition-colors ${
+                    isMonthInPast()
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-gray-100"
+                  }`}
                   aria-label="Previous month"
                 >
                   <svg
@@ -401,12 +452,17 @@ export default function PopulatedStudentPage() {
                 {Array.from({ length: daysInMonth }).map((_, i) => {
                   const day = i + 1;
                   const isSelected = selectedDates.includes(day);
+                  const isPast = isDateInPast(day);
+
                   return (
                     <button
                       key={day}
                       onClick={() => toggleDate(day)}
+                      disabled={isPast}
                       className={`aspect-square rounded-lg flex items-center justify-center text-xs xs:text-sm font-medium transition-colors ${
-                        isSelected
+                        isPast
+                          ? "text-gray-300 cursor-not-allowed"
+                          : isSelected
                           ? "bg-gray-900 text-white"
                           : "hover:bg-gray-100 text-gray-700"
                       }`}
