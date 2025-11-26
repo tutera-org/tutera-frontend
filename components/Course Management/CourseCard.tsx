@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import Button from "../Reuse/Button";
 import MediaImage from "../Reuse/MediaImage";
 import { Course } from "./CourseContext";
@@ -9,7 +10,7 @@ import CourseDeleteModal from "./CourseDeleteModal";
 interface CourseCardProps {
   course: Course;
   onEdit: (course: Course) => void;
-  onDelete: (courseId: string) => void;
+  onDelete: (courseId: string) => Promise<void>;
   onTogglePublish: (course: Course) => void;
 }
 
@@ -21,6 +22,7 @@ export default function CourseCard({
 }: CourseCardProps) {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   return (
     <>
@@ -115,13 +117,23 @@ export default function CourseCard({
           setShowDeleteModal(false);
           setShowMenu(false);
         }}
-        onConfirm={() => {
-          // Delete the course - this will remove it from the courses array
-          console.log("CourseCard onConfirm called, course.id:", course.id);
-          onDelete(course.id);
-          setShowDeleteModal(false);
-          setShowMenu(false);
+        onConfirm={async () => {
+          try {
+            setIsDeleting(true);
+            await onDelete(course.id);
+            toast.success("Course deleted successfully");
+            setShowDeleteModal(false);
+            setShowMenu(false);
+          } catch (error) {
+            console.error("Error deleting course:", error);
+            toast.error(
+              error instanceof Error ? error.message : "Failed to delete course"
+            );
+          } finally {
+            setIsDeleting(false);
+          }
         }}
+        isDeleting={isDeleting}
         courseTitle={course.title}
       />
 

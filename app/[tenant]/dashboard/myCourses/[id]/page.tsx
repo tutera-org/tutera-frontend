@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import StudentButton from "@/components/students/Button";
 import CourseCurriculum from "@/components/students/CourseCurriculum";
-import Image from "next/image";
+import MediaImage from "@/components/Reuse/MediaImage";
 import { use, useCallback, useEffect, useState } from "react";
 import TuteraLoading from "@/components/Reuse/Loader";
 import { toast } from "sonner";
@@ -123,13 +123,6 @@ export default function BuyCourseId({
     );
   }
 
-  // Helper function to get image URL (adjust based on your setup)
-  const getImageUrl = (imageId: string) => {
-    // Update this logic based on how your images are served
-    // Example: return `${process.env.NEXT_PUBLIC_API_URL}/images/${imageId}`;
-    return imageId ? `/api/images/${imageId}` : "/marketPlace.svg";
-  };
-
   // Calculate total lessons
   const totalLessons = course.modules.reduce(
     (acc, module) => acc + (module.lessons?.length || 0),
@@ -138,7 +131,7 @@ export default function BuyCourseId({
 
   return (
     <section className="mt-6 sm:mt-8 lg:mt-10">
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start  gap-6 lg:gap-4">
         <aside className="font-semibold w-full lg:basis-[50%] text-neutral-900">
           <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
             {course.title}
@@ -176,14 +169,16 @@ export default function BuyCourseId({
           </div>
         </aside>
         <aside className="w-full lg:basis-[45%]">
-          <Image
-            width={600}
-            height={400}
-            className="w-full h-auto rounded-lg object-cover"
-            src={getImageUrl(course.coverImage)}
-            alt={`${course.title} image`}
-            priority
-          />
+          {course.coverImage && (
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+              <MediaImage
+                mediaId={course.coverImage}
+                alt={`${course.title} cover image`}
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+          )}
         </aside>
       </div>
 

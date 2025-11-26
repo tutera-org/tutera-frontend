@@ -51,10 +51,9 @@ export default function CourseManagementPage() {
     setCurrentStep(1);
   };
 
-  const handleDeleteCourse = (courseId: string) => {
+  const handleDeleteCourse = async (courseId: string) => {
     // Delete is handled by CourseCard with custom modal
-    console.log("handleDeleteCourse called with courseId:", courseId);
-    deleteCourse(courseId);
+    await deleteCourse(courseId);
   };
 
   const handleTogglePublish = (course: Course) => {

@@ -1,7 +1,7 @@
 "use client";
 // Client-side component for displaying populated student dashboard with courses and calendar reminders
 import { useState } from "react";
-import Image from "next/image";
+import MediaImage from "@/components/Reuse/MediaImage";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { EnrolledCourse } from "./StudentCourses";
@@ -197,20 +197,15 @@ export default function PopulatedStudentPage({
                     className="rounded-2xl bg-white shadow-sm overflow-hidden"
                   >
                     {/* Course thumbnail/background image  */}
-                    <div className="relative h-48 bg-linear-to-br from-blue-900 to-purple-900 flex items-center justify-center">
-                      <div className="relative w-full h-full">
-                        {/* TODO: Onyinye fix this stuff */}
-                        {/* <Image
-                          src={getImageUrl(course.coverImage)}
+                    <div className="relative h-48 bg-linear-to-br from-blue-900 to-purple-900 flex items-center justify-center overflow-hidden">
+                      {course.coverImage && (
+                        <MediaImage
+                          mediaId={course.coverImage}
                           alt={course.title}
                           fill
                           className="object-cover"
-                          onError={(e) => {
-                            // Fallback to placeholder if image fails to load
-                            e.currentTarget.src = "/marketPlace.svg";
-                          }}
-                        /> */}
-                      </div>
+                        />
+                      )}
                     </div>
 
                     {/* Course content section with title, description, and actions */}
@@ -279,18 +274,15 @@ export default function PopulatedStudentPage({
                     className="rounded-2xl bg-white shadow-sm overflow-hidden"
                   >
                     {/* Course thumbnail/background image */}
-                    <div className="relative h-48 bg-linear-to-br from-purple-900 to-blue-900 flex items-center justify-center">
-                      <div className="relative w-full h-full">
-                        {/* <Image
-                          src={getImageUrl(course.coverImage)}
+                    <div className="relative h-48 bg-linear-to-br from-purple-900 to-blue-900 flex items-center justify-center overflow-hidden">
+                      {course.coverImage && (
+                        <MediaImage
+                          mediaId={course.coverImage}
                           alt={course.title}
                           fill
                           className="object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "/marketPlace.svg";
-                          }}
-                        /> */}
-                      </div>
+                        />
+                      )}
                     </div>
 
                     {/* Course content section with title, description, and actions */}
