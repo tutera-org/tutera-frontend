@@ -1,18 +1,54 @@
 "use client";
-
 import { useRouter, useParams } from "next/navigation";
 import StudentButton from "@/components/students/Button";
 import CourseCurriculum from "@/components/students/CourseCurriculum";
 import Image from "next/image";
+import { use, useCallback, useEffect, useState } from "react";
+import TuteraLoading from "@/components/Reuse/Loader";
+import { toast } from "sonner";
+import { api } from "@/lib/axiosClientInstance";
 
-export default function BuyCourseId() {
+export default function BuyCourseId({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = use(params);
+
+  const [loading, setLoading] = useState(true);
+  const [courses, setCourses] = useState();
+
+  // Fetch courses
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`/v1/studentCourseDetails/${id}`);
+      console.log("Course Data:", response.data.data);
+      setCourses(response.data.data);
+      console.log(response.data.data);
+    } catch (error: unknown) {
+      console.error("Full Error:", error);
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Fetching Course failed";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) {
+    return <TuteraLoading />;
+  }
 
   const course = {
     id: 1,
-    title: "Ansah omitted Title",
+    title: "Ansah You are forgiven for omitting Title",
     img: "/marketPlace.svg",
     desc: "Learn how to build the part of a website or app that works behind the scenes. You'll understand how to connect apps to databases, make them run faster, keep them secure, and handle many users at once.",
     stars: 3,
