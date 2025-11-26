@@ -22,8 +22,8 @@ export default function BrandSetUp({
           <input
             type="text"
             placeholder="Name"
-            value={formData.brandName || ""}
-            onChange={(e) => onChange({ brandName: e.target.value })}
+            // value={formData.sections. || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
             className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>

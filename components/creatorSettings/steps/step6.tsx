@@ -22,8 +22,8 @@ export default function Testimonials({
           <input
             type="text"
             placeholder="Enter name"
-            value={formData.brandName || ""}
-            onChange={(e) => onChange({ brandName: e.target.value })}
+            // value={formData.brandName || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
             className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -35,8 +35,8 @@ export default function Testimonials({
           <input
             type="text"
             placeholder="Enter Job Title"
-            value={formData.brandName || ""}
-            onChange={(e) => onChange({ brandName: e.target.value })}
+            // value={formData.brandName || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
             className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -48,8 +48,8 @@ export default function Testimonials({
           <input
             type="text"
             placeholder="Enter Remark"
-            value={formData.brandName || ""}
-            onChange={(e) => onChange({ brandName: e.target.value })}
+            // value={formData.brandName || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
             className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -60,7 +60,7 @@ export default function Testimonials({
           </label>
           <label className="cursor-pointer block">
             <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
-              {formData.coverPhoto ? (
+              {/* {formData.coverPhoto ? (
                 <Image
                   src={formData.coverPhoto}
                   width={100}
@@ -85,7 +85,7 @@ export default function Testimonials({
                   </svg>
                   <span className="text-gray-500 text-sm">Choose file</span>
                 </>
-              )}
+              )} */}
             </div>
             <input
               type="file"

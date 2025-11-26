@@ -41,7 +41,7 @@ export default function HeroImage({
               <div>
                 <label className="cursor-pointer block">
                   <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
-                    {formData.coverPhoto ? (
+                    {/* {formData.coverPhoto ? (
                       <Image
                         src={formData.coverPhoto}
                         width={100}
@@ -75,7 +75,7 @@ export default function HeroImage({
                           Choose file
                         </span>
                       </>
-                    )}
+                    )} */}
                   </div>
                   <input
                     type="file"
