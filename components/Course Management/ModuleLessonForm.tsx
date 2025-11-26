@@ -203,21 +203,21 @@ export default function ModuleLessonForm({
           </div>
         </div>
         <div className="flex justify-between">
-          <Button
-            variant="secondary"
-            onClick={onAddLesson}
-            className="px-4 py-2 border-none text-black md:text-[1rem] text-[14px] font-semibold bg-transparent"
-          >
-            <span className="text-[#0EB137]">(+)</span> Add Lesson
-          </Button>
+        <Button
+          variant="secondary"
+          onClick={onAddLesson}
+          className="px-4 py-2 border-none text-black md:text-[1rem] text-[14px] font-semibold bg-transparent"
+        >
+          <span className="text-[#0EB137]">(+)</span> Add Lesson
+        </Button>
 
-          <Button
-            variant="secondary"
-            onClick={onAddQuiz}
-            className="px-5 py-2 border-none bg-transparent text-black md:text-[1rem] text-[14px] font-semibold"
-          >
-            <span className="text-[#DF4623]"> (+)</span> Add Quiz
-          </Button>
+        <Button
+              variant="secondary"
+              onClick={onAddQuiz}
+              className="px-5 py-2 border-none bg-transparent text-black md:text-[1rem] text-[14px] font-semibold"
+            >
+             <span className="text-[#DF4623]"> (+)</span> Add Quiz
+            </Button>
         </div>
 
         <div className="flex justify-end items-center pt-4">

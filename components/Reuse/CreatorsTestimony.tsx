@@ -12,7 +12,7 @@ const CreatorsTestimony = () => {
           own their success.
         </p>
 
-        <CustomVideoPlayer src="/Creators.mp4" width={850} height={550} />
+        <CustomVideoPlayer src="/Creators.mp4"  />
       </div>
     </section>
   );

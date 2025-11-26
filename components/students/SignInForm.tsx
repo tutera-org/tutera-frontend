@@ -119,9 +119,10 @@ export default function SignInForm({
 
       // Redirect to dashboard
       window.location.href = "/dashboard";
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.error || "Sign in failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response
+          ?.data?.error || "Sign in failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);

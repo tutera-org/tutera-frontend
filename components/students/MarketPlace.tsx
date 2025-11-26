@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import { AiFillStar } from "react-icons/ai";
 import StudentButton from "./Button";
 import { CiSearch } from "react-icons/ci";
@@ -8,6 +7,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/axiosClientInstance";
 import { toast } from "sonner";
 import TuteraLoading from "../Reuse/Loader";
+import MediaImage from "../Reuse/MediaImage";
 
 // course interface
 interface Courses {
@@ -27,10 +27,7 @@ interface Courses {
   _id: number;
 }
 
-// Extended interface with signed URL
-interface CourseWithSignedUrl extends Courses {
-  signedImageUrl?: string;
-}
+// No need for extended interface - MediaImage handles signed URLs internally
 
 export default function Marketplace() {
   const router = useRouter();
@@ -39,48 +36,22 @@ export default function Marketplace() {
     router.push(`/dashboard/${courseId}`);
   };
 
-  // State to populate courses with signed URLs
-  const [courses, setCourses] = useState<CourseWithSignedUrl[]>([]);
+  // State to populate courses
+  const [courses, setCourses] = useState<Courses[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Function to fetch signed URL for a single image
-  const fetchSignedUrl = async (imageId: string): Promise<string | null> => {
-    try {
-      const response = await api.post(
-        `https://tutera-backend.onrender.com/api/v1/media/${imageId}`
-      );
-      return response.data.signedUrl || response.data.url || null;
-    } catch (error: any) {
-      console.error(`Failed to fetch signed URL for ${imageId}:`, error);
-      return null;
-    }
-  };
-
-  // Fetch courses and their signed URLs
+  // Fetch courses - MediaImage component handles signed URLs automatically
   const fetchData = async () => {
     try {
       setLoading(true);
-
-      // Fetch courses
       const response = await api.get("/v1/marketPlace");
       const coursesData: Courses[] = response.data.data;
-
-      // Fetch signed URLs for all courses in parallel
-      const coursesWithUrls = await Promise.all(
-        coursesData.map(async (course) => {
-          const signedUrl = await fetchSignedUrl(course.coverImage);
-          return {
-            ...course,
-            signedImageUrl: signedUrl || undefined,
-          };
-        })
-      );
-
-      setCourses(coursesWithUrls);
-    } catch (error: any) {
+      setCourses(coursesData);
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.error || "Fetching MarketPlace failed";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Fetching MarketPlace failed";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -133,25 +104,18 @@ export default function Marketplace() {
         ) : (
           filteredCourses.map((course) => (
             <div
-              className="py-3 sm:py-4 px-3 sm:px-4 bg-white flex-col flex gap-3 sm:gap-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
+              className="pb-4 sm:pb-6 bg-white flex-col flex gap-3 sm:gap-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
               key={course._id}
             >
-              <div className="relative w-full aspect-326/149 max-w-[326px] mx-auto bg-gray-100 rounded-lg overflow-hidden">
-                {course.signedImageUrl ? (
-                  <Image
-                    src={course.signedImageUrl}
-                    fill
-                    alt={course.title}
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400">
-                    No image available
-                  </div>
-                )}
+              <div className="relative w-full aspect-326/169 rounded-t-lg mx-auto  bg-gray-100  overflow-hidden">
+                <MediaImage
+                  mediaId={course.coverImage}
+                  alt={course.title}
+                  fill
+                  className="object-cover"
+                />
               </div>
-
+            <div className="p-4 space-y-3">
               {/* title */}
               <h3 className="font-semibold text-lg sm:text-xl text-neutral-900 line-clamp-2">
                 {course.title}
@@ -197,9 +161,10 @@ export default function Marketplace() {
                       });
                       toast.success("Enrolled successfully!");
                       console.log("Enrollment response:", response.data);
-                    } catch (error: any) {
+                    } catch (error: unknown) {
                       const message =
-                        error.response?.data?.error || "Enrollment failed";
+                        (error as { response?: { data?: { error?: string } } })
+                          ?.response?.data?.error || "Enrollment failed";
                       toast.error(message);
                     }
                   }}
@@ -214,6 +179,7 @@ export default function Marketplace() {
                 >
                   Course Details
                 </StudentButton>
+              </div>
               </div>
             </div>
           ))

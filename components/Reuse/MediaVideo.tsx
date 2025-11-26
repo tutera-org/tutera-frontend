@@ -1,6 +1,7 @@
 "use client";
 
-import { useMediaUrl } from "@/hooks/useMediaUrl";
+import { useVideoMediaUrl } from "@/hooks/useVideoMediaUrl";
+import { useRef, useEffect } from "react";
 
 interface MediaVideoProps {
   mediaId?: string | null;
@@ -14,10 +15,10 @@ interface MediaVideoProps {
 }
 
 /**
- * Reusable component for displaying media videos
- * Automatically fetches signed URL from mediaId
- * Falls back to fallbackUrl if provided (for newly uploaded files)
- * Shows placeholder if no mediaId or fallbackUrl
+ * Reusable component for displaying media videos with smart URL refresh
+ * - Pre-fetches new URLs before expiration
+ * - Only updates source when paused (prevents playback interruption)
+ * - Handles error recovery automatically
  */
 export default function MediaVideo({
   mediaId,
@@ -29,10 +30,70 @@ export default function MediaVideo({
   onLoad,
   onError,
 }: MediaVideoProps) {
-  const { signedUrl, isLoading, error } = useMediaUrl(mediaId);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { signedUrl, pendingUrl, isLoading, error, isPlaying, setIsPlaying, applyPendingUrl } = useVideoMediaUrl(mediaId);
 
   // Determine which URL to use: fallbackUrl (recent upload) > signedUrl (fetched) > null
   const videoUrl = fallbackUrl || signedUrl;
+
+  // Track video playback state
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleEnded = () => setIsPlaying(false);
+
+    video.addEventListener("play", handlePlay);
+    video.addEventListener("pause", handlePause);
+    video.addEventListener("ended", handleEnded);
+
+    return () => {
+      video.removeEventListener("play", handlePlay);
+      video.removeEventListener("pause", handlePause);
+      video.removeEventListener("ended", handleEnded);
+    };
+  }, [setIsPlaying]);
+
+  // Apply pending URL when video pauses
+  useEffect(() => {
+    if (!isPlaying && pendingUrl && videoRef.current) {
+      const currentTime = videoRef.current.currentTime;
+      const wasPlaying = !videoRef.current.paused;
+      
+      // Apply pending URL
+      applyPendingUrl();
+      
+      // Restore playback position and state after URL change
+      videoRef.current.addEventListener(
+        "loadedmetadata",
+        () => {
+          if (videoRef.current) {
+            videoRef.current.currentTime = currentTime;
+            if (wasPlaying) {
+              videoRef.current.play().catch(console.error);
+            }
+          }
+        },
+        { once: true }
+      );
+    }
+  }, [isPlaying, pendingUrl, applyPendingUrl]);
+
+  // Handle error recovery - if video fails to load, refresh URL
+  const handleVideoError = () => {
+    if (onError) {
+      onError();
+    }
+    
+    // Try to refresh URL if we have a mediaId
+    if (mediaId && !fallbackUrl) {
+      // The hook will handle retry on next interval
+      // But we can also trigger immediate refresh if needed
+      console.warn("Video error detected, will retry on next refresh");
+    }
+  };
 
   // Show loading state
   if (isLoading && !videoUrl) {
@@ -83,13 +144,14 @@ export default function MediaVideo({
   // Render video
   return (
     <video
+      ref={videoRef}
       src={videoUrl}
       controls={controls}
       autoPlay={autoPlay}
       muted={muted}
       className={className}
       onLoadedData={onLoad}
-      onError={onError}
+      onError={handleVideoError}
     >
       Your browser does not support the video tag.
     </video>

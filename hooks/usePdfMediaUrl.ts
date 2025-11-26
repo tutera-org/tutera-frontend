@@ -11,12 +11,11 @@ interface MediaUrlResponse {
 }
 
 /**
- * Reusable hook to fetch and manage signed URLs for media
- * Automatically fetches a new signed URL when mediaId changes
- * Auto-refreshes every 4 minutes to prevent expiration (URLs expire in 5 minutes)
- * Can be used for images, videos, PDFs, etc.
+ * Hook for PDF media URLs with auto-refresh
+ * PDFs are less critical than videos, but still need URL refresh
+ * Simpler than video hook - can update immediately since PDFs reload anyway
  */
-export function useMediaUrl(mediaId: string | null | undefined) {
+export function usePdfMediaUrl(mediaId: string | null | undefined) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +31,6 @@ export function useMediaUrl(mediaId: string | null | undefined) {
     setError(null);
 
     try {
-      // Use relative URL - Next.js API routes work on all subdomains
       const response = await fetch(`/api/v1/media/${id}`);
       
       if (!response.ok) {
@@ -48,7 +46,7 @@ export function useMediaUrl(mediaId: string | null | undefined) {
         throw new Error("No signed URL in response");
       }
     } catch (err) {
-      console.error("Error fetching media URL:", err);
+      console.error("Error fetching PDF URL:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch media");
       setSignedUrl(null);
     } finally {
@@ -68,7 +66,7 @@ export function useMediaUrl(mediaId: string | null | undefined) {
       // Initial fetch
       fetchSignedUrl(mediaId);
 
-      // Set up auto-refresh every 4 minutes (240000ms) to stay ahead of 5-minute expiration
+      // Set up auto-refresh every 4 minutes to stay ahead of 5-minute expiration
       refreshIntervalRef.current = setInterval(() => {
         fetchSignedUrl(mediaId);
       }, 4 * 60 * 1000); // 4 minutes
@@ -86,7 +84,7 @@ export function useMediaUrl(mediaId: string | null | undefined) {
     };
   }, [mediaId, fetchSignedUrl]);
 
-  // Also refresh when page becomes visible (user switches back to tab)
+  // Also refresh when page becomes visible
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && mediaId) {

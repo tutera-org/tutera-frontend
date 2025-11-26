@@ -82,10 +82,11 @@ export default function SignInForm({
 
       // Hard redirect to subdomain (full page reload to change domain)
       window.location.href = subdomainUrl;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle errors from the API
       const message =
-        error.response?.data?.error || "Sign in failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response
+          ?.data?.error || "Sign in failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);

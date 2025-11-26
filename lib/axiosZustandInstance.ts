@@ -1,14 +1,14 @@
 // For client-side API calls with request deduplication
-import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponseHeaders, AxiosHeaders, AxiosResponse } from "axios";
 import { toast } from "sonner";
 
 // Cache for ongoing requests
-const pendingRequests = new Map<string, Promise<any>>();
+const pendingRequests = new Map<string, Promise<AxiosResponse>>();
 
 // Cache for completed requests
 interface CachedResponse {
-  data: any;
-  headers: any;
+  data: unknown;
+  headers: AxiosResponseHeaders | Partial<AxiosHeaders>;
   timestamp: number;
 }
 const responseCache = new Map<string, CachedResponse>();
@@ -54,7 +54,7 @@ backendApi.interceptors.request.use(
           statusText: "OK (cached)",
           headers: cached.headers,
           config,
-        });
+        } as AxiosResponse);
       };
       return config;
     }

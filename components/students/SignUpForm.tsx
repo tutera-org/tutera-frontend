@@ -142,9 +142,10 @@ export default function TenantSignUpForm() {
       window.location.href = `/signIn?email=${encodeURIComponent(
         formData.email
       )}&registered=true`;
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.error || "Sign up failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response
+          ?.data?.error || "Sign up failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);

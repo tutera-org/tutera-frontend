@@ -102,8 +102,13 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       }
 
       const data = await response.json();
+      // Backend may return either 'mediaId' or '_id' - handle both
+      const mediaId = data.data?.mediaId || data.data?._id;
+      if (!mediaId) {
+        throw new Error("No media ID returned from upload");
+      }
       return {
-        mediaId: data.data.mediaId,
+        mediaId: mediaId,
         signedUrl: data.data.signedUrl,
       };
     },
@@ -326,7 +331,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       // Only restore step if it's between 1-3 (valid creation steps)
       if (step >= 1 && step <= 3) {
         setCurrentStep(step);
-
+        
         // If we're restoring a step but no currentCourse exists, initialize it
         // This handles the case where user refreshed before entering any data
         if (!savedCurrentCourse) {
@@ -423,7 +428,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
 
   const deleteCourse = useCallback((courseId: string) => {
     console.log("deleteCourse called with courseId:", courseId);
-
+    
     // Delete from state - the useEffect will handle saving to localStorage
     setCourses((prev) => {
       console.log(
@@ -441,7 +446,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       );
       return updated;
     });
-
+    
     // If the deleted course is the current course being edited, clear it
     setCurrentCourse((prev) => {
       if (prev?.id === courseId) {

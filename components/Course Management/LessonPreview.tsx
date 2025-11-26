@@ -2,6 +2,7 @@
 
 import Button from "../Reuse/Button";
 import MediaVideo from "../Reuse/MediaVideo";
+import MediaPdf from "../Reuse/MediaPdf";
 import { Module } from "./CourseContext";
 
 interface LessonPreviewProps {
@@ -27,9 +28,11 @@ export default function LessonPreview({ lesson, onBack }: LessonPreviewProps) {
           {(lesson.video || lesson.contentId) && (
             <div className="w-full">
               {lesson.videoFile?.type?.includes("pdf") ? (
-                <iframe
-                  src={lesson.video}
-                  className="w-full h-96 rounded-lg"
+                <MediaPdf
+                  mediaId={lesson.contentId}
+                  fallbackUrl={lesson.video}
+                  className="w-full rounded-lg"
+                  height="600px"
                   title="PDF Document"
                 />
               ) : (
