@@ -123,6 +123,7 @@ export default function SetUp() {
       const finalIsPaid = paymentOption === "paid";
 
       const courseData: Partial<Course> = {
+        id: currentCourse?.id ?? "", // Include ID for updates
         title: currentCourse?.title ?? "",
         description: currentCourse?.description ?? "",
         thumbnail: currentCourse?.thumbnail ?? "",
@@ -138,7 +139,12 @@ export default function SetUp() {
 
       await createCourse(courseData);
       
-      toast.success("Course published successfully!");
+      const isUpdate = currentCourse?.id && currentCourse.id.trim() !== "";
+      toast.success(
+        isUpdate 
+          ? "Course updated and published successfully!" 
+          : "Course published successfully!"
+      );
       setPendingCourseId(null);
       setShowPublishModal(false);
       setCurrentStep(0);

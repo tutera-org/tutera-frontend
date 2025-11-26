@@ -16,22 +16,22 @@ export default function EarningCards() {
       icon: "/dollarIcon.svg",
       button: "Withdraw",
       title: "Available Balance",
-      amt: "70000",
+      amt: "0",
     },
     {
       icon: "/pending.svg",
       title: "Pending",
-      amt: "18500",
+      amt: "0",
     },
     {
       icon: "/analysisTrend.svg",
       title: "Total Earnings",
-      amt: "650000",
+      amt: "0",
     },
     {
       icon: "/arrowPoint.svg",
       title: "This Month",
-      amt: "85500",
+      amt: "0",
     },
   ];
 
