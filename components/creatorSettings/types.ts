@@ -1,23 +1,29 @@
-// Shared types for Customization Form
-
 export interface CustomizationFormData {
-  // Step 1
-  brandName?: string;
-  bio?: string;
-  headline?: string;
-  whatYouLearn?: string;
-  whatYouGain?: string;
-  // Step 2
-  logo?: string;
-  coverPhoto?: string;
-  brandImage1?: string;
-  brandImage2?: string;
-  // Step 3
-  colorTheme?: string;
-  // Step 4
-  twitter?: string;
-  linkedin?: string;
-  youtube?: string;
-  instagram?: string;
+  logo: string;
+  sections: {
+    section1: {
+      image: string;
+    };
+    section2: {
+      description: string;
+      image: string;
+    };
+    section3: {
+      description: string;
+      image: string;
+    };
+    section4: {
+      title: string;
+      description: string;
+      image: string;
+    };
+    section5: {
+      testimonials: Array<{
+        image: string;
+        name: string;
+        jobTitle: string;
+        remark: string;
+      }>;
+    };
+  };
 }
-

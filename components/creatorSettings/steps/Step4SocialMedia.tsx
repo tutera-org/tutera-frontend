@@ -12,8 +12,10 @@ export default function Step4SocialMedia({
   onChange,
 }: Step4SocialMediaProps) {
   return (
-    <div >
-      <h2 className="text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-2 rounded-xl mb-6">Social media links</h2>
+    <div>
+      <h2 className="text-xl font-bold text-[#101A33] bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-2 rounded-xl mb-6">
+        Social media links
+      </h2>
       <div className="flex flex-col gap-6 bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-6 rounded-2xl ">
         <div>
           <label className="block text-sm font-medium text-[#101A33] mb-2">
@@ -22,8 +24,8 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://twitter.com/@username"
-            value={formData.twitter || ""}
-            onChange={(e) => onChange({ twitter: e.target.value })}
+            // value={formData.twitter || ""}
+            // onChange={(e) => onChange({ twitter: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -34,8 +36,8 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://linkedin.com/in/@username"
-            value={formData.linkedin || ""}
-            onChange={(e) => onChange({ linkedin: e.target.value })}
+            // value={formData.linkedin || ""}
+            // onChange={(e) => onChange({ linkedin: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -46,8 +48,8 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://youtube.com/in/@username"
-            value={formData.youtube || ""}
-            onChange={(e) => onChange({ youtube: e.target.value })}
+            // value={formData.youtube || ""}
+            // onChange={(e) => onChange({ youtube: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -58,8 +60,8 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://instagram.com/in/@username"
-            value={formData.instagram || ""}
-            onChange={(e) => onChange({ instagram: e.target.value })}
+            // value={formData.instagram || ""}
+            // onChange={(e) => onChange({ instagram: e.target.value })}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -67,4 +69,3 @@ export default function Step4SocialMedia({
     </div>
   );
 }
-

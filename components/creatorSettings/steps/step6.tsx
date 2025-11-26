@@ -8,7 +8,7 @@ interface Step1BrandWriteupProps {
   onChange: (data: Partial<CustomizationFormData>) => void;
 }
 
-export default function LearnHereSection({
+export default function Testimonials({
   formData,
   onChange,
 }: Step1BrandWriteupProps) {
@@ -17,11 +17,37 @@ export default function LearnHereSection({
       <div className="flex flex-col gap-15 bg-gray-50 md:border border-[#C3C3C3] md:bg-transparent px-4 py-6 rounded-2xl">
         <div>
           <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
-            Description
+            Name
           </label>
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Enter name"
+            // value={formData.brandName || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
+            Job Title
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Job Title"
+            // value={formData.brandName || ""}
+            // onChange={(e) => onChange({ brandName: e.target.value })}
+            className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label className="block md:text-[20px] text-[16px] font-semibold text-[#101A33] mb-2">
+            Remark
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Remark"
             // value={formData.brandName || ""}
             // onChange={(e) => onChange({ brandName: e.target.value })}
             className="w-full px-4 py-3 border border-[#878787] rounded-lg focus:outline-none focus:ring-1 focus:ring-[#4977E6] focus:border-transparent"
