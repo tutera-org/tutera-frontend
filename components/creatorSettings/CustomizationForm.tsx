@@ -4,16 +4,42 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Reuse/Button";
 import CustomizationProgressStepper from "./CustomizationProgressStepper";
-import Step1BrandWriteup from "./steps/Step1BrandWriteup";
-import Step2BrandAssets from "./steps/Step2BrandAssets";
-import Step3ColorTheme from "./steps/Step3ColorTheme";
+import BrandSetUp from "./steps/Step1BrandWriteup";
+import HeroImage from "./steps/Step2BrandAssets";
 import Step4SocialMedia from "./steps/Step4SocialMedia";
 import { CustomizationFormData } from "./types";
+import LearnHereSection from "./steps/Step3ColorTheme";
+import WhatYouWillLearn from "./steps/Step4";
+import MeetYourInstructor from "./steps/step5";
+import Testimonials from "./steps/step6";
 
 export default function CustomizationForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<CustomizationFormData>({});
+  const [formData, setFormData] = useState<CustomizationFormData>({
+    logo: "",
+    sections: {
+      section1: {
+        image: "",
+      },
+      section2: {
+        description: "",
+        image: "",
+      },
+      section3: {
+        description: "",
+        image: "",
+      },
+      section4: {
+        title: "",
+        description: "",
+        image: "",
+      },
+      section5: {
+        testimonials: [],
+      },
+    },
+  });
 
   // Store step in localStorage to hide navbar
   useEffect(() => {
@@ -32,14 +58,17 @@ export default function CustomizationForm() {
   }, []);
 
   const stepTitles = [
-    "Lets start with your profile",
-    "Brand assets",
-    "Choose your color theme",
-    "Connect your socials",
+    "Brand Setup",
+    "Hero Section",
+    "Why Learn Here",
+    "What You'll Learn Here",
+    "Meet Your Instructor",
+    "Testimonials From Students",
+    "Social Media Links",
   ];
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
     } else {
       // Handle form submission
@@ -89,24 +118,33 @@ export default function CustomizationForm() {
         {/* Step Content */}
         <div className="mb-8">
           {currentStep === 1 && (
-            <Step1BrandWriteup
-              formData={formData}
-              onChange={handleFormDataChange}
-            />
+            <BrandSetUp formData={formData} onChange={handleFormDataChange} />
           )}
           {currentStep === 2 && (
-            <Step2BrandAssets
-              formData={formData}
-              onChange={handleFormDataChange}
-            />
+            <HeroImage formData={formData} onChange={handleFormDataChange} />
           )}
           {currentStep === 3 && (
-            <Step3ColorTheme
+            <LearnHereSection
               formData={formData}
               onChange={handleFormDataChange}
             />
           )}
           {currentStep === 4 && (
+            <WhatYouWillLearn
+              formData={formData}
+              onChange={handleFormDataChange}
+            />
+          )}
+          {currentStep === 5 && (
+            <MeetYourInstructor
+              formData={formData}
+              onChange={handleFormDataChange}
+            />
+          )}
+          {currentStep === 6 && (
+            <Testimonials formData={formData} onChange={handleFormDataChange} />
+          )}
+          {currentStep === 7 && (
             <Step4SocialMedia
               formData={formData}
               onChange={handleFormDataChange}
@@ -130,7 +168,7 @@ export default function CustomizationForm() {
             onClick={handleNext}
             className="px-12 py-2.5"
           >
-            {currentStep === 4 ? "Done" : "Next"}
+            {currentStep === 7 ? "Done" : "Next"}
           </Button>
         </div>
       </div>
