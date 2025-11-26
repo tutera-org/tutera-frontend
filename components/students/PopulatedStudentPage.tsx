@@ -31,6 +31,42 @@ export default function PopulatedStudentPage({
     (course) => course.progress.percent === 100
   );
 
+  // Helper function to check if a date is in the past
+  const isDateInPast = (day: number): boolean => {
+    const today = new Date();
+    const selectedDate = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth(),
+      day
+    );
+
+    // Set both dates to midnight for accurate comparison
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    return selectedDate < today;
+  };
+
+  // Helper function to check if month/year is in the past
+  const isMonthInPast = (): boolean => {
+    const today = new Date();
+    const currentYear = currentMonth.getFullYear();
+    const currentMonthNum = currentMonth.getMonth();
+
+    return (
+      currentYear < today.getFullYear() ||
+      (currentYear === today.getFullYear() &&
+        currentMonthNum < today.getMonth())
+    );
+  };
+
+  // Helper function to validate if course title exists in enrolled courses
+  const isValidCourseTitle = (title: string): boolean => {
+    return data.some(
+      (course) => course.title.toLowerCase() === title.toLowerCase()
+    );
+  };
+
   // Helper function to calculate the first day of month and total days in month
   const getDaysInMonth = (
     date: Date
@@ -61,11 +97,25 @@ export default function PopulatedStudentPage({
     "December",
   ];
 
-  // Navigate to previous month in calendar
+  // Navigate to previous month in calendar (prevent going to past months)
   const prevMonth = (): void => {
-    setCurrentMonth(
-      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    const newMonth = new Date(
+      currentMonth.getFullYear(),
+      currentMonth.getMonth() - 1
     );
+    const today = new Date();
+
+    // Don't allow navigation to months before current month
+    if (
+      newMonth.getFullYear() < today.getFullYear() ||
+      (newMonth.getFullYear() === today.getFullYear() &&
+        newMonth.getMonth() < today.getMonth())
+    ) {
+      toast.warning("Cannot select dates in the past");
+      return;
+    }
+
+    setCurrentMonth(newMonth);
   };
 
   // Navigate to next month in calendar
@@ -77,6 +127,11 @@ export default function PopulatedStudentPage({
 
   // Toggle date selection - add or remove date from selectedDates array
   const toggleDate = (day: number): void => {
+    if (isDateInPast(day)) {
+      toast.warning("Cannot select dates in the past");
+      return;
+    }
+
     setSelectedDates((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
@@ -88,6 +143,14 @@ export default function PopulatedStudentPage({
       toast.error("Please enter a course name");
       return;
     }
+
+    if (!isValidCourseTitle(courseName.trim())) {
+      toast.error(
+        "Please enter a valid course title from your enrolled courses"
+      );
+      return;
+    }
+
     if (selectedDates.length === 0) {
       toast.error("Please select at least one date");
       return;
@@ -299,14 +362,19 @@ export default function PopulatedStudentPage({
               Set Reminder
             </h2>
 
-            {/* Course name input field */}
-            <input
-              type="text"
-              placeholder="Enter Course Name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
-              className="w-full px-4 py-2 sm:py-3 bg-gray-100 rounded-lg mb-6 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs xs:text-sm md:text-base"
-            />
+            {/* Course name input field with helper text */}
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Enter Course Name"
+                value={courseName}
+                onChange={(e) => setCourseName(e.target.value)}
+                className="w-full px-4 py-2 sm:py-3 bg-gray-100 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs xs:text-sm md:text-base"
+              />
+              <p className="text-xs text-gray-500 mt-1 px-1">
+                Enter exact course title from your enrolled courses
+              </p>
+            </div>
 
             {/* Calendar widget for selecting reminder dates */}
             <div className="mb-6">
@@ -314,7 +382,12 @@ export default function PopulatedStudentPage({
               <div className="flex items-center justify-between mb-4">
                 <button
                   onClick={prevMonth}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  disabled={isMonthInPast()}
+                  className={`p-2 rounded-lg transition-colors ${
+                    isMonthInPast()
+                      ? "opacity-50 cursor-not-allowed"
+                      : "hover:bg-gray-100"
+                  }`}
                   aria-label="Previous month"
                 >
                   <svg
@@ -379,12 +452,17 @@ export default function PopulatedStudentPage({
                 {Array.from({ length: daysInMonth }).map((_, i) => {
                   const day = i + 1;
                   const isSelected = selectedDates.includes(day);
+                  const isPast = isDateInPast(day);
+
                   return (
                     <button
                       key={day}
                       onClick={() => toggleDate(day)}
+                      disabled={isPast}
                       className={`aspect-square rounded-lg flex items-center justify-center text-xs xs:text-sm font-medium transition-colors ${
-                        isSelected
+                        isPast
+                          ? "text-gray-300 cursor-not-allowed"
+                          : isSelected
                           ? "bg-gray-900 text-white"
                           : "hover:bg-gray-100 text-gray-700"
                       }`}

@@ -10,22 +10,27 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Extract the id from params
     const { id } = await params;
-    const api = await getApiWithCookies();
 
-    // Use the actual id in the API call
+    // Validate ID
+    if (!id) {
+      return NextResponse.json(
+        { error: "Enrollment ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const api = await getApiWithCookies();
     const response = await api.get(`/v1/enrollments/${id}/details`);
 
+    // Return the actual data (adjust based on your API structure)
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     const errorMessage = handleServerApiError(error);
-
     const status = axios.isAxiosError(error)
       ? error.response?.status || 500
       : 500;
 
-    console.log(errorMessage);
     return NextResponse.json({ error: errorMessage }, { status });
   }
 }
