@@ -246,7 +246,17 @@ export default function TenantSignUpForm() {
           {...register("termsAccepted")}
           className="mr-3"
         />
-        By signing up, I agree to the terms of use and privacy policy
+        <span>
+          By signing up, I agree to the{" "}
+          <Link
+            href="/legal"
+            className="text-red-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            terms of use and privacy policy
+          </Link>
+        </span>
       </label>
       {errors.termsAccepted && (
         <span className="text-red-500 text-xs font-normal text-center -mt-4">

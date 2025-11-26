@@ -3,13 +3,14 @@
 import Image from "next/image";
 import Button from "./Button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Footer = () => {
   const handleSignUp = () => {
     router.push("/signUp");
   };
   const router = useRouter();
+  const pathname = usePathname();
   return (
     <section className="w-full ">
       <div className="relative bg-[#4977E6] pt-50 pb-20 text-white text-[1rem] ">
@@ -98,41 +99,43 @@ const Footer = () => {
           </div>
         </div>
 
-        <div
-          data-aos="fade-up"
-          data-aos-anchor-placement="top-center"
-          data-aos-duration="1000"
-          data-aos-delay="200"
-          data-aos-once="false"
-          className="absolute bg-white w-[90%] border border-[#C3C3C3] lg:w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14"
-        >
-          <div className=" w-[90%] lg:w-[80%] mx-auto flex flex-col  lg:flex-row item-center gap-6">
-            <Image
-              src="/footerImg.svg"
-              alt="footer-bg"
-              width={400}
-              height={189}
-            />
+        {pathname !== "/legal" && (
+          <div
+            data-aos="fade-up"
+            data-aos-anchor-placement="top-center"
+            data-aos-duration="1000"
+            data-aos-delay="200"
+            data-aos-once="false"
+            className="absolute bg-white w-[90%] border border-[#C3C3C3] lg:w-[60%] top-[-45%] left-[50%] translate-x-[-50%]  rounded-[24px] py-14"
+          >
+            <div className=" w-[90%] lg:w-[80%] mx-auto flex flex-col  lg:flex-row item-center gap-6">
+              <Image
+                src="/footerImg.svg"
+                alt="footer-bg"
+                width={400}
+                height={189}
+              />
 
-            <div className=" flex flex-col gap-6 justify-center items-center md:items-start ">
-              <p className="text-[1rem] md:text-[1.25rem] font-medium text-[#101A33]">
-                Join the next generation of African knowledge entrepreneurs
-                scaling their income.
-              </p>
-              <Button
-                variant="primary"
-                className="w-[75%] md:w-[57%] py-3 rounded-[8px] text-[0.875rem] md:text-[1rem] font-bold"
-                onClick={handleSignUp}
-                data-aos="zoom-in"
-                data-aos-duration="1000"
-                data-aos-delay="1000"
-                data-aos-once="false"
-              >
-                Start Your Academy Today
-              </Button>
+              <div className=" flex flex-col gap-6 justify-center items-center md:items-start ">
+                <p className="text-[1rem] md:text-[1.25rem] font-medium text-[#101A33]">
+                  Join the next generation of African knowledge entrepreneurs
+                  scaling their income.
+                </p>
+                <Button
+                  variant="primary"
+                  className="w-[75%] md:w-[57%] py-3 rounded-[8px] text-[0.875rem] md:text-[1rem] font-bold"
+                  onClick={handleSignUp}
+                  data-aos="zoom-in"
+                  data-aos-duration="1000"
+                  data-aos-delay="1000"
+                  data-aos-once="false"
+                >
+                  Start Your Academy Today
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="bg-[#ffffff]">
@@ -143,9 +146,21 @@ const Footer = () => {
           </p>
           <div>
             <ul className="flex items-center gap-4 text-[0.75rem] font-semibold">
-              <li>Privacy Policy</li>
-              <li>Terma Use</li>
-              <li>Legal</li>
+              <li>
+                <Link href="/legal" className="hover:underline">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal" className="hover:underline">
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link href="/legal" className="hover:underline">
+                  Legal
+                </Link>
+              </li>
               <li>Site map</li>
             </ul>
           </div>
