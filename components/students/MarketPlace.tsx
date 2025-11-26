@@ -48,6 +48,7 @@ export default function Marketplace() {
       const response = await api.get("/v1/marketPlace");
       const coursesData: Courses[] = response.data.data;
       setCourses(coursesData);
+      console.log(coursesData);
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { error?: string } } })?.response?.data
