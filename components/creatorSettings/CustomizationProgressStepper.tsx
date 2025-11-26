@@ -7,41 +7,33 @@ interface CustomizationProgressStepperProps {
 export default function CustomizationProgressStepper({
   currentStep,
 }: CustomizationProgressStepperProps) {
-  const steps = [1, 2, 3, 4];
-  const stepDescriptions = [
-    "Tell us about yourself and brand",
-    "Upload your logo, cover photo and images",
-    "Select colors that match your brand",
-    "Let students find you on social media",
-  ];
+  const steps = [1, 2, 3, 4, 5, 6, 7];
 
   return (
-    <div className="flex flex-col  mb-8">
-      <div className="flex items-center justify-center mb-4 md:text-[30px] text-[20px] ">
+    <div className="flex flex-col mb-8 w-full px-4">
+      <div className="flex items-center justify-between md:justify-center mb-4 w-full overflow-x-auto">
         {steps.map((step, index) => {
           const isCompleted = step < currentStep;
           const isCurrent = step === currentStep;
 
           return (
-            <div key={step} className="flex items-center">
+            <div key={step} className="flex items-center shrink-0">
               <div
-                className={`w-6 h-10 md:w-8 md:h-13 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center font-semibold transition-colors text-sm sm:text-base md:text-lg lg:text-xl ${
                   isCompleted
                     ? "bg-[#EED390] text-[#101A33]"
                     : isCurrent
-                    ? "bg-[#EED390]"
-                    : " text-[#101A33]"
+                    ? "bg-[#EED390] text-[#101A33]"
+                    : "bg-gray-200 text-[#101A33]"
                 }`}
               >
                 {isCompleted ? (
                   <svg
-                    width="20"
-                    height="20"
+                    className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="3"
-                    className="md:w-10 md:h-10"
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -51,8 +43,8 @@ export default function CustomizationProgressStepper({
               </div>
               {index < steps.length - 1 && (
                 <div
-                  className={`w-12 md:w-30 h-0.5 mx-2 md:mx-6 transition-colors ${
-                    isCompleted ? "bg-[#EED390]" : "bg-[#EED390]"
+                  className={`w-4 sm:w-8 md:w-16 lg:w-24 h-0.5 mx-1 sm:mx-2 md:mx-4 transition-colors shrink-0 ${
+                    isCompleted ? "bg-[#EED390]" : "bg-gray-200"
                   }`}
                 />
               )}
@@ -60,10 +52,6 @@ export default function CustomizationProgressStepper({
           );
         })}
       </div>
-      <p className="text-[#4977E6] text-[14px] md:text-[24px] font-medium text-start my-4">
-        {stepDescriptions[currentStep - 1]}
-      </p>
     </div>
   );
 }
-

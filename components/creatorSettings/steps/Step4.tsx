@@ -8,7 +8,7 @@ interface Step1BrandWriteupProps {
   onChange: (data: Partial<CustomizationFormData>) => void;
 }
 
-export default function LearnHereSection({
+export default function WhatYouWillLearn({
   formData,
   onChange,
 }: Step1BrandWriteupProps) {
