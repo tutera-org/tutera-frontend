@@ -2,9 +2,9 @@
 import TuteraLoading from "@/components/Reuse/Loader";
 import StudentButton from "@/components/students/Button";
 import CourseCurriculum from "@/components/students/CourseCurriculum";
+import MediaImage from "@/components/Reuse/MediaImage";
 import { api } from "@/lib/axiosClientInstance";
-import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 
 // Interfaces
@@ -90,7 +90,7 @@ export default function BuyCourseId({
   const [course, setCourse] = useState<Course>();
 
   // Fetch courses
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get<CourseResponse>(
@@ -98,18 +98,20 @@ export default function BuyCourseId({
       );
       console.log("Course Data:", response.data.data);
       setCourse(response.data.data);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Full Error:", error);
-      const message = error.response?.data?.error || "Fetching Course failed";
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Fetching Course failed";
       toast.error(message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchData();
-  }, [id]);
+  }, [fetchData]);
 
   if (loading) {
     return <TuteraLoading />;
@@ -128,14 +130,14 @@ export default function BuyCourseId({
         </aside>
         <aside className="w-full lg:basis-[45%]">
           {course?.coverImage && (
-            // <Image
-            //   width={600}
-            //   height={400}
-            //   className="w-full h-auto rounded-lg"
-            //   src={course.coverImage}
-            //   alt={`${course.title} image`}
-            // />
-            <div>Image not found</div>
+            <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-gray-100">
+              <MediaImage
+                mediaId={course.coverImage}
+                alt={`${course.title} cover image`}
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
           )}
         </aside>
       </div>
@@ -153,9 +155,10 @@ export default function BuyCourseId({
               });
               toast.success("Enrolled successfully!");
               console.log("Enrollment response:", response.data);
-            } catch (error: any) {
+            } catch (error: unknown) {
               const message =
-                error.response?.data?.error || "Enrollment failed";
+                (error as { response?: { data?: { error?: string } } })
+                  ?.response?.data?.error || "Enrollment failed";
               toast.error(message);
             }
           }}

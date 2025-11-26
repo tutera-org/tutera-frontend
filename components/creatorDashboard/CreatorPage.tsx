@@ -20,7 +20,7 @@ interface Course {
 }
 
 interface AnalysisData {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface OverallAnalysis {
@@ -68,9 +68,10 @@ export default function CreatorPage() {
       // Update ownsLessons based on courses length
       const hasLessons = (fetchedData?.data?.courses?.length ?? 0) > 0;
       setOwnsLessons(hasLessons);
-    } catch (error: any) {
+    } catch (error: unknown) {
       const message =
-        error.response?.data?.error || "Fetching dashboard failed";
+        (error as { response?: { data?: { error?: string } } })?.response
+          ?.data?.error || "Fetching dashboard failed";
       toast.error(message);
     } finally {
       setLoading(false);

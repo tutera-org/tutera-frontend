@@ -27,15 +27,19 @@ export default function CourseManagementPage() {
     setShowPreview,
     showQuiz,
     updateCourseStatus,
+    resetCurrentCourse,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
 
   const handleCreateModule = () => {
-    // Initialize current course and start at step 1
+    // Reset current course completely to start fresh
+    resetCurrentCourse();
+    // Initialize with empty values for new course
     updateCurrentCourse({
       title: "",
       description: "",
       thumbnail: "",
+      thumbnailMediaId: undefined, // Clear mediaId to prevent loading previous course's image
     });
     setCurrentStep(1);
   };

@@ -9,7 +9,12 @@ interface Course {
 }
 
 interface AnalysisData {
-  [key: string]: any;
+  [key: string]: unknown;
+  day?: string;
+  hour?: string;
+  week?: string;
+  month?: string;
+  value?: number;
 }
 
 interface OverallAnalysis {

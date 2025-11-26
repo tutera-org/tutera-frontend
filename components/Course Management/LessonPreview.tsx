@@ -1,6 +1,8 @@
 "use client";
 
 import Button from "../Reuse/Button";
+import MediaVideo from "../Reuse/MediaVideo";
+import MediaPdf from "../Reuse/MediaPdf";
 import { Module } from "./CourseContext";
 
 interface LessonPreviewProps {
@@ -23,22 +25,23 @@ export default function LessonPreview({ lesson, onBack }: LessonPreviewProps) {
             {lesson.name || "Lesson Title"}
           </h2>
 
-          {lesson.video && (
+          {(lesson.video || lesson.contentId) && (
             <div className="w-full">
-              {lesson.video.startsWith("data:video") ? (
-                <video src={lesson.video} controls className="w-full rounded-lg">
-                  Your browser does not support the video tag.
-                </video>
-              ) : lesson.video.startsWith("data:application/pdf") ? (
-                <iframe
-                  src={lesson.video}
-                  className="w-full h-96 rounded-lg"
+              {lesson.videoFile?.type?.includes("pdf") ? (
+                <MediaPdf
+                  mediaId={lesson.contentId}
+                  fallbackUrl={lesson.video}
+                  className="w-full rounded-lg"
+                  height="600px"
                   title="PDF Document"
                 />
               ) : (
-                <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">Media Preview</span>
-                </div>
+                <MediaVideo
+                  mediaId={lesson.contentId}
+                  fallbackUrl={lesson.video}
+                  className="w-full rounded-lg"
+                  controls
+                />
               )}
             </div>
           )}

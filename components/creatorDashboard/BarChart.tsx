@@ -16,7 +16,12 @@ interface CustomBarProps {
 }
 
 interface AnalysisData {
-  [key: string]: any;
+  [key: string]: unknown;
+  day?: string;
+  hour?: string;
+  week?: string;
+  month?: string;
+  value?: number;
 }
 
 interface OverallAnalysis {
@@ -44,7 +49,7 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
     const data = overallAnalysis[timeframe] || [];
 
     // Transform API data to chart format
-    return data.map((item: any, index: number) => {
+    return data.map((item: AnalysisData, index: number) => {
       let dayLabel = "";
 
       if (timeframe === "daily") {
@@ -58,9 +63,21 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
         dayLabel = item.week || item.month || `Week ${index + 1}`;
       }
 
+      // Ensure value is a number
+      const getNumericValue = (val: unknown): number => {
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string') {
+          const parsed = parseFloat(val);
+          return isNaN(parsed) ? 0 : parsed;
+        }
+        return 0;
+      };
+
+      const value = getNumericValue(item.value) || getNumericValue(item.count) || 0;
+
       return {
         day: dayLabel,
-        value: item.value || item.count || 0,
+        value: value,
       };
     });
   };
