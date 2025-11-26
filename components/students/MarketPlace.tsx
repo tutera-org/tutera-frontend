@@ -48,6 +48,7 @@ export default function Marketplace() {
       const response = await api.get("/v1/marketPlace");
       const coursesData: Courses[] = response.data.data;
       setCourses(coursesData);
+      console.log(coursesData);
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { error?: string } } })?.response?.data
@@ -78,8 +79,6 @@ export default function Marketplace() {
   if (loading) {
     return <TuteraLoading />;
   }
-
-  console.log(courses);
 
   return (
     <>
@@ -115,71 +114,73 @@ export default function Marketplace() {
                   className="object-cover"
                 />
               </div>
-            <div className="p-4 space-y-3">
-              {/* title */}
-              <h3 className="font-semibold text-lg sm:text-xl text-neutral-900 line-clamp-2">
-                {course.title}
-              </h3>
+              <div className="p-4 space-y-3">
+                {/* title */}
+                <h3 className="font-semibold text-lg sm:text-xl text-neutral-900 line-clamp-2">
+                  {course.title}
+                </h3>
 
-              {/* description */}
-              <p className="font-normal text-xs sm:text-sm text-neutral-600 line-clamp-3">
-                {course.description}
-              </p>
+                {/* description */}
+                <p className="font-normal text-xs sm:text-sm text-neutral-600 line-clamp-3">
+                  {course.description}
+                </p>
 
-              {/* Stars and Rating */}
-              {course.averageRating > 0 && (
-                <div className="flex gap-1 items-center">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <AiFillStar
-                      key={star}
-                      className={
-                        star <= Math.round(course.averageRating)
-                          ? "text-[rgba(133,32,9,1)]"
-                          : "text-gray-300"
+                {/* Stars and Rating */}
+                {course.averageRating > 0 && (
+                  <div className="flex gap-1 items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <AiFillStar
+                        key={star}
+                        className={
+                          star <= Math.round(course.averageRating)
+                            ? "text-[rgba(133,32,9,1)]"
+                            : "text-gray-300"
+                        }
+                        size={16}
+                      />
+                    ))}
+                    <span className="text-sm text-gray-600 ml-1">
+                      ({course.averageRating.toFixed(1)})
+                    </span>
+                  </div>
+                )}
+
+                {/* Amount */}
+                <p className="font-semibold text-lg sm:text-xl text-neutral-900">
+                  {formatAmount(course.price)}
+                </p>
+
+                <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-2">
+                  <StudentButton
+                    onClick={async () => {
+                      try {
+                        if (!course?._id) return;
+                        const response = await api.post("/v1/enrollment", {
+                          courseId: course._id,
+                        });
+                        toast.success("Enrolled successfully!");
+                      } catch (error: unknown) {
+                        const message =
+                          (
+                            error as {
+                              response?: { data?: { error?: string } };
+                            }
+                          )?.response?.data?.error || "Enrollment failed";
+                        toast.error(message);
                       }
-                      size={16}
-                    />
-                  ))}
-                  <span className="text-sm text-gray-600 ml-1">
-                    ({course.averageRating.toFixed(1)})
-                  </span>
+                    }}
+                    className="w-full sm:w-auto"
+                  >
+                    Enroll
+                  </StudentButton>
+                  <StudentButton
+                    onClick={() => handleViewCourseDetail(course._id)}
+                    variant="secondary"
+                    className="w-full sm:w-auto"
+                  >
+                    Course Details
+                  </StudentButton>
                 </div>
-              )}
-
-              {/* Amount */}
-              <p className="font-semibold text-lg sm:text-xl text-neutral-900">
-                {formatAmount(course.price)}
-              </p>
-
-              <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-2">
-                <StudentButton
-                  onClick={async () => {
-                    try {
-                      if (!course?._id) return;
-                      const response = await api.post("/v1/enrollment", {
-                        courseId: course._id,
-                      });
-                      toast.success("Enrolled successfully!");
-                      console.log("Enrollment response:", response.data);
-                    } catch (error: unknown) {
-                      const message =
-                        (error as { response?: { data?: { error?: string } } })
-                          ?.response?.data?.error || "Enrollment failed";
-                      toast.error(message);
-                    }
-                  }}
-                  className="w-full sm:w-auto"
-                >
-                  Enroll
-                </StudentButton>
-                <StudentButton
-                  onClick={() => handleViewCourseDetail(course._id)}
-                  variant="secondary"
-                  className="w-full sm:w-auto"
-                >
-                  Course Details
-                </StudentButton>
-              </div>
               </div>
             </div>
           ))
