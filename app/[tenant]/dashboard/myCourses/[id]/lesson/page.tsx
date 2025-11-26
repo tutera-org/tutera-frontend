@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { FaCheck } from "react-icons/fa";
 import StudentButton from "@/components/students/Button";
+import MediaVideo from "@/components/Reuse/MediaVideo";
+import MediaPdf from "@/components/Reuse/MediaPdf";
 import { use, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/axiosClientInstance";
@@ -21,7 +23,7 @@ interface Lesson {
   _id: string;
   title: string;
   description: string;
-  contentId: ContentId;
+  contentId: ContentId | string | null; // Can be object, string, or null
   duration: number;
   isCompleted: boolean;
   isPreview: boolean;
@@ -83,6 +85,18 @@ export default function LessonPage({
       const response = await api.get(`/v1/studentCourseDetails/${id}`);
       console.log("Course Data:", response.data);
       const data = response.data.data;
+      
+      // Debug: Log lesson structure to see contentId format
+      if (data.modules && data.modules.length > 0) {
+        const firstLesson = data.modules[0]?.lessons?.[0];
+        if (firstLesson) {
+          console.log("📹 [LESSON DEBUG] First lesson:", firstLesson);
+          console.log("📹 [LESSON DEBUG] contentId:", firstLesson.contentId);
+          console.log("📹 [LESSON DEBUG] contentId type:", typeof firstLesson.contentId);
+          console.log("📹 [LESSON DEBUG] contentId._id:", firstLesson.contentId?._id);
+        }
+      }
+      
       setCourseData(data);
 
       // Set the first incomplete lesson as current, or the first lesson if all complete
@@ -113,6 +127,56 @@ export default function LessonPage({
     fetchData();
   }, [fetchData]);
 
+  // Calculate progress (before conditional returns to avoid hook order issues)
+  const totalLessons = courseData?.modules.reduce(
+    (acc, module) => acc + module.lessons.length,
+    0
+  ) || 0;
+  const completedLessons = courseData?.modules.reduce(
+    (acc, module) =>
+      acc + module.lessons.filter((lesson) => lesson.isCompleted).length,
+    0
+  ) || 0;
+  const progress =
+    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+
+  // Find current lesson
+  const currentLesson = courseData?.modules
+    .flatMap((module) => module.lessons)
+    .find((lesson) => lesson._id === currentLessonId);
+
+  // Get media ID - handle both cases: contentId as object or string
+  // contentId can be an object with _id or just a string (mediaId)
+  const mediaId = currentLesson?.contentId
+    ? typeof currentLesson.contentId === 'string'
+      ? currentLesson.contentId
+      : currentLesson.contentId._id
+    : null;
+
+  // Determine media type from contentId
+  const isPdf = currentLesson?.contentId && typeof currentLesson.contentId === 'object'
+    ? currentLesson.contentId.mimeType?.includes('pdf') || 
+      currentLesson.contentId.fileName?.toLowerCase().endsWith('.pdf') ||
+      currentLesson.contentId.originalName?.toLowerCase().endsWith('.pdf')
+    : false;
+  
+  const isVideo = currentLesson?.contentId && typeof currentLesson.contentId === 'object'
+    ? currentLesson.contentId.mimeType?.includes('video') || 
+      currentLesson.contentId.mimeType?.includes('audio')
+    : true; // Default to video if we can't determine (for backward compatibility)
+
+  // Debug logging - MUST be before conditional returns (Rules of Hooks)
+  useEffect(() => {
+    if (currentLesson) {
+      console.log("📹 [MEDIA DEBUG] Current lesson:", currentLesson);
+      console.log("📹 [MEDIA DEBUG] ContentId:", currentLesson.contentId);
+      console.log("📹 [MEDIA DEBUG] ContentId type:", typeof currentLesson.contentId);
+      console.log("📹 [MEDIA DEBUG] MediaId:", mediaId);
+      console.log("📹 [MEDIA DEBUG] Is PDF:", isPdf);
+      console.log("📹 [MEDIA DEBUG] Is Video:", isVideo);
+    }
+  }, [currentLesson, mediaId, isPdf, isVideo]);
+
   if (loading) {
     return <TuteraLoading />;
   }
@@ -124,27 +188,6 @@ export default function LessonPage({
       </div>
     );
   }
-
-  // Calculate progress
-  const totalLessons = courseData.modules.reduce(
-    (acc, module) => acc + module.lessons.length,
-    0
-  );
-  const completedLessons = courseData.modules.reduce(
-    (acc, module) =>
-      acc + module.lessons.filter((lesson) => lesson.isCompleted).length,
-    0
-  );
-  const progress =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
-
-  // Find current lesson
-  const currentLesson = courseData.modules
-    .flatMap((module) => module.lessons)
-    .find((lesson) => lesson._id === currentLessonId);
-
-  // Get video URL - using contentId._id to fetch from S3
-  const videoContentId = currentLesson?.contentId?._id;
 
   return (
     <div className="mt-6 sm:mt-8">
@@ -171,24 +214,32 @@ export default function LessonPage({
             )}
           </div>
 
-          {/* Video Player */}
+          {/* Media Player (Video or PDF) */}
           <div className="mb-6">
-            <div className="w-full aspect-video rounded-lg overflow-hidden bg-black">
-              {currentLesson && videoContentId ? (
-                <video
-                  key={videoContentId}
-                  src={`/api/v1/content/${videoContentId}`}
-                  controls
-                  className="w-full h-full object-contain"
-                >
-                  Your browser does not support the video tag.
-                </video>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-white">
-                  No video available
+            {currentLesson && mediaId ? (
+              isPdf ? (
+                <div className="w-full rounded-lg overflow-hidden bg-gray-100">
+                  <MediaPdf
+                    mediaId={mediaId}
+                    className="w-full rounded-lg"
+                    height="600px"
+                    title={currentLesson.title}
+                  />
                 </div>
-              )}
-            </div>
+              ) : (
+                <div className="w-full aspect-video rounded-lg overflow-hidden bg-black">
+                  <MediaVideo
+                    mediaId={mediaId}
+                    className="w-full h-full object-contain"
+                    controls
+                  />
+                </div>
+              )
+            ) : (
+              <div className="w-full aspect-video rounded-lg overflow-hidden bg-black flex items-center justify-center text-white">
+                No media available
+              </div>
+            )}
           </div>
 
           {/* Course Description */}
