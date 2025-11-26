@@ -62,7 +62,7 @@ interface CourseContextType {
   showQuiz: boolean;
   setShowQuiz: (show: boolean) => void;
   addCourse: (course: Course, keepStep?: boolean) => void;
-  deleteCourse: (courseId: string) => void;
+  deleteCourse: (courseId: string) => Promise<void>;
   updateCourseStatus: (courseId: string, status: "draft" | "published") => void;
   updateCurrentCourse: (data: Partial<Course>) => void;
   setCurrentStep: (step: number) => void;
@@ -282,26 +282,44 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
       };
 
       console.log(
-        "📤 [CREATE COURSE] Payload:",
+        "📤 [CREATE/UPDATE COURSE] Payload:",
         JSON.stringify(coursePayload, null, 2)
       );
 
-      // Use relative URL - works on all subdomains (proxy ignores /api/ routes)
-      const response = await fetch("/api/v1/courses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(coursePayload),
-      });
+      // Check if we're updating an existing course or creating a new one
+      const isUpdate = courseData.id && courseData.id.trim() !== "";
+      const courseId = courseData.id;
+
+      let response: Response;
+      if (isUpdate) {
+        // Update existing course
+        console.log("📝 [UPDATE COURSE] Updating course ID:", courseId);
+        response = await fetch(`/api/v1/courses/${courseId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(coursePayload),
+        });
+      } else {
+        // Create new course
+        console.log("➕ [CREATE COURSE] Creating new course");
+        response = await fetch("/api/v1/courses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(coursePayload),
+        });
+      }
 
       if (!response.ok) {
         const errorData = await response
           .json()
           .catch(() => ({ error: "Unknown error" }));
-        console.error("❌ [CREATE COURSE] Error response:", errorData);
+        console.error(`❌ [${isUpdate ? "UPDATE" : "CREATE"} COURSE] Error response:`, errorData);
         throw new Error(
-          errorData.error || `Failed to create course: ${response.statusText}`
+          errorData.error || `Failed to ${isUpdate ? "update" : "create"} course: ${response.statusText}`
         );
       }
 
@@ -426,40 +444,53 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const deleteCourse = useCallback((courseId: string) => {
-    console.log("deleteCourse called with courseId:", courseId);
+  const deleteCourse = useCallback(async (courseId: string) => {
+    console.log("🗑️ [DELETE COURSE] Starting deletion for courseId:", courseId);
     
-    // Delete from state - the useEffect will handle saving to localStorage
-    setCourses((prev) => {
-      console.log(
-        "setCourses prev length:",
-        prev.length,
-        "courseIds:",
-        prev.map((c) => c.id)
-      );
-      const updated = prev.filter((c) => c.id !== courseId);
-      console.log(
-        "setCourses updated length:",
-        updated.length,
-        "courseIds:",
-        updated.map((c) => c.id)
-      );
-      return updated;
-    });
-    
-    // If the deleted course is the current course being edited, clear it
-    setCurrentCourse((prev) => {
-      if (prev?.id === courseId) {
-        setCurrentStep(0);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("tutera_current_course");
-          localStorage.removeItem("tutera_current_step");
-        }
-        return null;
+    try {
+      // Call API to delete course
+      const response = await fetch(`/api/v1/courses/${courseId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response
+          .json()
+          .catch(() => ({ error: "Unknown error" }));
+        console.error("❌ [DELETE COURSE] Error response:", errorData);
+        throw new Error(
+          errorData.error || `Failed to delete course: ${response.statusText}`
+        );
       }
-      return prev;
-    });
-  }, []);
+
+      console.log("✅ [DELETE COURSE] Course deleted successfully");
+
+      // Remove from state after successful API call
+      setCourses((prev) => {
+        const updated = prev.filter((c) => c.id !== courseId);
+        return updated;
+      });
+      
+      // If the deleted course is the current course being edited, clear it
+      setCurrentCourse((prev) => {
+        if (prev?.id === courseId) {
+          setCurrentStep(0);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("tutera_current_course");
+            localStorage.removeItem("tutera_current_step");
+          }
+          return null;
+        }
+        return prev;
+      });
+
+      // Refresh courses list to ensure consistency
+      await fetchCourses();
+    } catch (error) {
+      console.error("❌ [DELETE COURSE] Error:", error);
+      throw error; // Re-throw to let caller handle (e.g., show toast)
+    }
+  }, [fetchCourses]);
 
   const updateCurrentCourse = useCallback((data: Partial<Course>) => {
     setCurrentCourse((prev) => {

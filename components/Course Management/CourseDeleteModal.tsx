@@ -5,8 +5,9 @@ import Button from "../Reuse/Button";
 interface CourseDeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   courseTitle: string;
+  isDeleting?: boolean;
 }
 
 export default function CourseDeleteModal({
@@ -14,6 +15,7 @@ export default function CourseDeleteModal({
   onClose,
   onConfirm,
   courseTitle,
+  isDeleting = false,
 }: CourseDeleteModalProps) {
   if (!isOpen) return null;
 
@@ -79,20 +81,11 @@ export default function CourseDeleteModal({
           </Button>
           <Button
             variant="primary"
-            onClick={() => {
-              console.log("CourseDeleteModal Delete button clicked - START");
-              console.log("onConfirm function exists:", typeof onConfirm === 'function');
-              if (onConfirm) {
-                console.log("Calling onConfirm...");
-                onConfirm();
-                console.log("onConfirm called - END");
-              } else {
-                console.error("onConfirm is not defined!");
-              }
-            }}
-            className="px-6 py-2 bg-red-600 hover:bg-red-700"
+            onClick={onConfirm}
+            disabled={isDeleting}
+            className="px-6 py-2 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Delete
+            {isDeleting ? "Deleting..." : "Delete"}
           </Button>
         </div>
       </div>
