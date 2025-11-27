@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Button from "../Reuse/Button";
+import { toast } from "sonner";
 
 export default function Customization() {
   const todo = [
@@ -31,15 +33,6 @@ export default function Customization() {
           <p className="text-sm sm:text-base md:text-lg lg:text-[1.2rem] text-primary-400 font-semibold">
             Upgrade to Pro to access custom domains, customize brand, and more
           </p>
-
-          <div>
-            <button
-              className="bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-3 px-10 font-bold text-sm sm:text-[14px] cursor-pointer transition-colors"
-              style={{ backgroundColor: "rgba(73, 119, 230, 1)" }}
-            >
-              Upgrade now
-            </button>
-          </div>
         </div>
 
         <div>

@@ -75,6 +75,7 @@ export default function LessonPage({
   const [loading, setLoading] = useState(true);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
+  const [completingLesson, setCompletingLesson] = useState<string | null>(null);
 
   // Fetch courses
   const fetchData = useCallback(async () => {
@@ -83,20 +84,9 @@ export default function LessonPage({
     try {
       setLoading(true);
       const response = await api.get(`/v1/studentCourseDetails/${id}`);
-      console.log("Course Data:", response.data);
       const data = response.data.data;
-      
-      // Debug: Log lesson structure to see contentId format
-      if (data.modules && data.modules.length > 0) {
-        const firstLesson = data.modules[0]?.lessons?.[0];
-        if (firstLesson) {
-          console.log("📹 [LESSON DEBUG] First lesson:", firstLesson);
-          console.log("📹 [LESSON DEBUG] contentId:", firstLesson.contentId);
-          console.log("📹 [LESSON DEBUG] contentId type:", typeof firstLesson.contentId);
-          console.log("📹 [LESSON DEBUG] contentId._id:", firstLesson.contentId?._id);
-        }
-      }
-      
+      console.log(data);
+
       setCourseData(data);
 
       // Set the first incomplete lesson as current, or the first lesson if all complete
@@ -127,16 +117,40 @@ export default function LessonPage({
     fetchData();
   }, [fetchData]);
 
+  // Mark lesson as completed
+  const markLessonComplete = async (lessonId: string) => {
+    try {
+      setCompletingLesson(lessonId);
+      await api.patch(`/v1/markAsCompleted`, {
+        lessonId,
+        courseId: courseData?._id,
+      });
+      toast.success("Lesson marked as completed!");
+      // Refresh data to get updated completion status
+      await fetchData();
+    } catch (error: unknown) {
+      console.error("Error completing lesson:", error);
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Failed to mark lesson as completed";
+      toast.error(message);
+    } finally {
+      setCompletingLesson(null);
+    }
+  };
+
   // Calculate progress (before conditional returns to avoid hook order issues)
-  const totalLessons = courseData?.modules.reduce(
-    (acc, module) => acc + module.lessons.length,
-    0
-  ) || 0;
-  const completedLessons = courseData?.modules.reduce(
-    (acc, module) =>
-      acc + module.lessons.filter((lesson) => lesson.isCompleted).length,
-    0
-  ) || 0;
+  const totalLessons =
+    courseData?.modules.reduce(
+      (acc, module) => acc + module.lessons.length,
+      0
+    ) || 0;
+  const completedLessons =
+    courseData?.modules.reduce(
+      (acc, module) =>
+        acc + module.lessons.filter((lesson) => lesson.isCompleted).length,
+      0
+    ) || 0;
   const progress =
     totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
@@ -145,37 +159,40 @@ export default function LessonPage({
     .flatMap((module) => module.lessons)
     .find((lesson) => lesson._id === currentLessonId);
 
+  // Find which module the current lesson belongs to
+  const currentModule = courseData?.modules.find((module) =>
+    module.lessons.some((lesson) => lesson._id === currentLessonId)
+  );
+
+  // Calculate the correct lesson number within the current module
+  const currentLessonNumber =
+    currentModule && currentLessonId
+      ? currentModule.lessons.findIndex(
+          (lesson) => lesson._id === currentLessonId
+        ) + 1
+      : 1;
+
   // Get media ID - handle both cases: contentId as object or string
   // contentId can be an object with _id or just a string (mediaId)
   const mediaId = currentLesson?.contentId
-    ? typeof currentLesson.contentId === 'string'
+    ? typeof currentLesson.contentId === "string"
       ? currentLesson.contentId
       : currentLesson.contentId._id
     : null;
 
   // Determine media type from contentId
-  const isPdf = currentLesson?.contentId && typeof currentLesson.contentId === 'object'
-    ? currentLesson.contentId.mimeType?.includes('pdf') || 
-      currentLesson.contentId.fileName?.toLowerCase().endsWith('.pdf') ||
-      currentLesson.contentId.originalName?.toLowerCase().endsWith('.pdf')
-    : false;
-  
-  const isVideo = currentLesson?.contentId && typeof currentLesson.contentId === 'object'
-    ? currentLesson.contentId.mimeType?.includes('video') || 
-      currentLesson.contentId.mimeType?.includes('audio')
-    : true; // Default to video if we can't determine (for backward compatibility)
+  const isPdf =
+    currentLesson?.contentId && typeof currentLesson.contentId === "object"
+      ? currentLesson.contentId.mimeType?.includes("pdf") ||
+        currentLesson.contentId.fileName?.toLowerCase().endsWith(".pdf") ||
+        currentLesson.contentId.originalName?.toLowerCase().endsWith(".pdf")
+      : false;
 
-  // Debug logging - MUST be before conditional returns (Rules of Hooks)
-  useEffect(() => {
-    if (currentLesson) {
-      console.log("📹 [MEDIA DEBUG] Current lesson:", currentLesson);
-      console.log("📹 [MEDIA DEBUG] ContentId:", currentLesson.contentId);
-      console.log("📹 [MEDIA DEBUG] ContentId type:", typeof currentLesson.contentId);
-      console.log("📹 [MEDIA DEBUG] MediaId:", mediaId);
-      console.log("📹 [MEDIA DEBUG] Is PDF:", isPdf);
-      console.log("📹 [MEDIA DEBUG] Is Video:", isVideo);
-    }
-  }, [currentLesson, mediaId, isPdf, isVideo]);
+  const isVideo =
+    currentLesson?.contentId && typeof currentLesson.contentId === "object"
+      ? currentLesson.contentId.mimeType?.includes("video") ||
+        currentLesson.contentId.mimeType?.includes("audio")
+      : true; // Default to video if we can't determine (for backward compatibility)
 
   if (loading) {
     return <TuteraLoading />;
@@ -209,7 +226,8 @@ export default function LessonPage({
             </h1>
             {currentLesson && (
               <p className="text-base font-semibold text-[#101A33]">
-                {currentLesson.order} {currentLesson.title}
+                {currentModule?.title} - Lesson {currentLessonNumber}:{" "}
+                {currentLesson.title}
               </p>
             )}
           </div>
@@ -261,11 +279,10 @@ export default function LessonPage({
                     {module.title}:
                   </h3>
                   <div className="space-y-2">
-                    {module.lessons.map((lesson) => (
+                    {module.lessons.map((lesson, index) => (
                       <div
                         key={lesson._id}
-                        onClick={() => setCurrentLessonId(lesson._id)}
-                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer ${
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                           lesson._id === currentLessonId && lesson.isCompleted
                             ? "bg-[#F6F6F6]"
                             : lesson._id === currentLessonId
@@ -276,27 +293,43 @@ export default function LessonPage({
                         }`}
                       >
                         <div
-                          className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
-                            lesson.isCompleted
-                              ? "bg-orange-300"
-                              : "bg-[rgba(133,32,9,1)]"
-                          }`}
+                          onClick={() => setCurrentLessonId(lesson._id)}
+                          className="flex items-center gap-3 flex-1 cursor-pointer"
                         >
-                          {lesson.isCompleted ? (
-                            <FaCheck className="text-xs" />
-                          ) : (
-                            lesson.order
-                          )}
+                          <div
+                            className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold ${
+                              lesson.isCompleted
+                                ? "bg-orange-300"
+                                : "bg-[rgba(133,32,9,1)]"
+                            }`}
+                          >
+                            {lesson.isCompleted ? (
+                              <FaCheck className="text-xs" />
+                            ) : (
+                              index + 1
+                            )}
+                          </div>
+                          <span
+                            className={`text-[16px] flex-1 ${
+                              lesson._id === currentLessonId
+                                ? "font-semibold text-[#101A33]"
+                                : "font-medium text-neutral-900"
+                            }`}
+                          >
+                            {lesson.title}
+                          </span>
                         </div>
-                        <span
-                          className={`text-[16px] flex-1 ${
-                            lesson._id === currentLessonId
-                              ? "font-semibold text-[#101A33]"
-                              : "font-medium text-neutral-900"
-                          }`}
-                        >
-                          {lesson.title}
-                        </span>
+                        {!lesson.isCompleted && (
+                          <button
+                            onClick={() => markLessonComplete(lesson._id)}
+                            disabled={completingLesson === lesson._id}
+                            className="shrink-0 px-3 py-1 text-xs font-semibold bg-orange-300 hover:bg-orange-400 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {completingLesson === lesson._id
+                              ? "..."
+                              : "Complete"}
+                          </button>
+                        )}
                       </div>
                     ))}
                     {/* Take Quiz Button */}
@@ -321,13 +354,13 @@ export default function LessonPage({
             </div>
 
             {/* Course Progress */}
-            <div className="pb-18 bg-[#E6EAF5] p-6 rounded-lg">
-              <div className="flex items-center justify-between mb-10">
+            <div className="pb-6 bg-[#E6EAF5] p-6 rounded-lg">
+              <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-semibold text-neutral-900">
                   Course Progress
                 </span>
               </div>
-              <div className="relative w-full bg-neutral-200 rounded-full h-3 mb-8">
+              <div className="relative w-full bg-neutral-200 rounded-full h-3">
                 <div
                   className="bg-orange-300 h-3 rounded-full transition-all"
                   style={{ width: `${progress}%` }}
@@ -336,15 +369,6 @@ export default function LessonPage({
                   {progress}%
                 </span>
               </div>
-
-              {/* Mark Course as Completed Button */}
-              <StudentButton
-                variant="secondary"
-                className="w-full text-[1rem] font-semibold"
-                disabled={progress < 100}
-              >
-                Mark Course as Completed
-              </StudentButton>
             </div>
           </div>
         </div>

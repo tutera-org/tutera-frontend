@@ -6,6 +6,7 @@ import MediaImage from "@/components/Reuse/MediaImage";
 import { api } from "@/lib/axiosClientInstance";
 import { use, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Interfaces
 interface CourseResponse {
@@ -85,6 +86,7 @@ export default function BuyCourseId({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const router = useRouter();
 
   const [loading, setLoading] = useState(true);
   const [course, setCourse] = useState<Course>();
@@ -119,6 +121,12 @@ export default function BuyCourseId({
 
   return (
     <section className="mt-6 sm:mt-8 lg:mt-10">
+      <button
+        onClick={() => router.back()}
+        className="text-neutral-900 hover:text-orange-300 font-bold text-[16px] md:text-[20px] mb-6 transition-colors flex items-center gap-2"
+      >
+        <span className="text-[16px] md:text-[20px]">←</span> Back
+      </button>
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 lg:gap-4">
         <aside className="font-semibold w-full lg:basis-[50%] text-neutral-900">
           <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
