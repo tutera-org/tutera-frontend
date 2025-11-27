@@ -19,21 +19,28 @@ export default function StudentPage() {
 
         {/* Buttons - Responsive */}
         <div className="flex flex-wrap gap-3 sm:gap-4">
-          <StudentButton
+          <button
             onClick={() => setmarketPlace(true)}
             type="button"
-            className="flex-1 sm:flex-initial min-w-[120px]"
+            className={
+              marketPlace
+                ? `bg-orange-300 hover:border hover:border-orange-300 text-white hover:text-orange-300 hover:bg-transparent px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-semibold transition-all duration-150 cursor-pointer active:scale-95  flex-1 sm:flex-initial min-w-[120px] `
+                : "bg-gray-400 hover:border hover:border-orange-300 text-white hover:text-orange-300 hover:bg-transparent px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-semibold transition-all duration-150 cursor-pointer active:scale-95 flex-1 sm:flex-initial min-w-[120px]"
+            }
           >
             Marketplace
-          </StudentButton>
-          <StudentButton
+          </button>
+          <button
             onClick={() => setmarketPlace(false)}
-            variant="secondary"
             type="button"
-            className="flex-1 sm:flex-initial min-w-[120px]"
+            className={
+              marketPlace
+                ? `bg-gray-400 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-semibold transition-all duration-150 cursor-pointer active:scale-95 hover:border hover:border-orange-300 text-white hover:text-orange-300 hover:bg-transparent  flex-1 sm:flex-initial min-w-[120px]`
+                : "bg-orange-300 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-semibold transition-all duration-150 cursor-pointer active:scale-95 rounded-lg hover:border hover:border-orange-300 text-white hover:text-orange-300 hover:bg-transparent  flex-1 sm:flex-initial min-w-[120px]"
+            }
           >
             My Courses
-          </StudentButton>
+          </button>
         </div>
 
         {/* Courses Content - Responsive */}

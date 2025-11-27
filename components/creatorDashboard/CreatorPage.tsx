@@ -101,17 +101,10 @@ export default function CreatorPage() {
             <div className="flex gap-3">
               <Button
                 variant="secondary"
-                onClick={() => router.push("/courseManagement/analytics")}
+                onClick={() => router.push("/courseManagement")}
                 className="px-9 md:px-8 md:py-4 py-3 bg-white"
               >
                 View Product
-              </Button>
-              <Button
-                variant="primary"
-                onClick={() => router.push("/courseManagement/analytics")}
-                className="px-9 md:px-8 md:py-4 py-3"
-              >
-                Add Course
               </Button>
             </div>
           </>
