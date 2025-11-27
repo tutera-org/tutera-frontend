@@ -1,64 +1,95 @@
 "use client";
 import StudentButton from "@/components/students/Button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { api } from "@/lib/axiosClientInstance";
+import TuteraLoading from "@/components/Reuse/Loader";
 
-export default function QuizPage() {
+interface Question {
+  questionText: string;
+  options: string[];
+  correctAnswerIndex: number;
+  _id: string;
+}
+
+interface QuizData {
+  _id: string;
+  moduleId: string;
+  questions: Question[];
+  isPublished: boolean;
+}
+
+export default function QuizPage({
+  params,
+}: {
+  params: Promise<{ id: string; quizId: string }>;
+}) {
+  const router = useRouter();
+  const { id, quizId } = use(params);
+
+  const [loading, setLoading] = useState(true);
+  const [quizData, setQuizData] = useState<QuizData | null>(null);
+  const [moduleTitle, setModuleTitle] = useState<string>("");
   const [quizNum, setQuizNum] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [userAnswers, setUserAnswers] = useState<(string | null)[]>(
-    new Array(5).fill(null)
-  );
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  // mock Quiz
-  const Quiz = [
-    {
-      question: "What is the main purpose of responsive design?",
-      options: [
-        "To make websites load faster",
-        "To adapt layouts to different screen sizes",
-        "To improve SEO rankings",
-        "To reduce server costs",
-      ],
-      answer: "To adapt layouts to different screen sizes",
-    },
-    {
-      question: "Which CSS unit is relative to the viewport width?",
-      options: ["px", "em", "vw", "pt"],
-      answer: "vw",
-    },
-    {
-      question: "What does the 'box-sizing: border-box' property do?",
-      options: [
-        "Removes the border from elements",
-        "Includes padding and border in the element's total width and height",
-        "Creates a box shadow effect",
-        "Changes the border style to a box shape",
-      ],
-      answer:
-        "Includes padding and border in the element's total width and height",
-    },
-    {
-      question:
-        "Which JavaScript method is used to select an element by its ID?",
-      options: [
-        "querySelector()",
-        "getElementsByClassName()",
-        "getElementById()",
-        "selectElement()",
-      ],
-      answer: "getElementById()",
-    },
-    {
-      question: "What is the default display value of a <div> element?",
-      options: ["inline", "block", "flex", "grid"],
-      answer: "block",
-    },
-  ];
+  // Fetch course data to get quiz
+  const fetchCourseData = useCallback(async () => {
+    if (!id || !quizId) return;
+
+    try {
+      setLoading(true);
+      // Fetch the course data (same endpoint as lesson page)
+      const response = await api.get(`/v1/studentCourseDetails/${id}`);
+      console.log("Course Data:", response.data);
+      const courseData = response.data.data;
+
+      // Find the module that contains this quiz
+      const module = courseData.modules.find(
+        (mod: any) => mod.quiz && mod.quiz._id === quizId
+      );
+
+      if (module && module.quiz) {
+        setQuizData(module.quiz);
+        setModuleTitle(module.title);
+        // Initialize user answers array
+        setUserAnswers(new Array(module.quiz.questions.length).fill(null));
+      } else {
+        toast.error("Quiz not found");
+      }
+    } catch (error: unknown) {
+      console.error("Error fetching quiz:", error);
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Failed to load quiz";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, quizId]);
+
+  useEffect(() => {
+    fetchCourseData();
+  }, [fetchCourseData]);
+
+  if (loading) {
+    return <TuteraLoading />;
+  }
+
+  if (!quizData) {
+    return (
+      <div className="mt-6 sm:mt-8 text-center">
+        <p className="text-neutral-900">Quiz not found</p>
+      </div>
+    );
+  }
 
   // Calculate progress percentage
-  const progressPercentage = ((quizNum + 1) / Quiz.length) * 100;
+  const progressPercentage = ((quizNum + 1) / quizData.questions.length) * 100;
 
   // Function to determine progress bar color based on percentage
   const getProgressColor = (percent: number) => {
@@ -73,28 +104,58 @@ export default function QuizPage() {
   const calculateScore = () => {
     let correct = 0;
     userAnswers.forEach((answer, index) => {
-      if (answer === Quiz[index].answer) {
+      if (answer === quizData.questions[index].correctAnswerIndex) {
         correct++;
       }
     });
     return correct;
   };
 
-  const handleAnswerSelect = (option: string) => {
+  const handleAnswerSelect = (optionIndex: number) => {
     const newAnswers = [...userAnswers];
-    newAnswers[quizNum] = option;
+    newAnswers[quizNum] = optionIndex;
     setUserAnswers(newAnswers);
-    setSelectedAnswer(option);
+    setSelectedAnswer(optionIndex);
   };
 
-  const handleNext = () => {
-    // If last question, show confirmation
-    if (quizNum === Quiz.length - 1) {
+  const handleNext = async () => {
+    // If last question, show confirmation and submit
+    if (quizNum === quizData.questions.length - 1) {
       const confirmSubmit = window.confirm(
         "Are you sure you want to submit your quiz?"
       );
       if (confirmSubmit) {
-        setShowResults(true);
+        try {
+          setSubmitting(true);
+
+          // Format answers according to backend requirements
+          const formattedAnswers = userAnswers.map((answer, index) => ({
+            questionIndex: index,
+            selectedOptionIndex: answer !== null ? answer : -1,
+            isCorrect: answer === quizData.questions[index].correctAnswerIndex,
+          }));
+
+          const submissionData = {
+            courseId: id,
+            quizId: quizId,
+            answers: formattedAnswers,
+          };
+
+          console.log("Submitting quiz:", submissionData);
+
+          const response = await api.post(`/v1/submitQuiz`, submissionData);
+          console.log("Quiz submission response:", response.data);
+          toast.success("Quiz submitted successfully!");
+          setShowResults(true);
+        } catch (error: unknown) {
+          console.error("Error submitting quiz:", error);
+          const message =
+            (error as { response?: { data?: { error?: string } } })?.response
+              ?.data?.error || "Failed to submit quiz";
+          toast.error(message);
+        } finally {
+          setSubmitting(false);
+        }
       }
     } else {
       // Next Question
@@ -113,26 +174,24 @@ export default function QuizPage() {
 
   const handleRetakeQuiz = () => {
     setQuizNum(0);
-    setUserAnswers(new Array(5).fill(null));
+    setUserAnswers(new Array(quizData.questions.length).fill(null));
     setSelectedAnswer(null);
     setShowResults(false);
   };
 
-  const router = useRouter();
-
   // Results View
   if (showResults) {
     const score = calculateScore();
-    const percentage = (score / Quiz.length) * 100;
+    const percentage = (score / quizData.questions.length) * 100;
 
     return (
       <section className="mt-6 sm:mt-8">
         <h3 className="text-2xl md:text-[2.5rem] font-bold text-neutral-900 mb-2">
-          Quiz Results
+          {moduleTitle} - Quiz Results
         </h3>
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push(`/dashboard/myCourses/${id}`)}
           className="text-neutral-900 hover:text-orange-300 font-bold text-[16px] md:text-[20px] mb-6 transition-colors flex items-center gap-2"
         >
           <span className="text-[16px] md:text-[20px]">←</span> Back
@@ -145,7 +204,7 @@ export default function QuizPage() {
               Your Score
             </h4>
             <p className="text-5xl md:text-6xl font-bold text-orange-500 mb-2">
-              {score} / {Quiz.length}
+              {score} / {quizData.questions.length}
             </p>
             <p className="text-xl text-neutral-600">
               {percentage.toFixed(0)}% Correct
@@ -165,13 +224,17 @@ export default function QuizPage() {
               Question Review
             </h5>
 
-            {Quiz.map((quiz, index) => {
+            {quizData.questions.map((question, index) => {
               const userAnswer = userAnswers[index];
-              const isCorrect = userAnswer === quiz.answer;
+              const isCorrect = userAnswer === question.correctAnswerIndex;
+              const userAnswerText =
+                userAnswer !== null ? question.options[userAnswer] : null;
+              const correctAnswerText =
+                question.options[question.correctAnswerIndex];
 
               return (
                 <div
-                  key={index}
+                  key={question._id}
                   className={`p-4 rounded-lg border-2 ${
                     isCorrect
                       ? "border-green-300 bg-green-50"
@@ -188,20 +251,20 @@ export default function QuizPage() {
                     </span>
                     <div className="flex-1">
                       <p className="font-semibold text-neutral-900 mb-2">
-                        Question {index + 1}: {quiz.question}
+                        Question {index + 1}: {question.questionText}
                       </p>
 
                       {!isCorrect && (
                         <>
                           <p className="text-sm text-red-700 mb-1">
                             <span className="font-semibold">Your answer:</span>{" "}
-                            {userAnswer || "Not answered"}
+                            {userAnswerText || "Not answered"}
                           </p>
                           <p className="text-sm text-green-700">
                             <span className="font-semibold">
                               Correct answer:
                             </span>{" "}
-                            {quiz.answer}
+                            {correctAnswerText}
                           </p>
                         </>
                       )}
@@ -209,7 +272,7 @@ export default function QuizPage() {
                       {isCorrect && (
                         <p className="text-sm text-green-700">
                           <span className="font-semibold">Your answer:</span>{" "}
-                          {userAnswer} ✓
+                          {userAnswerText} ✓
                         </p>
                       )}
                     </div>
@@ -228,7 +291,7 @@ export default function QuizPage() {
               Retake Quiz
             </button>
             <button
-              onClick={() => router.back()}
+              onClick={() => router.push(`/dashboard/myCourses/${id}`)}
               className="px-6 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-all"
             >
               Back to Lessons
@@ -243,11 +306,11 @@ export default function QuizPage() {
   return (
     <section className="mt-6 sm:mt-8">
       <h3 className="text-2xl md:text-[2.5rem] font-bold text-neutral-900 mb-2">
-        Quiz
+        {moduleTitle} - Quiz
       </h3>
       {/* Back Button */}
       <button
-        onClick={() => router.back()}
+        onClick={() => router.push(`/dashboard/myCourses/${id}`)}
         className="text-neutral-900 hover:text-orange-300 font-bold text-[16px] md:text-[20px] mb-6 transition-colors flex items-center gap-2"
       >
         <span className="text-[16px] md:text-[20px]">←</span> Back
@@ -255,15 +318,15 @@ export default function QuizPage() {
 
       <div className="flex justify-center items-center w-full h-[80vh]">
         <div className="bg-white flex flex-col gap-4 py-6 px-4 rounded-2xl w-full max-w-3xl">
-          {Quiz.map((quiz, index) => (
+          {quizData.questions.map((question, index) => (
             <div
-              key={quiz.question}
+              key={question._id}
               className={quizNum === index ? "block" : "hidden"}
             >
               {/* Quiz No and completion Ratio */}
               <aside className="text-neutral-900 text-sm flex items-center justify-between mb-3">
                 <p className="font-medium">
-                  Question {index + 1} of {Quiz.length}
+                  Question {index + 1} of {quizData.questions.length}
                 </p>
                 <p className="font-semibold">
                   {Math.round(progressPercentage)}%
@@ -283,22 +346,22 @@ export default function QuizPage() {
 
               {/* Question */}
               <h4 className="text-xl md:text-2xl font-bold text-neutral-900 mb-6">
-                {quiz.question}
+                {question.questionText}
               </h4>
 
               {/* Options */}
               <div className="space-y-3 mb-8">
-                {quiz.options.map((option) => (
+                {question.options.map((option, optionIndex) => (
                   <label
-                    key={option}
+                    key={optionIndex}
                     className="flex items-start gap-3 p-4 rounded-lg border hover:bg-gray-50 cursor-pointer transition-all"
                   >
                     <input
                       type="radio"
                       name={`question-${index}`}
-                      value={option}
-                      checked={selectedAnswer === option}
-                      onChange={() => handleAnswerSelect(option)}
+                      value={optionIndex}
+                      checked={selectedAnswer === optionIndex}
+                      onChange={() => handleAnswerSelect(optionIndex)}
                       className="mt-1 w-4 h-4 accent-orange-500"
                     />
                     <span className="text-neutral-900">{option}</span>
@@ -317,10 +380,12 @@ export default function QuizPage() {
                 </StudentButton>
                 <StudentButton
                   onClick={handleNext}
-                  disabled={selectedAnswer === null}
+                  disabled={selectedAnswer === null || submitting}
                   className="px-6 py-3 rounded-lg font-semibold disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  {quizNum === Quiz.length - 1
+                  {submitting
+                    ? "Submitting..."
+                    : quizNum === quizData.questions.length - 1
                     ? "Submit Quiz"
                     : "Next Question"}
                 </StudentButton>

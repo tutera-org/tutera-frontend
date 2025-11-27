@@ -121,7 +121,7 @@ export default function LessonPage({
   const markLessonComplete = async (lessonId: string) => {
     try {
       setCompletingLesson(lessonId);
-      await api.patch(`/v1/markAsCompleted`, {
+      await api.patch(`/v1/lessons/complete`, {
         lessonId,
         courseId: courseData?._id,
       });
@@ -338,7 +338,7 @@ export default function LessonPage({
                         className={"w-full mt-4 disabled:bg-gray-500"}
                         onClick={() =>
                           router.push(
-                            `/dashboard/myCourses/${courseData._id}/quiz`
+                            `/dashboard/myCourses/${courseData._id}/quiz/${module.quiz._id}`
                           )
                         }
                         disabled={
