@@ -111,6 +111,12 @@ export default function BuyCourseId({
     }
   }, [id]);
 
+  const formatAmount = (amount: number) => {
+    const num = amount.toString();
+    const number = parseFloat(num.replace(/,/g, ""));
+    return `₦${number.toLocaleString("en-NG")}`;
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -172,7 +178,8 @@ export default function BuyCourseId({
           }}
           className="w-full sm:w-auto"
         >
-          Enroll Now (${course?.price})
+          {/* TODO: fix the amt */}
+          Enroll Now {formatAmount(course?.price as number)}
         </StudentButton>
       </div>
 
