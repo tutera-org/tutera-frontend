@@ -172,12 +172,6 @@ export default function PopulatedStudentPage({
     setSelectedDates([]);
   };
 
-  // Helper function to construct image URL (adjust based on your API setup)
-  // const getImageUrl = (imageId: string): string => {
-  //   // Replace with your actual image URL pattern
-  //   return `/api/images/${imageId}`;
-  // };
-
   return (
     <div className="min-h-screen">
       {/* Main layout: Main content and sidebar - reverse on mobile, flex on desktop */}
@@ -213,7 +207,7 @@ export default function PopulatedStudentPage({
                       <h3 className="font-bold text-base xs:text-lg sm:text-xl md:text-2xl text-gray-900 mb-2">
                         {course.title}
                       </h3>
-                      <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4 line-clamp-2">
+                      <p className="text-gray-600 text-xs xs:text-sm md:text-base mb-4 line-clamp-1">
                         {course.description}
                       </p>
 

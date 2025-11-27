@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import NavLink from "../creatorDashboard/NavBar";
-import { FaBell, FaBars, FaTimes, FaSignOutAlt } from "react-icons/fa";
+import { FaBell, FaBars, FaTimes, FaSignOutAlt, FaCopy } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { SingleAvatar } from "./Avatar";
 import { useRouter } from "next/navigation";
@@ -46,6 +46,20 @@ export default function CreatorHeader() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isDropdownOpen]);
+
+  const handleCopyUrl = async () => {
+    try {
+      if (typeof window !== "undefined") {
+        const currentUrl = window.location.href;
+        await navigator.clipboard.writeText(currentUrl);
+        toast.success("URL copied to clipboard!");
+        setIsDropdownOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to copy URL:", error);
+      toast.error("Failed to copy URL");
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -124,10 +138,23 @@ export default function CreatorHeader() {
             {/* Dropdown Menu */}
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-neutral-200 py-2 z-50">
+                {/* Copy URL Button */}
+                <button
+                  onClick={handleCopyUrl}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-neutral-900 hover:bg-neutral-100 transition-colors"
+                >
+                  <FaCopy className="text-base" />
+                  <span className="font-medium">Copy URL</span>
+                </button>
+
+                {/* Divider */}
+                <div className="border-t border-neutral-200 my-1"></div>
+
+                {/* Logout Button */}
                 <button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-neutral-900 hover:bg-neutral-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FaSignOutAlt className="text-base" />
                   <span className="font-medium">
@@ -204,6 +231,15 @@ export default function CreatorHeader() {
               <NavLink href="/settings" linkText="Settings" />
             </div>
           </nav>
+
+          {/* Mobile Copy URL Button */}
+          <button
+            onClick={handleCopyUrl}
+            className="w-full flex items-center justify-center gap-3 bg-blue-50 hover:bg-blue-100 text-blue-600 font-semibold py-3 px-4 rounded-xl transition-colors mb-3"
+          >
+            <FaCopy className="text-base" />
+            <span>Copy URL</span>
+          </button>
 
           {/* Mobile Logout Button */}
           <button

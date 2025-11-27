@@ -14,6 +14,8 @@ import { IoChevronDown } from "react-icons/io5";
 // Type definitions - must match the parent component types
 interface AnalysisData {
   [key: string]: unknown;
+  label?: string;
+  date?: string;
   coursesSold?: number;
   revenue?: number;
   studentsEnrolled?: number;
@@ -86,29 +88,32 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
       let label = "";
 
       if (timeframe === "daily") {
-        // Last 30 days - show every 5th day to avoid crowding
-        const dayNum = index + 1;
-        label = dayNum % 5 === 0 || dayNum === 1 ? `Day ${dayNum}` : "";
+        // For daily view, show labels at 2-hour intervals (0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22)
+        // This gives us 12 labels across the 24 hours
+        if (index % 2 === 0) {
+          label = item.label || `Hour ${index + 1}`;
+        } else {
+          label = ""; // Empty label for non-2hr intervals
+        }
       } else if (timeframe === "weekly") {
-        // 12 weeks
-        label = `W${index + 1}`;
+        // For weekly view, use day labels from API (e.g., "Fri, Nov 21", "Sat, Nov 22")
+        // Extract just the day name or use full label
+        if (item.label) {
+          // Extract day name from "Fri, Nov 21" format
+          const dayName = item.label.split(",")[0];
+          label = dayName || item.label;
+        } else {
+          label = `Day ${index + 1}`;
+        }
       } else if (timeframe === "monthly") {
-        // 12 months
-        const months = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        label = months[index] || `M${index + 1}`;
+        // For monthly view, use week labels from API (e.g., "Week 1 (Oct 31 - Nov 6)")
+        if (item.label) {
+          // Extract just "Week 1", "Week 2", etc. from the full label
+          const weekMatch = item.label.match(/Week (\d+)/);
+          label = weekMatch ? `Week ${weekMatch[1]}` : item.label;
+        } else {
+          label = `Week ${index + 1}`;
+        }
       }
 
       // Safely access the metric value with fallback to 0
@@ -160,10 +165,13 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
         displayValue = `${data.value}%`;
       }
 
+      // Get the full label from the original data
+      const fullLabel = data.fullData?.label || data.name;
+
       return (
         <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-3">
           <p className="text-sm font-semibold text-gray-900 mb-1">
-            {data.name}
+            {fullLabel}
           </p>
           <p className="text-sm text-gray-600">
             <span
@@ -183,6 +191,13 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
   const chartData = getCurrentData();
   const maxValue = Math.max(...chartData.map((d) => d.value), 10);
   const currentMetric = getCurrentMetric();
+
+  // Adjust bar size based on timeframe
+  const getBarSize = () => {
+    if (timeframe === "daily") return 12; // 24 hours - smaller bars
+    if (timeframe === "weekly") return 40; // 7 days - medium bars
+    return 40; // 4 weeks - medium bars
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto p-4 sm:p-6 bg-white font-semibold">
@@ -280,7 +295,7 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
           <BarChart
             data={chartData}
             margin={{ top: 20, right: 30, left: 0, bottom: 20 }}
-            barSize={timeframe === "daily" ? 8 : 40}
+            barSize={getBarSize()}
           >
             <CartesianGrid
               strokeDasharray="3 3"
@@ -291,8 +306,12 @@ const WeeklyActivity: React.FC<WeeklyActivityProps> = ({ overallAnalysis }) => {
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#9CA3AF", fontSize: 12 }}
+              tick={{ fill: "#9CA3AF", fontSize: 11 }}
               dy={10}
+              interval={0}
+              angle={timeframe === "daily" ? -45 : 0}
+              textAnchor={timeframe === "daily" ? "end" : "middle"}
+              height={timeframe === "daily" ? 70 : 30}
             />
             <YAxis
               axisLine={false}

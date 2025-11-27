@@ -121,7 +121,7 @@ export default function Marketplace() {
                 </h3>
 
                 {/* description */}
-                <p className="font-normal text-xs sm:text-sm text-neutral-600 line-clamp-3">
+                <p className="font-normal text-xs sm:text-sm text-neutral-600 line-clamp-1">
                   {course.description}
                 </p>
 
