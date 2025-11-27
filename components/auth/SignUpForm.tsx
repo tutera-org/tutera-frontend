@@ -123,8 +123,8 @@ export default function SignUpForm() {
       window.location.href = tenantSignInUrl;
     } catch (error: unknown) {
       const message =
-        (error as { response?: { data?: { error?: string } } })?.response
-          ?.data?.error || "Sign up failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Sign up failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);
@@ -212,7 +212,17 @@ export default function SignUpForm() {
           {...register("termsAccepted")}
           className="mr-3"
         />
-        By signing up, I agree to the terms of use and privacy policy
+        <span>
+          By signing up, I agree to the{" "}
+          <Link
+            href="/legal"
+            className="text-red-500 hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            terms of use and privacy policy
+          </Link>
+        </span>
       </label>
       {/* Show validation error if checkbox not checked */}
       {errors.termsAccepted && (

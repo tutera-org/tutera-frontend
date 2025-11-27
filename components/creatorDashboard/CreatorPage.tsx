@@ -5,10 +5,11 @@ import ChartDashboard from "./Chart";
 import CourseOverview from "./CourseOverview";
 import GettingStarted from "./GettingStarted";
 import Welcome from "./Welcome";
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import TuteraLoading from "../Reuse/Loader";
+import Button from "../Reuse/Button";
+import { useRouter } from "next/navigation";
 
 // Type definitions
 interface Course {
@@ -55,6 +56,7 @@ export default function CreatorPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [ownsLessons, setOwnsLessons] = useState(false);
+  const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -63,6 +65,7 @@ export default function CreatorPage() {
         "/v1/dashboard"
       );
       const fetchedData = response.data.data;
+      console.log(fetchedData);
       setData(fetchedData);
 
       // Update ownsLessons based on courses length
@@ -70,8 +73,8 @@ export default function CreatorPage() {
       setOwnsLessons(hasLessons);
     } catch (error: unknown) {
       const message =
-        (error as { response?: { data?: { error?: string } } })?.response
-          ?.data?.error || "Fetching dashboard failed";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Fetching dashboard failed";
       toast.error(message);
     } finally {
       setLoading(false);
@@ -92,23 +95,24 @@ export default function CreatorPage() {
       <section className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-10">
         {ownsLessons ? (
           <>
-            <h1 className="font-semibold lg:text-[2.5rem] leading-12 text-neutral-900 text-base">
-              Welcome back
+            <h1 className="text-[1.5rem] md:text-[2.5rem] font-bold text-[#101A33] mb-6 ">
+              Welcome Back
             </h1>
             <div className="flex gap-3">
-              <Link
-                href="/courseManagement"
-                className="text-primary-400 text-base font-bold leading-[120%] border border-primary-400 py-3 px-4 rounded-lg hover:bg-primary-400 cursor-pointer hover:text-neutral-100"
+              <Button
+                variant="secondary"
+                onClick={() => router.push("/courseManagement/analytics")}
+                className="px-9 md:px-8 md:py-4 py-3 bg-white"
               >
-                View product
-              </Link>
-
-              <Link
-                href="/courseManagement"
-                className="font-bold rounded-lg py-3 px-6 bg-primary-400 hover:border hover:border-primary-400 hover:bg-neutral-100 hover:text-primary-400 cursor-pointer text-neutral-100 text-base leading-[120%]"
+                View Product
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => router.push("/courseManagement/analytics")}
+                className="px-9 md:px-8 md:py-4 py-3"
               >
                 Add Course
-              </Link>
+              </Button>
             </div>
           </>
         ) : (
@@ -125,7 +129,7 @@ export default function CreatorPage() {
           <ChartDashboard data={data} />
 
           {/* Course overview */}
-          <CourseOverview />
+          <CourseOverview courses={data?.data?.courses} />
         </>
       ) : (
         <GettingStarted />

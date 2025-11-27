@@ -44,9 +44,6 @@ export default function CourseOverview({ courses }: CourseOverviewProps) {
         <h3 className="font-semibold text-lg sm:text-2xl leading-8 text-neutral-900">
           Course Overview
         </h3>
-        <button className="text-primary-400 font-semibold leading-5 text-sm sm:text-base hover:underline cursor-pointer">
-          More Details
-        </button>
       </aside>
 
       {/* Course Content with Horizontal Scroll */}
