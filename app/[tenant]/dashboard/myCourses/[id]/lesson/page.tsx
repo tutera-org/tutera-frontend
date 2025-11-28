@@ -121,7 +121,7 @@ export default function LessonPage({
   const markLessonComplete = async (lessonId: string) => {
     try {
       setCompletingLesson(lessonId);
-      await api.patch(`/v1/lessons/complete`, {
+      await api.patch(`/v1/markAsCompleted`, {
         lessonId,
         courseId: courseData?._id,
       });

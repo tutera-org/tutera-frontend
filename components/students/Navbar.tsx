@@ -96,14 +96,7 @@ export default function StudentsNavbar() {
   return (
     <header className="flex justify-between items-center">
       <aside className="flex gap-1 sm:gap-2 items-center">
-        <div className="h-auto w-10 sm:w-12 md:w-[53px]">
-          <img
-            src="/creatorLogo.svg"
-            alt="Creator logo"
-            className="w-full h-auto"
-          />
-        </div>
-        <h3 className="text-base sm:text-lg md:text-xl lg:text-[2rem] text-orange-300 font-semibold">
+        <h3 className="text-base capitalize sm:text-lg md:text-xl lg:text-[2rem] text-orange-300 font-semibold">
           {tenantName}
         </h3>
       </aside>
