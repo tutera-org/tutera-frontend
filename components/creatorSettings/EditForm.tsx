@@ -1,152 +1,212 @@
 "use client";
-import { useState } from "react";
-import { FaTimes } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import {
+  FaUser,
+  FaEnvelope,
+  FaBuilding,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaClock,
+} from "react-icons/fa";
 import { toast } from "sonner";
-import ChangePassword from "./ChangePassword";
+import { api } from "@/lib/axiosClientInstance";
+import TuteraLoading from "../Reuse/Loader";
 
-export default function EditForm() {
-  // show toast
-  const handleSubscription = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("Changes saved successfully");
+interface ISubscription {
+  plan: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  trialEndDate: string;
+  autoRenew: boolean;
+}
+
+interface ITenant {
+  _id: string;
+  name: string;
+  email: string;
+  type: string;
+  subscription: ISubscription;
+  isActive: boolean;
+  isVerified: boolean;
+  totalRevenue: number;
+}
+
+interface IUserData {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  avatar: string;
+  role: string;
+  isEmailVerified: boolean;
+  isActive: boolean;
+  tenantId: ITenant;
+  tenantName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export default function ProfileInfo() {
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState<IUserData | null>(null);
+
+  // Fetch user data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/v1/user");
+
+      // Access the nested data: response.data.data.data
+      const userData = response.data.data?.data;
+
+      if (userData) {
+        setUser(userData);
+      } else {
+        toast.error("No user data found");
+      }
+    } catch (error: any) {
+      console.error("Fetch error:", error);
+      const message =
+        error.response?.data?.error || "Failed to fetch user data";
+      toast.error(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  //   handle popup
-  const [changePasswordPopUp, showChangePasswordPopup] =
-    useState<boolean>(false);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const handleChangePasswordPopUp = () => {
-    showChangePasswordPopup((prevState) => !prevState);
+  // Helper function to format date
+  const formatDate = (dateString: string) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
+
+  // Loading state
+  if (loading) {
+    return <TuteraLoading />;
+  }
+
+  // No user data
+  if (!user) {
+    return (
+      <div className="w-full">
+        <div className="flex items-center justify-center py-16 px-4">
+          <p className="text-sm sm:text-base text-gray-500">
+            Unable to load user data
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const tenant = user.tenantId;
+
+  // Only show fields that have values
+  const profileFields = [
+    {
+      icon: FaEnvelope,
+      label: "Email",
+      value: user.email,
+      show: !!user.email,
+    },
+    {
+      icon: FaUser,
+      label: "First Name",
+      value: user.firstName,
+      show: !!user.firstName,
+    },
+    {
+      icon: FaUser,
+      label: "Last Name",
+      value: user.lastName,
+      show: !!user.lastName,
+    },
+    {
+      icon: FaBuilding,
+      label: "Institution Name",
+      value: tenant?.name,
+      show: !!tenant?.name,
+    },
+    {
+      icon: FaBuilding,
+      label: "Account Type",
+      value: user.role,
+      show: !!user.role,
+    },
+    {
+      icon: FaCalendarAlt,
+      label: "Member Since",
+      value: formatDate(user.createdAt),
+      show: !!user.createdAt,
+    },
+    {
+      icon: FaClock,
+      label: "Free Trial Ends",
+      value: formatDate(tenant?.subscription?.trialEndDate),
+      show:
+        !!tenant?.subscription?.trialEndDate &&
+        tenant?.subscription?.status === "trial",
+    },
+    {
+      icon: FaCheckCircle,
+      label: "Email Verification",
+      value: user.isEmailVerified ? "Verified" : "Not Verified",
+      show: user.isEmailVerified !== undefined,
+      isStatus: true,
+      verified: user.isEmailVerified,
+    },
+    {
+      icon: FaCheckCircle,
+      label: "Account Status",
+      value: user.isActive ? "Active" : "Inactive",
+      show: user.isActive !== undefined,
+      isStatus: true,
+      verified: user.isActive,
+    },
+  ];
+
   return (
-    <>
-      <form
-        onSubmit={handleSubscription}
-        className="lg:col-span-3 flex flex-col gap-6 sm:gap-8 md:gap-10 border-rounded-2xl  sm:py-8 md:py-10"
-      >
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between">
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            {/* Name */}
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="name"
-            >
-              Name
-            </label>
-            <input
-              className="border p-3 sm:p-3.5 border-black-400 rounded-lg text-sm sm:text-base"
-              type="text"
-              name=""
-              id="name"
-            />
-          </aside>
+    <div className="w-full lg:col-span-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-7 md:gap-8 lg:gap-10">
+        {profileFields.map((field, index) => {
+          if (!field.show) return null;
 
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            {/* Email */}
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="email"
-            >
-              Email
-            </label>
-            <input
-              className="border p-3 sm:p-3.5 border-black-400 rounded-lg text-sm sm:text-base"
-              type="email"
-              name=""
-              id="email"
-            />
-          </aside>
-        </div>
+          const Icon = field.icon;
 
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between">
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            {/* Name */}
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="plan"
-            >
-              Upgrade Plan
-            </label>
-            <select
-              className="border p-3 sm:p-3.5 border-black-400 rounded-lg text-sm sm:text-base"
-              name=""
-              id="plan"
-            >
-              <option value=""></option>
-              <option value="premium">Premium</option>
-              <option value="">Wetin go dey here Zamani</option>
-            </select>
-          </aside>
-
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="cancel"
-            >
-              Subscription
-            </label>
-
-            {/* Cancel Subscription */}
-            <button
-              type="button"
-              onClick={() => toast.warning("Na one chance you enter")}
-              className="border p-3 sm:p-3.5 border-primary-400 bg-neutral-100 text-primary-400 rounded-lg flex justify-center items-center gap-3 font-bold hover:bg-primary-400 hover:text-white text-xs sm:text-sm md:text-base transition-colors"
-              id="cancel"
-            >
-              <FaTimes /> Cancel Subscription
-            </button>
-          </aside>
-        </div>
-
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 justify-between">
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            {/* Password */}
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="border p-3 sm:p-3.5 border-black-400 rounded-lg text-sm sm:text-base"
-              type="password"
-              name=""
-              id="password"
-            />
-          </aside>
-
-          <aside className="flex flex-col w-full md:basis-[50%] gap-1">
-            {/* Chanhe password */}
-            <label
-              className="text-base sm:text-lg md:text-xl text-unnamed-100 font-semibold"
-              htmlFor="change-password"
-            >
-              Change Password
-            </label>
-            <button
-              type="button"
-              onClick={handleChangePasswordPopUp}
-              className="border p-3 sm:p-3.5 border-primary-400 bg-neutral-100 text-primary-400 rounded-lg flex justify-center items-center gap-3 font-bold hover:bg-primary-400 hover:text-white text-xs sm:text-sm md:text-base transition-colors"
-              id="change-password"
-            >
-              Change Password
-            </button>
-          </aside>
-        </div>
-
-        <div className="flex justify-center lg:justify-end">
-          <button
-            className="border p-3 sm:p-3.5 hover:border-primary-400 hover:bg-neutral-100 hover:text-primary-400 rounded-lg font-bold bg-primary-400 text-white text-xs sm:text-sm md:text-base transition-colors px-6 sm:px-8"
-            type="submit"
-          >
-            Save Changes
-          </button>
-        </div>
-      </form>
-
-      {changePasswordPopUp && (
-        <ChangePassword closeButton={handleChangePasswordPopUp} />
-      )}
-    </>
+          return (
+            <div key={index} className="flex items-start gap-3 sm:gap-4 group">
+              <div className="shrink-0 mt-0.5 sm:mt-1">
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 text-gray-400 group-hover:text-gray-600 transition-colors duration-200" />
+              </div>
+              <div className="grow min-w-0">
+                <p className="text-xs sm:text-sm md:text-sm font-medium text-gray-500 mb-1 sm:mb-1.5 tracking-wide uppercase">
+                  {field.label}
+                </p>
+                <p
+                  className={`text-sm sm:text-base md:text-lg leading-relaxed wrap-break-word ${
+                    field.isStatus
+                      ? field.verified
+                        ? "text-green-600 font-semibold"
+                        : "text-amber-600 font-semibold"
+                      : "text-gray-900 font-medium"
+                  }`}
+                >
+                  {field.value}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }

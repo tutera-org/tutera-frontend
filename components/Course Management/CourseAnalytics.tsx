@@ -1,68 +1,120 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Course } from "./CourseContext";
+import { toast } from "sonner";
+import { api } from "@/lib/axiosClientInstance";
+import TuteraLoading from "../Reuse/Loader";
 
+// API Response Interfaces
+interface IStudentAnalytics {
+  studentId: string;
+  studentName: string;
+  quizScore: number;
+  progress: number;
+  status: "COMPLETED" | "NOT_COMPLETED";
+}
+
+interface ICourseAnalyticsResponse {
+  courseId: string;
+  courseTitle: string;
+  totalStudents: number;
+  averageQuizScore: number;
+  completionRate: number;
+  students: IStudentAnalytics[];
+}
+
+// Component Interfaces
 interface Student {
   id: string;
   name: string;
   quizScore: number;
   progress: number;
-  status: "completed" | "not-completed";
+  status: "COMPLETED" | "NOT_COMPLETED";
 }
 
-interface CourseAnalyticsProps {
-  courses: Course[];
+interface Course {
+  id: string;
+  title: string;
 }
 
-// Mock student data - in a real app, this would come from an API
-const generateMockStudents = (courseId: string): Student[] => {
-  const names = [
-    "Kamsi Michel",
-    "Alex Johnson",
-    "Ozioma ThankGod",
-    "Olamide Philip",
-    "Matthew Okon",
-    "Ezinne Okeafor",
-    "Udoka Ugwu",
-    "Chiamaka Nwosu",
-    "David Okoro",
-    "Blessing Adeyemi",
-  ];
-
-  return names.map((name, index) => {
-    const quizScore = Math.floor(Math.random() * 100);
-    const progress = Math.floor(Math.random() * 100);
-    const status: "completed" | "not-completed" =
-      progress === 100 ? "completed" : "not-completed";
-
-    return {
-      id: `${courseId}-student-${index}`,
-      name,
-      quizScore,
-      progress,
-      status,
-    };
-  });
-};
-
-export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
+export default function CourseAnalytics() {
   const router = useRouter();
-  const [selectedCourseId, setSelectedCourseId] = useState<string>(
-    courses.length > 0 ? courses[0].id : ""
-  );
+  const [analyticsData, setAnalyticsData] = useState<
+    ICourseAnalyticsResponse[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Get selected course
+  // Fetch analytics data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/v1/analytics");
+
+      // Access the triple-nested data: response.data.data.data
+      const coursesData = Array.isArray(response.data.data?.data)
+        ? response.data.data.data
+        : [];
+
+      setAnalyticsData(coursesData);
+
+      // Set first course as selected by default
+      if (coursesData.length > 0 && !selectedCourseId) {
+        setSelectedCourseId(coursesData[0].courseId);
+      }
+    } catch (error: any) {
+      console.error("Fetch error:", error);
+      const message =
+        error.response?.data?.error || "Fetching Course Analytics failed";
+      toast.error(message);
+      setAnalyticsData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // Get courses list from analytics data
+  const courses: Course[] = useMemo(() => {
+    if (!Array.isArray(analyticsData)) {
+      return [];
+    }
+    return analyticsData.map((data) => ({
+      id: data.courseId,
+      title: data.courseTitle,
+    }));
+  }, [analyticsData]);
+
+  // Get selected course analytics
+  const selectedCourseAnalytics = useMemo(() => {
+    return analyticsData.find((data) => data.courseId === selectedCourseId);
+  }, [analyticsData, selectedCourseId]);
+
+  // Get selected course info
   const selectedCourse = courses.find((c) => c.id === selectedCourseId);
 
-  // Generate mock students for the selected course
-  const allStudents = useMemo(() => {
-    if (!selectedCourseId) return [];
-    return generateMockStudents(selectedCourseId);
-  }, [selectedCourseId]);
+  // Transform API students to component format
+  const allStudents: Student[] = useMemo(() => {
+    if (
+      !selectedCourseAnalytics ||
+      !Array.isArray(selectedCourseAnalytics.students)
+    ) {
+      return [];
+    }
+    return selectedCourseAnalytics.students.map((student) => ({
+      id: student.studentId,
+      name: student.studentName,
+      quizScore: student.quizScore,
+      progress: student.progress,
+      status: student.status,
+    }));
+  }, [selectedCourseAnalytics]);
 
   // Filter students based on search query
   const filteredStudents = useMemo(() => {
@@ -80,9 +132,15 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
   const handleCourseSelect = (courseId: string) => {
     setSelectedCourseId(courseId);
     setIsDropdownOpen(false);
-    setSearchQuery(""); // Reset search when changing course
+    setSearchQuery("");
   };
 
+  // Loading state
+  if (loading) {
+    return <TuteraLoading />;
+  }
+
+  // No courses state
   if (courses.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6">
@@ -108,7 +166,6 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
           onClick={handleBack}
           className="text-[#101A33] hover:text-[#3d66d4] mb-4 text-[1rem] md:text-[1.25rem] flex items-center gap-2 transition-colors"
         >
-         
           &lt; Back
         </button>
         <h1 className="text-[1.5rem] md:text-[2.5rem] font-bold text-[#101A33] mb-6">
@@ -149,7 +206,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                 onClick={() => setIsDropdownOpen(false)}
               />
               <div className="absolute top-full left-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-sm z-20 min-w-[200px]">
-                {courses.map((course) => (
+                {courses.map((course, index) => (
                   <button
                     key={course.id}
                     onClick={() => handleCourseSelect(course.id)}
@@ -157,12 +214,8 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                       selectedCourseId === course.id
                         ? "bg-[#4977E6] text-white hover:bg-[#3d66d4]"
                         : ""
-                    } ${
-                      course.id === courses[0].id ? "rounded-t-lg" : ""
-                    } ${
-                      course.id === courses[courses.length - 1].id
-                        ? "rounded-b-lg"
-                        : ""
+                    } ${index === 0 ? "rounded-t-lg" : ""} ${
+                      index === courses.length - 1 ? "rounded-b-lg" : ""
                     }`}
                   >
                     {course.title}
@@ -200,10 +253,10 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
       </div>
 
       {/* Analytics Table */}
-      <div className="bg-white rounded-lg  border border-[#E1E1E1] h-160  overflow-y-scroll">
+      <div className="bg-white rounded-lg border border-[#E1E1E1] h-160 overflow-y-scroll">
         <div className="">
           <table className="w-full">
-            <thead className=" border-b border-[#EAECF0]">
+            <thead className="border-b border-[#EAECF0]">
               <tr>
                 <th className="px-2 md:px-6 py-4 text-left md:text-sm text-[0.5rem] font-semibold text-[#5D5D5D]">
                   Student Name
@@ -226,7 +279,9 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                     colSpan={4}
                     className="px-2 md:px-6 py-8 text-start text-gray-500"
                   >
-                    No students found
+                    {allStudents.length === 0
+                      ? "No students enrolled in this course"
+                      : "No students found"}
                   </td>
                 </tr>
               ) : (
@@ -241,15 +296,15 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                     <td className="px-1 w-15 md:px-6 py-4 text-[12px] md:text-[1rem] text-gray-600 font-semibold md:w-[15%]">
                       {student.quizScore}%
                     </td>
-                    <td className="md:px-6 px-1 py-4 w-[28%] md:w-[50%] ">
+                    <td className="md:px-6 px-1 py-4 w-[28%] md:w-[50%]">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2 ">
+                        <div className="flex-1 bg-gray-200 rounded-full h-2">
                           <div
-                            className="bg-[#4977E6]  h-2 rounded-full transition-all"
+                            className="bg-[#4977E6] h-2 rounded-full transition-all"
                             style={{ width: `${student.progress}%` }}
                           />
                         </div>
-                        <span className="text-[12px] md:text-[1rem] font-semibold text-gray-600 ">
+                        <span className="text-[12px] md:text-[1rem] font-semibold text-gray-600">
                           {student.progress}%
                         </span>
                       </div>
@@ -257,13 +312,12 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
                     <td className="px-3 md:px-6 py-4 w-[25%] md:w-[25%] md:text-center">
                       <span
                         className={`text-[8px] md:text-[0.75rem] font-semibold ${
-                          student.status === "completed"
+                          student.status === "COMPLETED"
                             ? "text-[#0EB137]"
                             : "text-red-600"
                         }`}
                       >
-                        
-                        {student.status === "completed"
+                        {student.status === "COMPLETED"
                           ? "Completed"
                           : "Not Completed"}
                       </span>
@@ -276,15 +330,15 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
         </div>
       </div>
 
-      {/* Summary Stats */}
-      {filteredStudents.length > 0 && (
+      {/* Summary Stats - Using API data */}
+      {selectedCourseAnalytics && (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-4">
             <h3 className="text-sm font-medium text-gray-600 mb-2">
               Total Students
             </h3>
             <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {filteredStudents.length}
+              {selectedCourseAnalytics.totalStudents}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
@@ -292,13 +346,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
               Average Quiz Score
             </h3>
             <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {Math.round(
-                filteredStudents.reduce(
-                  (sum, s) => sum + s.quizScore,
-                  0
-                ) / filteredStudents.length
-              )}
-              %
+              {Math.round(selectedCourseAnalytics.averageQuizScore)}%
             </p>
           </div>
           <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
@@ -306,13 +354,7 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
               Completion Rate
             </h3>
             <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {Math.round(
-                (filteredStudents.filter((s) => s.status === "completed")
-                  .length /
-                  filteredStudents.length) *
-                  100
-              )}
-              %
+              {Math.round(selectedCourseAnalytics.completionRate)}%
             </p>
           </div>
         </div>
@@ -320,4 +362,3 @@ export default function CourseAnalytics({ courses }: CourseAnalyticsProps) {
     </div>
   );
 }
-

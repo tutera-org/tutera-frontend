@@ -7,10 +7,6 @@ import EditAccount from "./EditAccount";
 export default function Account() {
   const userDetails = [
     {
-      title: "Account name",
-      text: "Ansah Chikeh",
-    },
-    {
       title: "Account number",
       text: "null",
     },

@@ -4,43 +4,7 @@ import { useState } from "react";
 export default function TransactionHistory() {
   const [selectedPeriod, setSelectedPeriod] = useState("Today");
 
-  const transactions = [
-    {
-      date: "Nov 10, 2025",
-      description: "Course sales - Complete Web Development",
-      type: "earning",
-      status: "completed",
-      amount: "+₦45,000",
-    },
-    {
-      date: "Nov 8, 2025",
-      description: "Withdrawal to Bank Account",
-      type: "withdrawal",
-      status: "completed",
-      amount: "-₦30,000",
-    },
-    {
-      date: "Nov 5, 2025",
-      description: "Withdrawal to Bank Account",
-      type: "withdrawal",
-      status: "processing",
-      amount: "-₦18,500",
-    },
-    {
-      date: "Nov 3, 2025",
-      description: "Course sales - Digital Marketing",
-      type: "earning",
-      status: "completed",
-      amount: "+₦22,000",
-    },
-    {
-      date: "Nov 2, 2025",
-      description: "Course sales - Graphic Design",
-      type: "earning",
-      status: "completed",
-      amount: "+₦15,000",
-    },
-  ];
+  const transactions: any[] = [];
 
   return (
     <section className="my-6 sm:my-10 md:my-15 bg-neutral-100 border border-[#C3C3C3] rounded-2xl p-5 sm:p-6 md:p-8">
@@ -64,7 +28,7 @@ export default function TransactionHistory() {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto overflow-y-auto h-80 sm:h-96 rounded-lg">
+      <div className="overflow-x-auto overflow-y-auto h-80 sm:h-96 rounded-lg border border-neutral-300">
         <table className="w-full min-w-[800px]">
           <thead className="sticky top-0 z-10">
             <tr
@@ -103,52 +67,82 @@ export default function TransactionHistory() {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {transactions.map((transaction, index) => (
-              <tr
-                key={index}
-                className="hover:bg-neutral-200 border-b border-[#EAECF0] transition-colors"
-              >
-                <td
-                  className="py-4 px-2 sm:px-4 text-xs sm:text-sm lg:text-base whitespace-nowrap"
-                  style={{ color: "rgba(16, 24, 40, 1)" }}
-                >
-                  {transaction.date}
-                </td>
-                <td
-                  className="py-4 px-2 sm:px-4 text-xs sm:text-sm lg:text-base"
-                  style={{ color: "rgba(16, 24, 40, 1)" }}
-                >
-                  {transaction.description}
-                </td>
-                <td
-                  className="py-4 px-2 sm:px-4 text-xs sm:text-sm lg:text-base capitalize"
-                  style={{ color: "rgba(16, 24, 40, 1)" }}
-                >
-                  {transaction.type}
-                </td>
-                <td className="py-4 px-2 sm:px-4">
-                  <span
-                    className={`text-xs sm:text-sm lg:text-base capitalize ${
-                      transaction.status === "completed"
-                        ? "text-success-400"
-                        : "text-accent-400"
-                    }`}
-                  >
-                    {transaction.status}
-                  </span>
-                </td>
-                <td
-                  className={`py-4 px-2 sm:px-4 text-right text-xs sm:text-sm lg:text-base font-semibold whitespace-nowrap ${
-                    transaction.amount.startsWith("+")
-                      ? "text-success-400"
-                      : "text-accent-400"
-                  }`}
-                >
-                  {transaction.amount}
+          <tbody className="bg-white">
+            {transactions.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-12 px-4">
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <svg
+                      width="48"
+                      height="48"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-neutral-400"
+                    >
+                      <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    </svg>
+                    <p className="text-base sm:text-lg font-semibold text-neutral-900">
+                      No Transactions Found
+                    </p>
+                    <p className="text-sm text-neutral-500">
+                      Your transaction history will appear here
+                    </p>
+                  </div>
                 </td>
               </tr>
-            ))}
+            ) : (
+              transactions.map((transaction, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-neutral-200 last:border-b-0 hover:bg-neutral-50"
+                >
+                  <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm text-neutral-700">
+                    {transaction.date}
+                  </td>
+                  <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm text-neutral-900 font-medium">
+                    {transaction.description}
+                  </td>
+                  <td className="py-3 px-2 sm:px-4">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium capitalize ${
+                        transaction.type === "earning"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                      }`}
+                    >
+                      {transaction.type}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 sm:px-4">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium capitalize ${
+                        transaction.status === "completed"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-yellow-100 text-yellow-800"
+                      }`}
+                    >
+                      {transaction.status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-2 sm:px-4 text-xs sm:text-sm font-semibold text-right">
+                    <span
+                      className={
+                        transaction.amount.startsWith("+")
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }
+                    >
+                      {transaction.amount}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

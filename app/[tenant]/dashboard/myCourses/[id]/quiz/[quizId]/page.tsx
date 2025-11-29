@@ -218,12 +218,21 @@ export default function QuizPage({
             </p>
           </div>
 
-          {/* Detailed Results */}
-          <div className="space-y-6">
+          {/* Question Review Header with Retake Button */}
+          <div className="flex items-center justify-between mb-6">
             <h5 className="text-xl font-bold text-neutral-900">
               Question Review
             </h5>
+            <button
+              onClick={handleRetakeQuiz}
+              className="px-5 py-2.5 rounded-lg border-2 border-orange-500 text-orange-500 font-semibold hover:bg-orange-50 transition-all"
+            >
+              Retake Quiz
+            </button>
+          </div>
 
+          {/* Detailed Results */}
+          <div className="space-y-6 mb-8">
             {quizData.questions.map((question, index) => {
               const userAnswer = userAnswers[index];
               const isCorrect = userAnswer === question.correctAnswerIndex;
@@ -282,19 +291,19 @@ export default function QuizPage({
             })}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex justify-center gap-4 mt-8">
-            <button
-              onClick={handleRetakeQuiz}
-              className="px-6 py-3 rounded-lg border-2 border-orange-500 text-orange-500 font-semibold hover:bg-orange-50 transition-all"
-            >
-              Retake Quiz
-            </button>
+          {/* Bottom Action Buttons */}
+          <div className="flex justify-center gap-4 pt-6 border-t">
             <button
               onClick={() => router.push(`/dashboard/myCourses/${id}`)}
-              className="px-6 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-all"
+              className="px-6 py-3 rounded-lg border-2 border-neutral-500 text-neutral-700 font-semibold hover:bg-neutral-50 transition-all"
             >
               Back to Lessons
+            </button>
+            <button
+              onClick={() => router.push(`/dashboard`)}
+              className="px-6 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-all"
+            >
+              Back to Dashboard
             </button>
           </div>
         </div>

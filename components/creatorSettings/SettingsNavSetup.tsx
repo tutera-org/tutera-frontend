@@ -5,8 +5,8 @@ import Account from "./Account";
 import Customization from "./Customization";
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState("Edit Profile");
-  const tabs = ["Edit Profile", "Customization", "Account"];
+  const [activeTab, setActiveTab] = useState("Profile");
+  const tabs = ["Profile", "Customization", "Account"];
 
   return (
     <section className="rounded-2xl py-5 sm:py-5 px-4 border border-[#C3C3C3] border-dashed sm:px-6 md:px-10 bg-neutral-100">
@@ -29,7 +29,7 @@ export default function Settings() {
       </div>
 
       {/* Edit Profile section */}
-      {activeTab == "Edit Profile" && <EditPricing />}
+      {activeTab == "Profile" && <EditPricing />}
 
       {/* Customization Section */}
       {activeTab === "Customization" && <Customization />}
