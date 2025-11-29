@@ -1,5 +1,4 @@
 "use client";
-// Client-side component for displaying populated student dashboard with courses and calendar reminders
 import { useState } from "react";
 import MediaImage from "@/components/Reuse/MediaImage";
 import { toast } from "sonner";
@@ -11,7 +10,6 @@ interface PopulatedStudentPageProps {
   data: EnrolledCourse[];
 }
 
-// Main component for student dashboard displaying courses and reminder calendar
 export default function PopulatedStudentPage({
   data,
 }: PopulatedStudentPageProps) {
@@ -308,18 +306,48 @@ export default function PopulatedStudentPage({
                         </span>
                       </div>
 
-                      {/* Action section: Certificate request button and completion percentage */}
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() =>
-                            toast.success("Creator notified of your request")
-                          }
-                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors text-xs xs:text-sm sm:text-base"
-                        >
-                          Request Certificate
-                        </button>
-                        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-4 border-gray-900 flex items-center justify-center font-bold text-gray-900 text-xs xs:text-sm sm:text-base">
-                          {course.progress.percent}%
+                      {/* Action section: Two buttons and completion percentage */}
+                      <div className="space-y-3">
+                        {/* Buttons row */}
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <button
+                            onClick={() =>
+                              router.push(
+                                `/dashboard/myCourses/${course.courseId}`
+                              )
+                            }
+                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-colors text-xs xs:text-sm"
+                          >
+                            Continue Lesson
+                          </button>
+                          <button
+                            onClick={() =>
+                              toast.success("Creator notified of your request")
+                            }
+                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg transition-colors text-xs xs:text-sm"
+                          >
+                            Request Certificate
+                          </button>
+                        </div>
+
+                        {/* Completion percentage badge */}
+                        <div className="flex justify-center">
+                          <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full border border-green-200">
+                            <svg
+                              className="w-4 h-4 xs:w-5 xs:h-5"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-xs xs:text-sm font-semibold">
+                              {course.progress.percent}% Complete
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>

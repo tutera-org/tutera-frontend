@@ -192,7 +192,7 @@ export default function ProfileInfo() {
                   {field.label}
                 </p>
                 <p
-                  className={`text-sm sm:text-base md:text-lg leading-relaxed break-words ${
+                  className={`text-sm sm:text-base md:text-lg leading-relaxed wrap-break-word ${
                     field.isStatus
                       ? field.verified
                         ? "text-green-600 font-semibold"

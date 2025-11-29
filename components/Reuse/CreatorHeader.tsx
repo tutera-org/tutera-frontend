@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import NavLink from "../creatorDashboard/NavBar";
-import { FaBell, FaBars, FaTimes, FaSignOutAlt, FaCopy } from "react-icons/fa";
+import { FaBars, FaTimes, FaSignOutAlt, FaCopy } from "react-icons/fa";
 import { useEffect, useState, useRef } from "react";
 import { SingleAvatar } from "./Avatar";
 import { useRouter } from "next/navigation";
@@ -118,9 +118,6 @@ export default function CreatorHeader() {
         </nav>
 
         <div className="flex items-center justify-center gap-6 sm:gap-8 lg:gap-10">
-          {/* icons */}
-          <FaBell className="text-lg hover:text-primary-400 cursor-pointer transition-colors" />
-
           {/* Avatar with Dropdown - Hidden on small screens, shown on md and up */}
           <div className="relative hidden sm:block" ref={dropdownRef}>
             <aside
