@@ -7,7 +7,6 @@ import PopUpModal from "../Reuse/PopUpModal";
 import AuthFormHeader from "../auth/AuthHeader";
 
 interface AccountFormData {
-  accountName: string;
   accountNumber: string;
   bank: string;
 }
@@ -56,31 +55,6 @@ export default function EditAccount({
       {step === 1 && (
         <form className="flex py-5 sm:py-6 md:py-8 flex-col gap-5 sm:gap-6 md:gap-8">
           <AuthFormHeader header="Update Your Account Details" />
-
-          <div className="flex flex-col gap-1.5 sm:gap-2">
-            {/* Account Name */}
-            <label
-              htmlFor="accountName"
-              className="text-neutral-900 text-xs sm:text-sm md:text-base font-semibold"
-            >
-              Account Name *
-            </label>
-
-            <input
-              {...register("accountName", {
-                required: "Account name is required",
-              })}
-              type="text"
-              id="accountName"
-              className="border text-sm sm:text-base p-3 sm:p-3.5 border-black-400 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
-              placeholder="Enter account name"
-            />
-            {errors.accountName && (
-              <span className="text-red-500 text-xs sm:text-sm">
-                {errors.accountName.message}
-              </span>
-            )}
-          </div>
 
           <div className="flex flex-col gap-1.5 sm:gap-2">
             {/* Account Number */}
@@ -150,15 +124,6 @@ export default function EditAccount({
           <AuthFormHeader header="Account Details" />
 
           <div className="bg-white rounded-lg p-4 sm:p-5 md:p-6 flex flex-col gap-4 sm:gap-5">
-            <div>
-              <p className="text-xs sm:text-sm text-gray-600 font-medium mb-1">
-                Account Name
-              </p>
-              <p className="text-sm sm:text-base md:text-lg text-neutral-900 font-semibold">
-                {formData.accountName || "Not provided"}
-              </p>
-            </div>
-
             <div>
               <p className="text-xs sm:text-sm text-gray-600 font-medium mb-1">
                 Account Number
