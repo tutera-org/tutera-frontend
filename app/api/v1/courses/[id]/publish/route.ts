@@ -9,7 +9,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  let body: { status: "DRAFT" | "PUBLISHED" | "ARCHIVED" };
+  let body: { status: "DRAFT" | "PUBLISHED" | "ARCHIVED" } | undefined;
   try {
     const { id } = await params;
     body = await request.json();
@@ -21,7 +21,7 @@ export async function PATCH(
       );
     }
 
-    if (!body.status) {
+    if (!body?.status) {
       return NextResponse.json(
         { error: "Status is required" },
         { status: 400 }
@@ -29,7 +29,7 @@ export async function PATCH(
     }
 
     // Validate status value
-    if (!["DRAFT", "PUBLISHED", "ARCHIVED"].includes(body.status)) {
+    if (!["DRAFT", "PUBLISHED", "ARCHIVED"].includes(body?.status)) {
       return NextResponse.json(
         { error: "Invalid status. Must be DRAFT, PUBLISHED, or ARCHIVED" },
         { status: 400 }
@@ -37,13 +37,13 @@ export async function PATCH(
     }
 
     console.log("📤 [COURSE PUBLISH/UNPUBLISH] Course ID:", id);
-    console.log("📤 [COURSE PUBLISH/UNPUBLISH] New status:", body.status);
+    console.log("📤 [COURSE PUBLISH/UNPUBLISH] New status:", body?.status);
 
     const api = await getApiWithCookies();
 
     // Call backend: PATCH /v1/courses/:courseId/publish
     const response = await api.patch(`/v1/courses/${id}/publish`, {
-      status: body.status,
+      status: body?.status,
     });
 
     console.log("✅ [COURSE PUBLISH/UNPUBLISH] Success:", response.status);
@@ -82,4 +82,3 @@ export async function PATCH(
     return NextResponse.json({ error: errorMessage }, { status });
   }
 }
-
