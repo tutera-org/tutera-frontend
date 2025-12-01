@@ -1,16 +1,21 @@
+import PremiumBadge from "../Reuse/PremiumBadge";
+
 export default function GettingStarted() {
   const steps = [
     {
       title: "Complete your profile",
       text: "Add a bio, photo, and expertise areas",
+      premium: true,
     },
     {
       title: "Create your first course",
       text: "Upload video, add lessons, and structure content",
+      premium: false,
     },
     {
       title: "Set up your payment",
       text: "Configure pricing and payment methods",
+      premium: true,
     },
     {
       title: "Publish and share",
@@ -30,15 +35,18 @@ export default function GettingStarted() {
         {steps.map((step, index) => (
           <li
             key={index}
-            className="bg-[#F0F0F0] rounded-xl p-4 sm:p-5 md:p-6 transition-all hover:bg-neutral-300"
+            className="bg-[#F0F0F0] rounded-xl p-4 sm:p-5 md:p-6 transition-all flex items-start justify-between"
           >
             {/* Step items */}
-            <h4 className="text-neutral-900 font-semibold text-base sm:text-lg md:text-xl leading-tight">
-              {step.title}
-            </h4>
-            <p className="text-neutral-700 text-sm sm:text-base leading-relaxed mt-2">
-              {step.text}
-            </p>
+            <aside>
+              <h4 className="text-neutral-900 font-semibold text-base sm:text-lg md:text-xl leading-tight">
+                {step.title}
+              </h4>
+              <p className="text-neutral-700 text-sm sm:text-base leading-relaxed mt-2">
+                {step.text}
+              </p>
+            </aside>
+            {step.premium && <PremiumBadge size="md" variant="gold" />}
           </li>
         ))}
       </ul>
