@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
+
 interface CustomizationProgressStepperProps {
   currentStep: number;
 }
@@ -8,16 +10,46 @@ export default function CustomizationProgressStepper({
   currentStep,
 }: CustomizationProgressStepperProps) {
   const steps = [1, 2, 3, 4, 5, 6, 7];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Auto-scroll to current step
+  useEffect(() => {
+    if (containerRef.current && stepRefs.current[currentStep - 1]) {
+      const stepElement = stepRefs.current[currentStep - 1];
+      if (stepElement) {
+        const container = containerRef.current;
+        const stepLeft = stepElement.offsetLeft;
+        const stepWidth = stepElement.offsetWidth;
+        const containerWidth = container.offsetWidth;
+        const scrollLeft = stepLeft - containerWidth / 2 + stepWidth / 2;
+
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [currentStep]);
 
   return (
     <div className="flex flex-col mb-8 w-full px-4">
-      <div className="flex items-center justify-between md:justify-center mb-4 w-full overflow-x-auto">
+      <div
+        ref={containerRef}
+        className="flex items-center justify-center mb-4 w-full overflow-x-auto hide-scrollbar scroll-smooth"
+      >
         {steps.map((step, index) => {
           const isCompleted = step < currentStep;
           const isCurrent = step === currentStep;
 
           return (
-            <div key={step} className="flex items-center shrink-0">
+            <div
+              key={step}
+              ref={(el) => {
+                stepRefs.current[step - 1] = el;
+              }}
+              className="flex items-center shrink-0"
+            >
               <div
                 className={`w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center font-semibold transition-colors text-sm sm:text-base md:text-lg lg:text-xl ${
                   isCompleted
