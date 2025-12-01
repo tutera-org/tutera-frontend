@@ -78,7 +78,7 @@ export default function SignInForm({
       const protocol = window.location.protocol;
       const rootDomain =
         process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
-      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/signIn`;
+      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/`;
 
       // Hard redirect to subdomain (full page reload to change domain)
       window.location.href = subdomainUrl;

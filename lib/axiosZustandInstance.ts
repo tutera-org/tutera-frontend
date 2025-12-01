@@ -164,7 +164,7 @@ backendApi.interceptors.response.use(
         console.log("🔄 [TOKEN REFRESH] Attempting to refresh token...");
 
         await backendApi.post(
-          "/v1/auth/refresh",
+          "/v1/refreshToken",
           {},
           { withCredentials: true }
         );
