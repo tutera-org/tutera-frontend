@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import {
   useCourse,
   Course,
@@ -28,8 +29,10 @@ export default function CourseManagementPage() {
     showQuiz,
     updateCourseStatus,
     resetCurrentCourse,
+    fetchCourseById,
   } = useCourse();
   const [viewingDrafts, setViewingDrafts] = useState(false);
+  const [isLoadingCourse, setIsLoadingCourse] = useState(false);
 
   const handleCreateModule = () => {
     // Reset current course completely to start fresh
@@ -44,11 +47,30 @@ export default function CourseManagementPage() {
     setCurrentStep(1);
   };
 
-  const handleEditCourse = (course: Course) => {
-    // Load the full course data into currentCourse for editing
-    // This will trigger all form components to reload with the course data
-    updateCurrentCourse({ ...course });
-    setCurrentStep(1);
+  const handleEditCourse = async (course: Course) => {
+    try {
+      setIsLoadingCourse(true);
+      
+      // Fetch full course details from API
+      console.log("📥 [EDIT COURSE] Fetching course details for:", course.id);
+      const fullCourseData = await fetchCourseById(course.id);
+      
+      // Update currentCourse with the fetched data
+      // This will trigger all form components to reload with the course data
+      updateCurrentCourse(fullCourseData);
+      setCurrentStep(1);
+      
+      console.log("✅ [EDIT COURSE] Course loaded successfully");
+    } catch (error) {
+      console.error("❌ [EDIT COURSE] Error fetching course:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to load course. Please try again."
+      );
+    } finally {
+      setIsLoadingCourse(false);
+    }
   };
 
   const handleDeleteCourse = async (courseId: string) => {
@@ -71,6 +93,18 @@ export default function CourseManagementPage() {
             Course Management
           </h1>
           <EmptyState onCreateModule={handleCreateModule} />
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state when fetching course for editing
+  if (isLoadingCourse) {
+    return (
+      <div className="min-h-screen py-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#4977E6] mx-auto mb-4"></div>
+          <p className="text-[#101A33]">Loading course details...</p>
         </div>
       </div>
     );
