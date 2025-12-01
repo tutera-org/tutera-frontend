@@ -78,9 +78,25 @@ export default function CourseManagementPage() {
     await deleteCourse(courseId);
   };
 
-  const handleTogglePublish = (course: Course) => {
-    const newStatus = course.status === "published" ? "draft" : "published";
-    updateCourseStatus(course.id, newStatus);
+  const handleTogglePublish = async (course: Course) => {
+    try {
+      const newStatus = course.status === "published" ? "draft" : "published";
+      await updateCourseStatus(course.id, newStatus);
+      
+      // Show success message
+      toast.success(
+        newStatus === "published"
+          ? "Course published successfully!"
+          : "Course unpublished successfully!"
+      );
+    } catch (error) {
+      console.error("Error updating course status:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update course status. Please try again."
+      );
+    }
   };
 
   // Show empty state if no courses and not in creation flow

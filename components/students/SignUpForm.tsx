@@ -3,6 +3,7 @@
 import { api } from "@/lib/axiosClientInstance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { PasswordInput } from "../ui/PasswordInput";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -144,8 +145,8 @@ export default function TenantSignUpForm() {
       )}&registered=true`;
     } catch (error: unknown) {
       const message =
-        (error as { response?: { data?: { error?: string } } })?.response
-          ?.data?.error || "Sign up failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Sign up failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);
@@ -224,13 +225,10 @@ export default function TenantSignUpForm() {
       {/* ==================== PASSWORD INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
-        <input
-          type="password"
+        <PasswordInput
           {...register("password")}
           placeholder="Enter password..."
-          className={`border text-base p-2.5 w-full rounded-lg ${
-            errors.password ? "border-red-500" : "border-black-400"
-          }`}
+          error={!!errors.password}
         />
         {errors.password && (
           <span className="text-red-500 text-xs font-normal">

@@ -179,7 +179,9 @@ export default function BuyCourseId({
           className="w-full sm:w-auto"
         >
           {/* TODO: fix the amt */}
-          Enroll Now {formatAmount(course?.price as number)}
+          {course?.price === 0
+            ? "Enroll Now Free"
+            : `Enroll Now ${formatAmount(course?.price as number)}`}
         </StudentButton>
       </div>
 

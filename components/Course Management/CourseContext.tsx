@@ -709,21 +709,87 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const updateCourseStatus = (
-    courseId: string,
-    status: "draft" | "published"
-  ) => {
-    setCourses((prev) => {
-      const updated = prev.map((course) =>
-        course.id === courseId ? { ...course, status } : course
-      );
-      // Save to localStorage
-      if (typeof window !== "undefined") {
-        localStorage.setItem("tutera_courses", JSON.stringify(updated));
+  const updateCourseStatus = useCallback(
+    async (courseId: string, status: "draft" | "published") => {
+      // Find the course to get its current state (for rollback on error)
+      const currentCourse = courses.find((c) => c.id === courseId);
+      if (!currentCourse) {
+        console.error("Course not found:", courseId);
+        return;
       }
-      return updated;
-    });
-  };
+
+      const previousStatus = currentCourse.status;
+
+      // Optimistic update: update local state immediately
+      setCourses((prev) => {
+        const updated = prev.map((course) =>
+          course.id === courseId ? { ...course, status } : course
+        );
+        // Save to localStorage
+        if (typeof window !== "undefined") {
+          localStorage.setItem("tutera_courses", JSON.stringify(updated));
+        }
+        return updated;
+      });
+
+      try {
+        // Map frontend status to backend status
+        const backendStatus: "DRAFT" | "PUBLISHED" =
+          status === "published" ? "PUBLISHED" : "DRAFT";
+
+        console.log(
+          "📤 [UPDATE COURSE STATUS] Updating course:",
+          courseId,
+          "to",
+          backendStatus
+        );
+
+        // Call API to update status
+        const response = await fetch(`/api/v1/courses/${courseId}/publish`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ status: backendStatus }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response
+            .json()
+            .catch(() => ({ error: "Unknown error" }));
+          throw new Error(
+            errorData.error || `Failed to update course status: ${response.statusText}`
+          );
+        }
+
+        const data = await response.json();
+        console.log("✅ [UPDATE COURSE STATUS] Success:", data);
+
+        // Refresh courses list to ensure consistency with backend
+        await fetchCourses();
+      } catch (error) {
+        console.error("❌ [UPDATE COURSE STATUS] Error:", error);
+
+        // Rollback: revert to previous status on error
+        setCourses((prev) => {
+          const updated = prev.map((course) =>
+            course.id === courseId
+              ? { ...course, status: previousStatus || "draft" }
+              : course
+          );
+          // Save to localStorage
+          if (typeof window !== "undefined") {
+            localStorage.setItem("tutera_courses", JSON.stringify(updated));
+          }
+          return updated;
+        });
+
+        // Re-throw error so caller can show toast
+        throw error;
+      }
+    },
+    [courses, fetchCourses]
+  );
 
   const deleteCourse = useCallback(async (courseId: string) => {
     console.log("🗑️ [DELETE COURSE] Starting deletion for courseId:", courseId);

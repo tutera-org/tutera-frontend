@@ -156,11 +156,11 @@ export default function BuyCourseId({
                 </span>
               </div>
             )}
-            {course.price > 0 && (
-              <span className="text-sm font-semibold text-neutral-700">
-                ₦{course.price.toLocaleString()}
-              </span>
-            )}
+            <span className="text-sm font-semibold text-neutral-700">
+              {course.price === 0
+                ? "Free"
+                : `₦${course.price.toLocaleString()}`}
+            </span>
             {course.totalEnrollments > 0 && (
               <span className="text-sm text-neutral-600">
                 {course.totalEnrollments}{" "}

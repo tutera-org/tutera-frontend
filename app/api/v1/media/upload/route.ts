@@ -6,6 +6,13 @@ import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import FormData from "form-data";
 
+// Configure route to accept large file uploads (up to 2GB)
+// Note: Next.js App Router API routes have no default body size limit
+// The maxDuration allows longer processing time for large uploads
+export const runtime = "nodejs";
+export const maxDuration = 300; // 5 minutes for large uploads
+export const dynamic = "force-dynamic"; // Ensure dynamic rendering for file uploads
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -15,9 +22,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    // Log file size for debugging
+    const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+    const fileSizeGB = (file.size / (1024 * 1024 * 1024)).toFixed(2);
+    
     console.log("📤 [MEDIA UPLOAD] File received:", {
       name: file.name,
       size: file.size,
+      sizeMB: `${fileSizeMB} MB`,
+      sizeGB: `${fileSizeGB} GB`,
       type: file.type,
     });
 

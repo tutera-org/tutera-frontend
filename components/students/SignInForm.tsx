@@ -3,6 +3,7 @@
 import { api } from "@/lib/axiosClientInstance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { PasswordInput } from "../ui/PasswordInput";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -96,7 +97,7 @@ export default function SignInForm({
       // Extract role and token from response
       const role = response.data.data.user.role;
       const accessToken = response.data.data.tokens?.accessToken;
-      
+
       console.log("🔐 User role from backend:", role);
 
       // Store token in Zustand store (required for axios interceptor)
@@ -120,10 +121,7 @@ export default function SignInForm({
           "user_firstName",
           response.data.data.user.firstName
         );
-        localStorage.setItem(
-          "user_lastName",
-          response.data.data.user.lastName
-        );
+        localStorage.setItem("user_lastName", response.data.data.user.lastName);
         localStorage.setItem("tenant_name", response.data.data.tenant.name);
 
         console.log("✅ Stored all user data in localStorage");
@@ -135,8 +133,8 @@ export default function SignInForm({
       window.location.href = "/dashboard";
     } catch (error: unknown) {
       const message =
-        (error as { response?: { data?: { error?: string } } })?.response
-          ?.data?.error || "Sign in failed. Please try again.";
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Sign in failed. Please try again.";
 
       setErrorMessage(message);
       setIsLoading(false);
@@ -178,13 +176,10 @@ export default function SignInForm({
 
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
-        <input
-          type="password"
+        <PasswordInput
           {...register("password")}
           placeholder="Enter password..."
-          className={`border text-base p-2.5 w-full rounded-lg ${
-            errors.password ? "border-red-500" : "border-black-400"
-          }`}
+          error={!!errors.password}
         />
         {errors.password && (
           <span className="text-red-500 text-xs font-normal">

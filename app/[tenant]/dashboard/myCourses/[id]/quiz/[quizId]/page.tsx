@@ -20,6 +20,81 @@ interface QuizData {
   isPublished: boolean;
 }
 
+interface SubmitConfirmModalProps {
+  isOpen: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+  questionCount: number;
+}
+
+function SubmitConfirmModal({
+  isOpen,
+  onConfirm,
+  onCancel,
+  questionCount,
+}: SubmitConfirmModalProps) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+        onClick={onCancel}
+      />
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 animate-in fade-in duration-200">
+        {/* Icon */}
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-orange-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-2xl font-bold text-neutral-900 text-center mb-2">
+          Submit Quiz?
+        </h3>
+
+        {/* Message */}
+        <p className="text-neutral-600 text-center mb-6">
+          You're about to submit your quiz with {questionCount} questions. Once
+          submitted, you cannot change your answers.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 px-6 py-3 rounded-lg border-2 border-neutral-300 text-neutral-700 font-semibold hover:bg-neutral-50 transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 px-6 py-3 rounded-lg bg-orange-500 text-white font-semibold hover:bg-orange-600 transition-all"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function QuizPage({
   params,
 }: {
@@ -36,6 +111,7 @@ export default function QuizPage({
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Fetch course data to get quiz
   const fetchCourseData = useCallback(async () => {
@@ -118,45 +194,45 @@ export default function QuizPage({
     setSelectedAnswer(optionIndex);
   };
 
+  const handleSubmitQuiz = async () => {
+    try {
+      setSubmitting(true);
+      setShowConfirmModal(false);
+
+      // Format answers according to backend requirements
+      const formattedAnswers = userAnswers.map((answer, index) => ({
+        questionIndex: index,
+        selectedOptionIndex: answer !== null ? answer : -1,
+        isCorrect: answer === quizData.questions[index].correctAnswerIndex,
+      }));
+
+      const submissionData = {
+        courseId: id,
+        quizId: quizId,
+        answers: formattedAnswers,
+      };
+
+      console.log("Submitting quiz:", submissionData);
+
+      const response = await api.post(`/v1/submitQuiz`, submissionData);
+      console.log("Quiz submission response:", response.data);
+      toast.success("Quiz submitted successfully!");
+      setShowResults(true);
+    } catch (error: unknown) {
+      console.error("Error submitting quiz:", error);
+      const message =
+        (error as { response?: { data?: { error?: string } } })?.response?.data
+          ?.error || "Failed to submit quiz";
+      toast.error(message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleNext = async () => {
-    // If last question, show confirmation and submit
+    // If last question, show confirmation modal
     if (quizNum === quizData.questions.length - 1) {
-      const confirmSubmit = window.confirm(
-        "Are you sure you want to submit your quiz?"
-      );
-      if (confirmSubmit) {
-        try {
-          setSubmitting(true);
-
-          // Format answers according to backend requirements
-          const formattedAnswers = userAnswers.map((answer, index) => ({
-            questionIndex: index,
-            selectedOptionIndex: answer !== null ? answer : -1,
-            isCorrect: answer === quizData.questions[index].correctAnswerIndex,
-          }));
-
-          const submissionData = {
-            courseId: id,
-            quizId: quizId,
-            answers: formattedAnswers,
-          };
-
-          console.log("Submitting quiz:", submissionData);
-
-          const response = await api.post(`/v1/submitQuiz`, submissionData);
-          console.log("Quiz submission response:", response.data);
-          toast.success("Quiz submitted successfully!");
-          setShowResults(true);
-        } catch (error: unknown) {
-          console.error("Error submitting quiz:", error);
-          const message =
-            (error as { response?: { data?: { error?: string } } })?.response
-              ?.data?.error || "Failed to submit quiz";
-          toast.error(message);
-        } finally {
-          setSubmitting(false);
-        }
-      }
+      setShowConfirmModal(true);
     } else {
       // Next Question
       setQuizNum(quizNum + 1);
@@ -403,6 +479,14 @@ export default function QuizPage({
           ))}
         </div>
       </div>
+
+      {/* Submit Confirmation Modal */}
+      <SubmitConfirmModal
+        isOpen={showConfirmModal}
+        onConfirm={handleSubmitQuiz}
+        onCancel={() => setShowConfirmModal(false)}
+        questionCount={quizData.questions.length}
+      />
     </section>
   );
 }

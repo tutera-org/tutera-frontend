@@ -3,6 +3,7 @@ import { FaTimes } from "react-icons/fa";
 import PopUpModal from "../Reuse/PopUpModal";
 import AuthFormHeader from "../auth/AuthHeader";
 import Link from "next/link";
+import { PasswordInput } from "../ui/PasswordInput";
 import { toast } from "sonner";
 
 export default function ChangePassword({
@@ -41,10 +42,9 @@ export default function ChangePassword({
             Current Password
           </label>
 
-          <input
+          <PasswordInput
             id="current"
-            type="password"
-            className="border text-sm sm:text-base p-3 sm:p-3.5 border-black-400 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            className="focus:ring-2 focus:ring-primary-400"
           />
         </div>
 
@@ -57,10 +57,9 @@ export default function ChangePassword({
             New Password
           </label>
 
-          <input
+          <PasswordInput
             id="new"
-            type="password"
-            className="border text-sm sm:text-base p-3 sm:p-3.5 border-black-400 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            className="focus:ring-2 focus:ring-primary-400"
           />
         </div>
 
@@ -72,10 +71,9 @@ export default function ChangePassword({
           >
             Confirm Password
           </label>
-          <input
+          <PasswordInput
             id="confirm"
-            type="password"
-            className="border text-sm sm:text-base p-3 sm:p-3.5 border-black-400 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-400"
+            className="focus:ring-2 focus:ring-primary-400"
           />
         </div>
 

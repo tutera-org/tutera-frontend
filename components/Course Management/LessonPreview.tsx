@@ -26,7 +26,7 @@ export default function LessonPreview({ lesson, onBack }: LessonPreviewProps) {
           </h2>
 
           {(lesson.video || lesson.contentId) && (
-            <div className="w-full">
+            <div className="w-full mt-15">
               {lesson.videoFile?.type?.includes("pdf") ? (
                 <MediaPdf
                   mediaId={lesson.contentId}
@@ -39,9 +39,9 @@ export default function LessonPreview({ lesson, onBack }: LessonPreviewProps) {
                 <MediaVideo
                   mediaId={lesson.contentId}
                   fallbackUrl={lesson.video}
-                  className="w-full rounded-lg"
-                  controls
-                />
+                    className="w-full md:w-[80%] h-110 rounded-lg"
+                    controls
+                  />
               )}
             </div>
           )}

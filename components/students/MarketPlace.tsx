@@ -147,7 +147,7 @@ export default function Marketplace() {
 
                 {/* Amount */}
                 <p className="font-semibold text-lg sm:text-xl text-neutral-900">
-                  {formatAmount(course.price)}
+                  {course.price === 0 ? "Free" : formatAmount(course.price)}
                 </p>
 
                 <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-2">
