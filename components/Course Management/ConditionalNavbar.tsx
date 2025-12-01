@@ -57,18 +57,23 @@ export default function ConditionalNavbar() {
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("tutera-step-changed", handleCustomStorageChange);
+      window.removeEventListener(
+        "tutera-step-changed",
+        handleCustomStorageChange
+      );
       clearInterval(interval);
     };
   }, []);
 
   // Determine if navbar should be shown
-  // Hide navbar only when:
-  // 1. We're in course creation flow (currentStep 1-3) AND
-  // 2. We're on the courseManagement page
+  // Hide navbar when:
+  // 1. We're on the homepage (/) OR
+  // 2. We're in course creation flow (currentStep 1-3) AND on the courseManagement page
+  const isHomePage = pathname === "/";
   const isCourseManagementPage = pathname?.includes("/courseManagement");
   const isInCreationFlow = currentStep >= 1 && currentStep <= 3;
-  const showNavbar = !(isCourseManagementPage && isInCreationFlow);
+  const showNavbar =
+    !isHomePage && !(isCourseManagementPage && isInCreationFlow);
 
   if (isLoading) return <TuteraLoading />;
   if (!showNavbar) return null;

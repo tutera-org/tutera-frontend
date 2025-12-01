@@ -71,7 +71,6 @@ export function proxy(req: NextRequest) {
   // --- Tenant subdomain logic ---
   if (tenant) {
     // Check authentication - simple check if token exists
-    // The axios interceptor will handle token refresh if it's expired
     const token = req.cookies.get("accessToken")?.value;
     const isAuthenticated = !!token;
 
