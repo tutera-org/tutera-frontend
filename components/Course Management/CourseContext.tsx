@@ -446,9 +446,9 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         coverImage: coverImage,
         status: status,
         modules: modules.map((module, index) => {
+          // Filter lessons that have contentId (can be string or object)
           const lessons = (module.lessons || []).filter(
-            (lesson): lesson is Lesson & { contentId: string } =>
-              Boolean(lesson.name && lesson.contentId)
+            (lesson) => Boolean(lesson.name && lesson.contentId)
           );
 
           if (lessons.length === 0) {
@@ -494,8 +494,12 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
               if (lesson.contentId) {
                 if (typeof lesson.contentId === "string") {
                   contentId = lesson.contentId;
-                } else if (typeof lesson.contentId === "object" && lesson.contentId._id) {
-                  contentId = lesson.contentId._id;
+                } else if (typeof lesson.contentId === "object" && lesson.contentId !== null) {
+                  // Type assertion for object with _id property
+                  const contentIdObj = lesson.contentId as { _id?: string };
+                  if (contentIdObj._id) {
+                    contentId = contentIdObj._id;
+                  }
                 }
               }
               

@@ -54,9 +54,10 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let body: any;
   try {
     const { id } = await params;
-    const body = await request.json();
+    body = await request.json();
 
     if (!id) {
       return NextResponse.json(
