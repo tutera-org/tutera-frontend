@@ -11,6 +11,26 @@ export const api = axios.create({
   },
 });
 
+// ADDED: Variables to handle multiple simultaneous refresh attempts
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value?: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
+
+// ADDED: Process all queued requests after token refresh
+const processQueue = (error: AxiosError | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve();
+    }
+  });
+
+  failedQueue = [];
+};
+
 // Request interceptor - runs before every request is sent
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
@@ -38,22 +58,45 @@ api.interceptors.response.use(
 
     // Handle 401 Unauthorized - Token expired or invalid
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // IMPROVED: Check if we're already refreshing
+      if (isRefreshing) {
+        // Queue this request to be retried after refresh completes
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then(() => {
+            return api(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       // Mark this request as retried to prevent infinite loops
       originalRequest._retry = true;
+      isRefreshing = true;
 
       try {
         console.log("🔄 [TOKEN REFRESH] Attempting to refresh token...");
 
-        //TODO: create the route below for refreshToken
-        await api.post("/auth/refresh", {}, { withCredentials: true });
+        // Call your refresh token endpoint
+        await api.post("/v1/refreshToken", {}, { withCredentials: true });
 
         console.log("✅ [TOKEN REFRESH] Token refreshed successfully");
+
+        // Process all queued requests
+        processQueue(null);
+        isRefreshing = false;
 
         // Retry the original request with the new token
         return api(originalRequest);
       } catch (refreshError) {
         // Token refresh failed - user needs to login again
         console.error("❌ [TOKEN REFRESH FAILED]", refreshError);
+
+        // Reject all queued requests
+        processQueue(refreshError as AxiosError);
+        isRefreshing = false;
 
         // Redirect to signIn page
         if (typeof window !== "undefined") {

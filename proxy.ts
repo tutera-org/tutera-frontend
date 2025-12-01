@@ -1,7 +1,22 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Reserved subdomains that should NOT be treated as tenants
+const RESERVED_SUBDOMAINS = ["www", "api", "admin", "app"];
+
+// Helper function for consistent route matching
+const isPublicRoute = (pathname: string, routes: string[]): boolean => {
+  return routes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+};
+
 export function proxy(req: NextRequest) {
+  // Prevent double-processing
+  if (req.headers.get("x-middleware-processed")) {
+    return NextResponse.next();
+  }
+
   const url = req.nextUrl.clone();
   const hostname = req.headers.get("host") || "";
   const baseDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
@@ -28,8 +43,8 @@ export function proxy(req: NextRequest) {
     tenant = hostname.replace(`.${baseDomain}`, "");
   }
 
-  // --- EXCLUDE "www" from being treated as a tenant ---
-  if (tenant === "www") {
+  // Exclude all reserved subdomains
+  if (!tenant || RESERVED_SUBDOMAINS.includes(tenant)) {
     tenant = null;
   }
 
@@ -47,29 +62,22 @@ export function proxy(req: NextRequest) {
       "/verifyOtp",
     ];
 
-    if (
-      mainPublicRoutes.some(
-        (route) =>
-          url.pathname === route || url.pathname.startsWith(route + "/")
-      )
-    ) {
+    // Use helper function for consistent matching
+    if (isPublicRoute(url.pathname, mainPublicRoutes)) {
       return NextResponse.next();
     }
   }
 
   // --- Tenant subdomain logic ---
   if (tenant) {
-    // Prevent double rewrite
-    if (url.pathname.startsWith(`/${tenant}`)) {
-      return NextResponse.next();
-    }
-
-    // Check authentication
+    // Check authentication - simple check if token exists
+    // The axios interceptor will handle token refresh if it's expired
     const token = req.cookies.get("accessToken")?.value;
     const isAuthenticated = !!token;
 
     // Public routes that don't require authentication on tenant subdomains
     const tenantPublicRoutes = [
+      "/",
       "/signIn",
       "/signUp",
       "/forgotPassword",
@@ -78,9 +86,8 @@ export function proxy(req: NextRequest) {
       "/verifyOtp",
     ];
 
-    const isTenantPublic = tenantPublicRoutes.some((route) =>
-      url.pathname.startsWith(route)
-    );
+    //  Use helper function for consistent matching
+    const isTenantPublic = isPublicRoute(url.pathname, tenantPublicRoutes);
 
     // Redirect to signIn if not authenticated and not on public route
     if (!isAuthenticated && !isTenantPublic) {
@@ -104,6 +111,8 @@ export function proxy(req: NextRequest) {
     url.pathname = `/${tenant}${url.pathname}`;
     const res = NextResponse.rewrite(url);
     res.headers.set("x-tenant-slug", tenant);
+    // IMPROVED: Add header to prevent double-processing
+    res.headers.set("x-middleware-processed", "true");
     return res;
   }
 

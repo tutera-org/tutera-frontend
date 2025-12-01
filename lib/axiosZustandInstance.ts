@@ -1,5 +1,11 @@
 // For client-side API calls with request deduplication
-import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponseHeaders, AxiosHeaders, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosResponseHeaders,
+  AxiosHeaders,
+  AxiosResponse,
+} from "axios";
 import { toast } from "sonner";
 
 // Cache for ongoing requests
@@ -143,7 +149,7 @@ backendApi.interceptors.response.use(
         console.log("🔄 [TOKEN REFRESH] Attempting to refresh token...");
 
         await backendApi.post(
-          "/v1/auth/refresh",
+          "/v1/refreshToken",
           {},
           { withCredentials: true }
         );
