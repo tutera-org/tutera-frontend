@@ -5,6 +5,51 @@ import {
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Course ID is required" },
+        { status: 400 }
+      );
+    }
+
+    console.log("📥 [COURSE FETCH] Course ID:", id);
+
+    const api = await getApiWithCookies();
+
+    // Fetch course details from backend - use /details endpoint
+    const response = await api.get(`/v1/courses/${id}/details`);
+
+    console.log("✅ [COURSE FETCH] Success:", response.status);
+
+    return NextResponse.json(response.data, { status: response.status });
+  } catch (error) {
+    console.error("❌ [COURSE FETCH] Error:", error);
+
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("📝 [COURSE FETCH] Backend error:", error.response.data);
+      console.error(
+        "📝 [COURSE FETCH] Backend status:",
+        error.response.status
+      );
+    }
+
+    const errorMessage = handleServerApiError(error);
+
+    const status = axios.isAxiosError(error)
+      ? error.response?.status || 500
+      : 500;
+
+    return NextResponse.json({ error: errorMessage }, { status });
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -40,17 +85,16 @@ export async function PUT(
     const response = await api.put(updateUrl, body);
 
     console.log("✅ [COURSE UPDATE] Success:", response.status);
+    console.log("✅ [COURSE UPDATE] Response data:", JSON.stringify(response.data, null, 2));
 
     return NextResponse.json(response.data, { status: response.status });
   } catch (error) {
     console.error("❌ [COURSE UPDATE] Error:", error);
 
     if (axios.isAxiosError(error) && error.response) {
-      console.error("📝 [COURSE UPDATE] Backend error:", error.response.data);
-      console.error(
-        "📝 [COURSE UPDATE] Backend status:",
-        error.response.status
-      );
+      console.error("📝 [COURSE UPDATE] Backend error:", JSON.stringify(error.response.data, null, 2));
+      console.error("📝 [COURSE UPDATE] Backend status:", error.response.status);
+      console.error("📝 [COURSE UPDATE] Request body that failed:", JSON.stringify(body, null, 2));
     }
 
     const errorMessage = handleServerApiError(error);

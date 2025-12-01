@@ -13,32 +13,49 @@ import React, {
 // This avoids CORS issues when trying to cross-origin fetch
 
 export interface Lesson {
-  id: string;
+  id: string; // Frontend ID
+  _id?: string; // Backend ID - preserved for updates
   name: string;
   description: string;
   video?: string; // Signed URL for preview
   videoFile?: File;
   contentId?: string; // Media ID from backend
   order: number;
+  type?: string; // Lesson type (VIDEO, PDF, etc.)
+  duration?: number; // Lesson duration
+  isPreview?: boolean; // Whether lesson is preview
 }
 
 export interface Quiz {
-  id: string;
+  id: string; // Frontend ID
+  _id?: string; // Backend ID - preserved for updates
   question: string;
   options: string[];
   correctAnswer?: number; // Index of correct option
 }
 
 export interface Module {
-  id: string;
+  id: string; // Frontend ID
+  _id?: string; // Backend ID - preserved for updates
   name: string;
   lessons: Lesson[];
   quizzes: Quiz[];
   order: number;
+  quiz?: {
+    _id?: string; // Backend quiz ID
+    isPublished?: boolean;
+    questions?: Array<{
+      _id?: string;
+      questionText: string;
+      options: string[];
+      correctAnswerIndex: number;
+    }>;
+  };
 }
 
 export interface Course {
-  id: string;
+  id: string; // Frontend ID
+  _id?: string; // Backend ID - preserved for updates
   title: string;
   description: string;
   thumbnail: string; // Signed URL for preview
@@ -69,6 +86,7 @@ interface CourseContextType {
   resetCurrentCourse: () => void;
   uploadMedia: (file: File) => Promise<{ mediaId: string; signedUrl: string }>;
   fetchCourses: () => Promise<void>;
+  fetchCourseById: (courseId: string) => Promise<Course>;
   createCourse: (courseData: Partial<Course>) => Promise<void>;
 }
 
@@ -166,6 +184,206 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // Fetch single course by ID with full details
+  const fetchCourseById = useCallback(async (courseId: string): Promise<Course> => {
+    try {
+      console.log("📥 [FETCH COURSE BY ID] Fetching course:", courseId);
+      const response = await fetch(`/api/v1/courses/${courseId}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("Course not found");
+        }
+        throw new Error(`Failed to fetch course: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const backendCourse = data.data || data;
+
+      console.log("📥 [FETCH COURSE BY ID] Backend response:", backendCourse);
+
+      // Transform backend course structure to match our Course interface
+      interface BackendModule {
+        _id?: string;
+        id?: string;
+        title?: string;
+        name?: string;
+        order?: number;
+        lessons?: Array<{
+          _id?: string;
+          id?: string;
+          title?: string;
+          name?: string;
+          description?: string;
+          contentId?: string;
+          video?: string;
+          order?: number;
+          type?: string;
+        }>;
+        quiz?: {
+          _id?: string;
+          isPublished?: boolean;
+          questions?: Array<{
+            _id?: string;
+            questionText?: string;
+            question?: string;
+            options?: string[];
+            correctAnswerIndex?: number;
+            correctAnswer?: number;
+          }>;
+        };
+        quizzes?: Array<{
+          id?: string;
+          question?: string;
+          questionText?: string;
+          options?: string[];
+          correctAnswer?: number;
+          correctAnswerIndex?: number;
+        }>;
+      }
+
+      // Transform modules
+      const transformedModules: Module[] = await Promise.all(
+        (backendCourse.modules || []).map(async (module: BackendModule, moduleIndex: number) => {
+          // Transform lessons
+          const transformedLessons: Lesson[] = await Promise.all(
+            (module.lessons || []).map(async (lesson: any, lessonIndex: number) => {
+              // Extract contentId - handle both string and object formats
+              let contentId = "";
+              let videoUrl = lesson.video || "";
+              
+              if (lesson.contentId) {
+                if (typeof lesson.contentId === "string") {
+                  contentId = lesson.contentId;
+                  // Fetch signed URL for video if we have contentId but no video URL
+                  if (contentId && !videoUrl) {
+                    try {
+                      const mediaResponse = await fetch(`/api/v1/media/${contentId}`);
+                      if (mediaResponse.ok) {
+                        const mediaData = await mediaResponse.json();
+                        videoUrl = mediaData.data?.signedUrl || "";
+                      }
+                    } catch (error) {
+                      console.warn("Failed to fetch video URL for contentId:", contentId, error);
+                    }
+                  }
+                } else if (typeof lesson.contentId === "object" && lesson.contentId._id) {
+                  contentId = lesson.contentId._id;
+                  // Fetch signed URL for video
+                  if (contentId && !videoUrl) {
+                    try {
+                      const mediaResponse = await fetch(`/api/v1/media/${contentId}`);
+                      if (mediaResponse.ok) {
+                        const mediaData = await mediaResponse.json();
+                        videoUrl = mediaData.data?.signedUrl || "";
+                      }
+                    } catch (error) {
+                      console.warn("Failed to fetch video URL for contentId:", contentId, error);
+                    }
+                  }
+                }
+              }
+
+              return {
+                id: lesson._id || lesson.id || `lesson-${lessonIndex}`,
+                _id: lesson._id || undefined, // Preserve backend ID
+                name: lesson.title || lesson.name || "",
+                description: lesson.description || "",
+                video: videoUrl,
+                contentId: contentId,
+                order: lesson.order || lessonIndex + 1,
+                type: lesson.type || "VIDEO",
+                duration: lesson.duration || 0,
+                isPreview: lesson.isPreview || false,
+              };
+            })
+          );
+
+          // Transform quiz - preserve quiz structure with _id
+          const transformedQuizzes: Quiz[] = [];
+          let quizData: Module["quiz"] | undefined = undefined;
+          
+          if (module.quiz) {
+            // Preserve the quiz structure with _id
+            quizData = {
+              _id: module.quiz._id,
+              isPublished: module.quiz.isPublished || true,
+              questions: module.quiz.questions?.map((q: any) => ({
+                _id: q._id,
+                questionText: q.questionText || q.question || "",
+                options: q.options || [],
+                correctAnswerIndex: q.correctAnswerIndex ?? q.correctAnswer ?? 0,
+              })),
+            };
+            
+            // Also populate quizzes array for frontend use
+            if (module.quiz.questions && module.quiz.questions.length > 0) {
+              transformedQuizzes.push(
+                ...module.quiz.questions.map((q: any) => ({
+                  id: q._id || `quiz-${Date.now()}`,
+                  _id: q._id || undefined,
+                  question: q.questionText || q.question || "",
+                  options: q.options || [],
+                  correctAnswer: q.correctAnswerIndex ?? q.correctAnswer ?? 0,
+                }))
+              );
+            }
+          } else if (module.quizzes && module.quizzes.length > 0) {
+            transformedQuizzes.push(
+              ...module.quizzes.map((q: any) => ({
+                id: q._id || q.id || `quiz-${Date.now()}`,
+                _id: q._id || undefined,
+                question: q.questionText || q.question || "",
+                options: q.options || [],
+                correctAnswer: q.correctAnswerIndex ?? q.correctAnswer ?? 0,
+              }))
+            );
+          }
+
+          return {
+            id: module._id || module.id || `module-${moduleIndex}`,
+            _id: module._id || undefined, // Preserve backend ID
+            name: module.title || module.name || "",
+            lessons: transformedLessons,
+            quizzes: transformedQuizzes,
+            order: module.order || moduleIndex + 1,
+            quiz: quizData, // Preserve quiz structure with _id
+          };
+        })
+      );
+
+      // Build the transformed course
+      const transformedCourse: Course = {
+        id: backendCourse._id || backendCourse.id || courseId,
+        _id: backendCourse._id || undefined, // Preserve backend ID
+        title: backendCourse.title || "",
+        description: backendCourse.description || "",
+        thumbnail: "", // Will be handled by MediaImage component using thumbnailMediaId
+        thumbnailMediaId: backendCourse.coverImage || null,
+        price: backendCourse.price || 0,
+        isPaid: (backendCourse.price || 0) > 0,
+        modules: transformedModules,
+        certificate: backendCourse.certificate || false,
+        ratings: backendCourse.ratings || false,
+        quizzes: [], // Global quizzes if any
+        createdAt: backendCourse.createdAt || new Date().toISOString(),
+        status:
+          backendCourse.status?.toLowerCase() === "published" ||
+          backendCourse.status === "ACTIVE" ||
+          backendCourse.status === "PUBLISHED"
+            ? "published"
+            : "draft",
+      };
+
+      console.log("✅ [FETCH COURSE BY ID] Transformed course:", transformedCourse);
+
+      return transformedCourse;
+    } catch (error) {
+      console.error("❌ [FETCH COURSE BY ID] Error:", error);
+      throw error;
+    }
+  }, []);
+
   // Create course via API
   const createCourse = useCallback(
     async (courseData: Partial<Course>) => {
@@ -188,11 +406,13 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         description: string;
         price: number;
         coverImage: string;
-        status: "PUBLISHED" | "DRAFT";
+        status: "PUBLISHED" | "DRAFT" | "ACTIVE";
         modules: Array<{
+          _id?: string; // Include _id for updates
           title: string;
           order: number;
           lessons: Array<{
+            _id?: string; // Include _id for updates
             title: string;
             description: string;
             type: string;
@@ -202,8 +422,10 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
             contentId: string;
           }>;
           quiz?: {
+            _id?: string; // Include _id for updates
             isPublished: boolean;
             questions: Array<{
+              _id?: string; // Include _id for updates
               questionText: string;
               options: string[];
               correctAnswerIndex: number;
@@ -211,12 +433,18 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
           };
         }>;
       }
+      // Map status: "published" -> "PUBLISHED" or "ACTIVE", "draft" -> "DRAFT"
+      let status: "PUBLISHED" | "DRAFT" | "ACTIVE" = "DRAFT";
+      if (courseData.status === "published") {
+        status = "PUBLISHED"; // or "ACTIVE" depending on backend preference
+      }
+
       const coursePayload: CoursePayload = {
         title: courseData.title || "",
         description: courseData.description || "",
         price: courseData.price || 0,
         coverImage: coverImage,
-        status: courseData.status === "published" ? "PUBLISHED" : "DRAFT",
+        status: status,
         modules: modules.map((module, index) => {
           const lessons = (module.lessons || []).filter(
             (lesson): lesson is Lesson & { contentId: string } =>
@@ -232,9 +460,11 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
           }
 
           const modulePayload: {
+            _id?: string;
             title: string;
             order: number;
             lessons: Array<{
+              _id?: string;
               title: string;
               description: string;
               type: string;
@@ -244,32 +474,79 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
               contentId: string;
             }>;
             quiz?: {
+              _id?: string;
               isPublished: boolean;
               questions: Array<{
+                _id?: string;
                 questionText: string;
                 options: string[];
                 correctAnswerIndex: number;
               }>;
             };
           } = {
+            // Include _id if it exists (for updates)
+            ...(module._id && { _id: module._id }),
             title: module.name || "",
             order: module.order || index + 1,
-            lessons: lessons.map((lesson, lessonIndex) => ({
-              title: lesson.name,
-              description: lesson.description || "",
-              type: "VIDEO",
-              order: lesson.order || lessonIndex + 1,
-              duration: 0,
-              isPreview: false,
-              contentId: lesson.contentId,
-            })),
+            lessons: lessons.map((lesson, lessonIndex) => {
+              // Ensure contentId is always a string (defensive check)
+              let contentId = "";
+              if (lesson.contentId) {
+                if (typeof lesson.contentId === "string") {
+                  contentId = lesson.contentId;
+                } else if (typeof lesson.contentId === "object" && lesson.contentId._id) {
+                  contentId = lesson.contentId._id;
+                }
+              }
+              
+              if (!contentId) {
+                console.warn(`Lesson "${lesson.name}" has no valid contentId`);
+              }
+
+              const lessonPayload: {
+                _id?: string;
+                title: string;
+                description: string;
+                type: string;
+                order: number;
+                duration: number;
+                isPreview: boolean;
+                contentId: string;
+              } = {
+                // Include _id if it exists (for updates)
+                ...(lesson._id && { _id: lesson._id }),
+                title: lesson.name,
+                description: lesson.description || "",
+                type: lesson.type || "VIDEO",
+                order: lesson.order || lessonIndex + 1,
+                duration: lesson.duration || 0,
+                isPreview: lesson.isPreview || false,
+                contentId: contentId,
+              };
+
+              return lessonPayload;
+            }),
           };
 
-          // Only include quiz if it exists and has questions
-          if (module.quizzes && module.quizzes.length > 0) {
+          // Include quiz if it exists - preserve _id structure
+          if (module.quiz) {
+            // Use the preserved quiz structure
+            modulePayload.quiz = {
+              ...(module.quiz._id && { _id: module.quiz._id }),
+              isPublished: module.quiz.isPublished !== undefined ? module.quiz.isPublished : true,
+              questions: (module.quiz.questions || []).map((q: any) => ({
+                ...(q._id && { _id: q._id }),
+                questionText: q.questionText || q.question || "",
+                options: q.options || [],
+                correctAnswerIndex: q.correctAnswerIndex ?? q.correctAnswer ?? 0,
+              })),
+            };
+          } else if (module.quizzes && module.quizzes.length > 0) {
+            // Fallback: use quizzes array if quiz object doesn't exist
             modulePayload.quiz = {
               isPublished: true,
               questions: module.quizzes.map((quiz) => ({
+                ...(quiz._id && { _id: quiz._id }),
                 questionText: quiz.question,
                 options: quiz.options || [],
                 correctAnswerIndex: quiz.correctAnswer || 0,
@@ -528,6 +805,7 @@ export function CourseProvider({ children }: { children: React.ReactNode }) {
         resetCurrentCourse,
         uploadMedia,
         fetchCourses,
+        fetchCourseById,
         createCourse,
       }}
     >
