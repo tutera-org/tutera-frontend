@@ -3,6 +3,7 @@
 import { api } from "@/lib/axiosClientInstance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { PasswordInput } from "../ui/PasswordInput";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -132,13 +133,10 @@ export default function SignInForm({
       {/* ==================== PASSWORD INPUT ==================== */}
       <label className="flex flex-col gap-2.5 text-xs sm:text-sm font-semibold leading-[120%] text-neutral-900">
         Password
-        <input
-          type="password"
+        <PasswordInput
           {...register("password")}
           placeholder="Enter password..."
-          className={`border text-base p-2.5 w-full rounded-lg ${
-            errors.password ? "border-red-500" : "border-black-400"
-          }`}
+          error={!!errors.password}
         />
         {/* Show validation error if exists */}
         {errors.password && (

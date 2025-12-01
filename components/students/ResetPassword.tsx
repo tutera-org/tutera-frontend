@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import StudentButton from "./Button";
+import { PasswordInput } from "../ui/PasswordInput";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -14,18 +15,10 @@ export default function ResetPasswordForm() {
     <form onSubmit={handleClick} className="flex py-8 flex-col gap-10">
       {/* New Password */}
 
-      <input
-        type="password"
-        placeholder="New Password"
-        className="border text-base  p-2.5 border-black-400 w-full rounded-lg"
-      />
+      <PasswordInput placeholder="New Password" />
 
       {/* Confirm Password */}
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        className="border  text-base  p-2.5 border-black-400 w-full rounded-lg"
-      />
+      <PasswordInput placeholder="Confirm Password" />
 
       {/* Reset Button */}
       <StudentButton type="submit">Reset Password</StudentButton>
