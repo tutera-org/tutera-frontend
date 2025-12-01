@@ -173,8 +173,38 @@ export default function CourseAnalytics() {
         </h1>
       </div>
 
+      {/* Summary Stats - Using API data */}
+      {selectedCourseAnalytics && (
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 mb-15">
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-4">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Total Students
+            </h3>
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
+              {selectedCourseAnalytics.totalStudents}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Average Quiz Score
+            </h3>
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
+              {Math.round(selectedCourseAnalytics.averageQuizScore)}%
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
+            <h3 className="text-sm font-medium text-gray-600 mb-2">
+              Completion Rate
+            </h3>
+            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
+              {Math.round(selectedCourseAnalytics.completionRate)}%
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Filters and Search */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 items-start md:items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-4 mb-10 items-start md:items-center justify-between">
         {/* Course Dropdown */}
         <div className="relative">
           <button
@@ -253,7 +283,7 @@ export default function CourseAnalytics() {
       </div>
 
       {/* Analytics Table */}
-      <div className="bg-white rounded-lg border border-[#E1E1E1] h-160 overflow-y-scroll">
+      <div className="bg-white rounded-lg border border-[#E1E1E1] max-h-100 overflow-y-scroll">
         <div className="">
           <table className="w-full">
             <thead className="border-b border-[#EAECF0]">
@@ -330,35 +360,7 @@ export default function CourseAnalytics() {
         </div>
       </div>
 
-      {/* Summary Stats - Using API data */}
-      {selectedCourseAnalytics && (
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-4">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">
-              Total Students
-            </h3>
-            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {selectedCourseAnalytics.totalStudents}
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">
-              Average Quiz Score
-            </h3>
-            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {Math.round(selectedCourseAnalytics.averageQuizScore)}%
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow-sm border border-[#E1E1E1] p-6">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">
-              Completion Rate
-            </h3>
-            <p className="text-[1.5rem] md:text-[2rem] font-bold text-[#101A33]">
-              {Math.round(selectedCourseAnalytics.completionRate)}%
-            </p>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 }

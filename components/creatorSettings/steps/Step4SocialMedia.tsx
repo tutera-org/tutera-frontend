@@ -24,8 +24,15 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://twitter.com/@username"
-            // value={formData.twitter || ""}
-            // onChange={(e) => onChange({ twitter: e.target.value })}
+            value={formData.socialLinks?.twitter || ""}
+            onChange={(e) =>
+              onChange({
+                socialLinks: {
+                  ...formData.socialLinks,
+                  twitter: e.target.value,
+                },
+              })
+            }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -36,8 +43,15 @@ export default function Step4SocialMedia({
           <input
             type="url"
             placeholder="https://linkedin.com/in/@username"
-            // value={formData.linkedin || ""}
-            // onChange={(e) => onChange({ linkedin: e.target.value })}
+            value={formData.socialLinks?.linkedin || ""}
+            onChange={(e) =>
+              onChange({
+                socialLinks: {
+                  ...formData.socialLinks,
+                  linkedin: e.target.value,
+                },
+              })
+            }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -47,9 +61,16 @@ export default function Step4SocialMedia({
           </label>
           <input
             type="url"
-            placeholder="https://youtube.com/in/@username"
-            // value={formData.youtube || ""}
-            // onChange={(e) => onChange({ youtube: e.target.value })}
+            placeholder="https://youtube.com/@username"
+            value={formData.socialLinks?.youtube || ""}
+            onChange={(e) =>
+              onChange({
+                socialLinks: {
+                  ...formData.socialLinks,
+                  youtube: e.target.value,
+                },
+              })
+            }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
@@ -59,9 +80,16 @@ export default function Step4SocialMedia({
           </label>
           <input
             type="url"
-            placeholder="https://instagram.com/in/@username"
-            // value={formData.instagram || ""}
-            // onChange={(e) => onChange({ instagram: e.target.value })}
+            placeholder="https://instagram.com/@username"
+            value={formData.socialLinks?.instagram || ""}
+            onChange={(e) =>
+              onChange({
+                socialLinks: {
+                  ...formData.socialLinks,
+                  instagram: e.target.value,
+                },
+              })
+            }
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4977E6] focus:border-transparent"
           />
         </div>
