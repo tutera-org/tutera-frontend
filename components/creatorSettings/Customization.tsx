@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getLandingPage } from "@/lib/api/landingPage";
+import PremiumBadge from "../Reuse/PremiumBadge";
 
 export default function Customization() {
   const [hasCustomization, setHasCustomization] = useState(false);
@@ -89,18 +90,22 @@ export default function Customization() {
     {
       title: "Profile and Bio",
       desc: "Share who you are what you teach",
+      premium: false,
     },
     {
       title: "Brand Assets",
       desc: "Update your logo, cover photo and image",
+      premium: false,
     },
     {
       title: "Visual Identity",
       desc: "Choose colors",
+      premium: true,
     },
     {
       title: "Connect Socials",
       desc: "Link your social media profiles",
+      premium: false,
     },
   ];
 
@@ -149,25 +154,32 @@ export default function Customization() {
         </div>
 
         {todo.map((todo, index) => (
-          <div
-            className="px-3 sm:px-4 flex flex-col gap-2 text-[rgba(0, 0, 0, 1)]"
-            key={index}
-          >
-            <h3 className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl">
-              {todo.title}
-            </h3>
-            <p className="lg:text-base text-xs sm:text-sm md:text-base">
-              {todo.desc}
-            </p>
+          <div className="px-3 sm:px-4 text-[rgba(0, 0, 0, 1)]" key={index}>
+            <div
+              className={`flex ${
+                todo.premium ? "justify-between items-center" : "flex-col gap-2"
+              }`}
+            >
+              <div className="flex flex-col gap-2">
+                <h3 className="font-semibold text-base sm:text-lg md:text-xl lg:text-2xl">
+                  {todo.title}
+                </h3>
+                <p className="lg:text-base text-xs sm:text-sm md:text-base">
+                  {todo.desc}
+                </p>
+              </div>
+
+              {todo.premium && <PremiumBadge size="md" variant="gold" />}
+            </div>
           </div>
         ))}
 
-        <div className="flex  justify-center lg:justify-end">
+        <div className="flex justify-center lg:justify-end">
           {/* Status Indicator */}
 
           <Link
             href={"/customization"}
-            className="w-fit text-center  bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-3 px-5 font-bold cursor-pointer text-sm sm:text-base transition-colors"
+            className="w-fit text-center bg-primary-400 mt-4 text-white hover:bg-white hover:border hover:border-primary-400 hover:text-primary-400 rounded-lg py-3 px-5 font-bold cursor-pointer text-sm sm:text-base transition-colors"
           >
             {isLoading
               ? "Loading..."

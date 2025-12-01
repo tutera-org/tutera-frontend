@@ -110,17 +110,14 @@ export default function SignUpForm() {
       console.log(`   Name: ${tenant.name}`);
 
       // Construct tenant subdomain sign-in URL
-      const protocol = window.location.protocol; // http: or https:
+      // Construct subdomain URL for redirect
+
+      const protocol = window.location.protocol;
       const rootDomain =
         process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
-      const tenantSignInUrl = `${protocol}//${
-        tenant.website
-      }.${rootDomain}/signIn?email=${encodeURIComponent(
-        formData.email
-      )}&registered=true`;
-
-      // Hard redirect to tenant subdomain sign-in page
-      window.location.href = tenantSignInUrl;
+      const subdomainUrl = `${protocol}//${tenant.website}.${rootDomain}/`;
+      // Hard redirect to subdomain (full page reload to change domain)
+      window.location.href = subdomainUrl;
     } catch (error: unknown) {
       const message =
         (error as { response?: { data?: { error?: string } } })?.response?.data
