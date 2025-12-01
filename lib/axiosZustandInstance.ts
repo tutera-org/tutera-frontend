@@ -1,6 +1,13 @@
 // For client-side API calls with request deduplication
-import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponseHeaders, AxiosHeaders, AxiosResponse } from "axios";
+import axios, {
+  AxiosError,
+  InternalAxiosRequestConfig,
+  AxiosResponseHeaders,
+  AxiosHeaders,
+  AxiosResponse,
+} from "axios";
 import { toast } from "sonner";
+import { getAuthToken } from "@/store/authStore";
 
 // Cache for ongoing requests
 const pendingRequests = new Map<string, Promise<AxiosResponse>>();
@@ -26,15 +33,29 @@ function getRequestKey(config: InternalAxiosRequestConfig): string {
 export const backendApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // Don't set default Content-Type - let axios set it based on request type
+  // For JSON: application/json
+  // For FormData: multipart/form-data with boundary (auto-set by axios)
 });
 
-// REQUEST INTERCEPTOR - Deduplication
+// REQUEST INTERCEPTOR - Deduplication & Authentication
 
 backendApi.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // Add Authorization header with Bearer token if available
+    const token = getAuthToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      if (process.env.NODE_ENV === "development") {
+        console.log("🔑 [AUTH] Bearer token added to request");
+      }
+    }
+
+    // Set Content-Type for JSON requests (but not for FormData)
+    if (!(config.data instanceof FormData) && !config.headers["Content-Type"]) {
+      config.headers["Content-Type"] = "application/json";
+    }
+
     const requestKey = getRequestKey(config);
 
     // Check if there's a cached response

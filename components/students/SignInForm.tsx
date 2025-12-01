@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import TuteraLoading from "../Reuse/Loader";
 import StudentButton from "./Button";
+import { setAuthToken } from "@/lib/authUtils";
 
 // ✅ TypeScript interface for backend response
 interface SignInResponse {
@@ -92,9 +93,22 @@ export default function SignInForm({
         password: formData.password,
       });
 
-      // Extract role from response
+      // Extract role and token from response
       const role = response.data.data.user.role;
+      const accessToken = response.data.data.tokens?.accessToken;
+      
       console.log("🔐 User role from backend:", role);
+
+      // Store token in Zustand store (required for axios interceptor)
+      if (accessToken) {
+        setAuthToken(accessToken);
+        console.log("✅ [AUTH] Token stored in Zustand store");
+      } else {
+        console.error("❌ [AUTH] No access token found in response!");
+        toast.error("Login failed: No token received");
+        setIsLoading(false);
+        return;
+      }
 
       // Store in localStorage
       if (typeof window !== "undefined") {

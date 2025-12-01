@@ -14,7 +14,7 @@ export default function EarningCards() {
   const cards: cardProps[] = [
     {
       icon: "/dollarIcon.svg",
-      button: "Withdraw",
+      // button: "Withdraw",
       title: "Available Balance",
       amt: "0",
     },
@@ -61,7 +61,7 @@ export default function EarningCards() {
               className="w-8 h-8 sm:w-10 sm:h-10 "
               alt={card.title}
             />
-            <button
+            {/* <button
               onClick={handleShowPopUp}
               className={
                 index === 0
@@ -70,7 +70,7 @@ export default function EarningCards() {
               }
             >
               {card.button}
-            </button>
+            </button> */}
           </aside>
 
           <aside className="mt-8 sm:mt-10 md:mt-13 flex flex-col gap-2 sm:gap-3 md:gap-3.5 text-sm sm:text-base text-neutral-900 leading-5">

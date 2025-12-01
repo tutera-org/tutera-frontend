@@ -20,7 +20,12 @@ export async function POST(request: NextRequest) {
       ...response.data,
       data: {
         ...response.data.data,
-        tokens: undefined, // Remove tokens from response body
+        // Keep tokens in response so client can store in Zustand
+        // The cookie is still set for server-side use
+        tokens: {
+          accessToken,
+          refreshToken,
+        },
       },
     };
 
