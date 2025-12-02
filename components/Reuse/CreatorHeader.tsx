@@ -50,9 +50,12 @@ export default function CreatorHeader() {
   const handleCopyUrl = async () => {
     try {
       if (typeof window !== "undefined") {
-        const currentUrl = window.location.href;
-        await navigator.clipboard.writeText(currentUrl);
-        toast.success("URL copied to clipboard!");
+        // Get the base URL (protocol + hostname + port)
+        const { protocol, hostname, port } = window.location;
+        const baseUrl = `${protocol}//${hostname}${port ? `:${port}` : ""}`;
+
+        await navigator.clipboard.writeText(baseUrl);
+        toast.success("Base URL copied to clipboard!");
         setIsDropdownOpen(false);
       }
     } catch (error) {
