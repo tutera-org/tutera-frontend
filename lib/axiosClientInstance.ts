@@ -112,41 +112,26 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle 403 Forbidden - User doesn't have permission to access this resource
-    if (error.response?.status === 403) {
-      console.error("🚫 [FORBIDDEN] User does not have permission");
+    // Show backend error message for all other errors
+    if (error.response && typeof window !== "undefined") {
+      const responseData = error.response.data as any;
+      const backendMessage =
+        responseData?.data?.message ||
+        responseData?.data?.error ||
+        responseData?.message ||
+        responseData?.error ||
+        responseData?.msg ||
+        error.response.statusText;
 
-      // Show error notification to user
-      if (typeof window !== "undefined") {
-        toast.error("You don't have permission to access this resource");
+      // Only show toast if there's a meaningful message
+      if (backendMessage && typeof backendMessage === "string") {
+        toast.error(backendMessage);
       }
     }
 
-    // Handle 404 Not Found - Resource doesn't exist
-    if (error.response?.status === 404) {
-      console.error("🔍 [NOT FOUND] Resource not found");
-
-      toast.error("The requested resource was not found");
-    }
-
-    // Handle 500 Internal Server Error - Something went wrong on the server
-    if (error.response?.status === 500) {
-      console.error("💥 [SERVER ERROR] Internal server error occurred");
-
-      toast.error("Something went wrong. Please try again later.");
-    }
-
-    // Handle 429 Too Many Requests - Rate limiting
-    if (error.response?.status === 429) {
-      console.error("⏱️ [RATE LIMITED] Too many requests");
-
-      toast.error("Too many requests. Please wait a moment and try again.");
-    }
-
     // Handle network errors (no response received)
-    if (!error.response) {
+    if (!error.response && typeof window !== "undefined") {
       console.error("🌐 [NETWORK ERROR] No response received from server");
-
       toast.error("Network error. Please check your internet connection.");
     }
 
@@ -160,9 +145,20 @@ export function handleClientApiError(error: unknown): string {
   if (axios.isAxiosError(error)) {
     // Server responded with an error status (4xx, 5xx)
     if (error.response) {
-      // Extract message from response data, fallback to status text
-      const message = error.response.data?.message || error.response.statusText;
-      return `${message}`;
+      const responseData = error.response.data as any;
+
+      // Extract message from backend - try multiple possible fields
+      const backendMessage =
+        responseData?.data?.message ||
+        responseData?.data?.error ||
+        responseData?.message ||
+        responseData?.error ||
+        responseData?.msg ||
+        error.response.statusText;
+
+      return typeof backendMessage === "string" && backendMessage
+        ? backendMessage
+        : "An error occurred";
     }
     // Request was made but no response received (network error, timeout, etc.)
     if (error.request) {

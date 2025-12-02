@@ -46,28 +46,20 @@ export async function getApiWithCookies() {
       return response;
     },
     (error: AxiosError) => {
-      // Handle 401 Unauthorized - User not authenticated or token expired
-      if (error.response?.status === 401) {
-        console.error("🔒 [UNAUTHORIZED] User not authenticated");
-        throw new Error("UNAUTHORIZED");
-      }
+      // Log the actual backend error message
+      if (error.response) {
+        const responseData = error.response.data as any;
+        const backendMessage =
+          responseData?.data?.message ||
+          responseData?.data?.error ||
+          responseData?.message ||
+          responseData?.error ||
+          responseData?.msg;
 
-      // Handle 403 Forbidden - User authenticated but doesn't have permission
-      if (error.response?.status === 403) {
-        console.error("🚫 [FORBIDDEN] User doesn't have permission");
-        throw new Error("FORBIDDEN");
-      }
-
-      // Handle 404 Not Found - Requested resource doesn't exist on backend
-      if (error.response?.status === 404) {
-        console.error("🔍 [NOT FOUND] Resource not found on backend");
-        throw new Error("NOT_FOUND");
-      }
-
-      // Handle 500 Internal Server Error - Backend server error
-      if (error.response?.status === 500) {
-        console.error("💥 [INTERNAL SERVER ERROR] Backend server error");
-        throw new Error("INTERNAL_SERVER_ERROR");
+        console.error(
+          `❌ [BACKEND ERROR ${error.response.status}]:`,
+          backendMessage || error.response.statusText
+        );
       }
 
       return Promise.reject(error);
@@ -83,10 +75,22 @@ export function handleServerApiError(error: unknown): string {
   if (axios.isAxiosError(error)) {
     // Server responded with an error status (4xx, 5xx)
     if (error.response) {
-      // Extract error message from backend response, fallback to status text
-      const message = error.response.data?.message || error.response.statusText;
-      console.error(`📝 [ERROR MESSAGE] Extracted: "${message}"`);
-      return `${message}`;
+      const responseData = error.response.data as any;
+
+      // Extract error message from backend response - try multiple possible fields
+      const backendMessage =
+        responseData?.data?.message ||
+        responseData?.data?.error ||
+        responseData?.message ||
+        responseData?.error ||
+        responseData?.msg ||
+        error.response.statusText;
+
+      console.error(`📝 [ERROR MESSAGE] Extracted: "${backendMessage}"`);
+
+      return typeof backendMessage === "string" && backendMessage
+        ? backendMessage
+        : "An error occurred";
     }
     // Request was made but no response received (network error, timeout, etc.)
     if (error.request) {
